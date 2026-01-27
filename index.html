@@ -1,53 +1,528 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Liga Cartola - Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Typography: display + body -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-body { background:#1e1e1e; color:#fff; font-family:Arial; padding:20px; }
-h1,h2 { text-align:center; color:#ff6a00; }
+  :root{
+    /* Pitch-night / stadium lights vibe */
+    --bg0:#06070a;
+    --bg1:#0b0f18;
+    --panel: rgba(255,255,255,.06);
+    --panel2: rgba(255,255,255,.085);
+    --stroke: rgba(255,255,255,.10);
+    --stroke2: rgba(255,255,255,.16);
+    --text:#eaf0ff;
+    --muted: rgba(234,240,255,.72);
 
-.section {
-  background:#2a2a2a;
-  padding:20px;
-  margin:20px 0;
-  border-radius:12px;
-}
+    --accent:#ff6a00;
+    --accent2:#7c5cff;
 
-table { width:100%; border-collapse:collapse; }
-th,td { padding:10px; text-align:center; border-bottom:1px solid #444; }
+    --shadow: 0 20px 60px rgba(0,0,0,.55);
+    --shadow2: 0 10px 30px rgba(0,0,0,.35);
 
-.th-vencedor { background:#d4af37; color:#000; }
-.th-perdedor { background:#e53935; }
-.th-dif { background:#1e88e5; }
-.th-rod { background:#8e24aa; }
-.th-pontos { background:#43a047; }
-.th-media { background:#00c853; }
-.th-lan { background:#757575; }
-.th-pun { background:#ff6a00; color:#000; }
+    --r-lg: 20px;
+    --r-md: 14px;
+    --r-sm: 12px;
 
-.nome {
-  padding:6px 10px;
-  border-radius:6px;
-  font-weight:bold;
-  color:#000;
-  display:inline-block;
-  min-width:90px;
-}
+    --pad: clamp(14px, 2vw, 22px);
+    --max: 1160px;
+  }
 
-.campeao {
-  box-shadow:0 0 12px gold;
-}
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    color:var(--text);
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background:
+      radial-gradient(1200px 800px at 15% 12%, rgba(255,106,0,.18), transparent 55%),
+      radial-gradient(900px 600px at 85% 18%, rgba(124,92,255,.18), transparent 55%),
+      radial-gradient(1000px 700px at 50% 110%, rgba(0,200,83,.14), transparent 60%),
+      linear-gradient(180deg, var(--bg0), var(--bg1));
+    overflow-x:hidden;
+  }
 
-canvas { max-width:420px; margin:auto; }
+  /* Subtle texture + pitch lines */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.8;
+    background:
+      linear-gradient(to bottom, rgba(255,255,255,.06), transparent 18%),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,.035) 0px,
+        rgba(255,255,255,.035) 1px,
+        transparent 1px,
+        transparent 28px
+      );
+    mix-blend-mode:soft-light;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:-200px;
+    pointer-events:none;
+    background:
+      radial-gradient(closest-side at 25% 25%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(closest-side at 80% 35%, rgba(255,255,255,.05), transparent 65%),
+      radial-gradient(closest-side at 55% 78%, rgba(255,255,255,.04), transparent 65%);
+    filter: blur(14px);
+    opacity:.65;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{
+    width:min(var(--max), calc(100% - 2*var(--pad)));
+    margin:0 auto;
+    position:relative;
+    padding: clamp(18px, 4.5vw, 42px) 0 56px;
+  }
+
+  /* Header */
+  header{
+    display:grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: clamp(14px, 2.2vw, 22px);
+    align-items:stretch;
+    margin-bottom: clamp(18px, 2.6vw, 26px);
+  }
+  @media (max-width: 900px){
+    header{ grid-template-columns:1fr; }
+  }
+
+  .hero{
+    position:relative;
+    border-radius: clamp(18px, 2vw, 28px);
+    padding: clamp(18px, 2.6vw, 28px);
+    background: linear-gradient(135deg, rgba(255,106,0,.12), rgba(255,255,255,.06) 45%, rgba(124,92,255,.10));
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background:
+      radial-gradient(700px 280px at 12% 25%, rgba(255,106,0,.28), transparent 60%),
+      radial-gradient(540px 220px at 86% 35%, rgba(124,92,255,.22), transparent 62%),
+      linear-gradient(180deg, rgba(255,255,255,.07), transparent 55%);
+    filter: blur(0px);
+    opacity:.9;
+    pointer-events:none;
+  }
+  .hero-inner{
+    position:relative;
+    display:flex;
+    gap: 18px;
+    align-items:flex-end;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+
+  .kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 12px;
+    border-radius:999px;
+    background: rgba(0,0,0,.25);
+    border: 1px solid rgba(255,255,255,.12);
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing:.2px;
+    backdrop-filter: blur(10px);
+  }
+  .k-dot{
+    width:10px;height:10px;border-radius:999px;
+    background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.2) 25%, transparent 35%),
+                linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 0 6px rgba(255,106,0,.08);
+  }
+
+  h1{
+    margin:10px 0 0;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    letter-spacing:.6px;
+    line-height: .92;
+    font-size: clamp(44px, 6vw, 78px);
+  }
+  .sub{
+    margin:10px 0 0;
+    color: var(--muted);
+    max-width: 62ch;
+    font-size: clamp(14px, 1.5vw, 16px);
+    line-height:1.6;
+  }
+
+  .meta{
+    display:grid;
+    gap: 10px;
+    align-content:start;
+  }
+  .metaPanel{
+    border-radius: 18px;
+    background: rgba(255,255,255,.055);
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow2);
+    padding: 16px 16px 14px;
+    backdrop-filter: blur(12px);
+  }
+  .metaTitle{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+    margin-bottom: 10px;
+  }
+  .metaTitle h2{
+    margin:0;
+    font-size: 13px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(234,240,255,.78);
+    font-weight: 700;
+  }
+  .pill{
+    font-size: 12px;
+    color: rgba(0,0,0,.85);
+    background: linear-gradient(135deg, #ffd66b, #d4af37);
+    border: 1px solid rgba(0,0,0,.18);
+    padding: 7px 10px;
+    border-radius: 999px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    white-space:nowrap;
+  }
+
+  /* Champion block */
+  #campeao{
+    text-align:left !important;
+    font-size: 16px !important;
+    line-height:1.25;
+    margin-top: 8px;
+  }
+  .champRow{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 12px;
+    flex-wrap:wrap;
+  }
+  .champBig{
+    display:flex; align-items:center; gap:10px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .champHint{
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* Layout sections */
+  main{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: clamp(14px, 2vw, 18px);
+  }
+
+  /* First row: chart + champion */
+  .topGrid{
+    display:grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: clamp(14px, 2vw, 18px);
+  }
+  @media (max-width: 920px){
+    .topGrid{ grid-template-columns:1fr; }
+  }
+
+  .section{
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
+    border: 1px solid var(--stroke);
+    border-radius: var(--r-lg);
+    padding: clamp(14px, 2vw, 18px);
+    box-shadow: var(--shadow2);
+    backdrop-filter: blur(12px);
+    position:relative;
+    overflow:hidden;
+  }
+  .section::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    pointer-events:none;
+    opacity:.7;
+    background:
+      radial-gradient(420px 140px at 20% 10%, rgba(255,106,0,.14), transparent 55%),
+      radial-gradient(380px 140px at 85% 15%, rgba(124,92,255,.14), transparent 60%);
+  }
+
+  .sectionHead{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom: 12px;
+    position:relative;
+  }
+  .section h2{
+    margin:0;
+    text-align:left;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    letter-spacing: .7px;
+    font-size: clamp(22px, 2.6vw, 32px);
+    color: rgba(234,240,255,.95);
+  }
+  .hint{
+    color: var(--muted);
+    font-size: 13px;
+    line-height:1.25;
+  }
+
+  /* Tables */
+  table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    overflow:hidden;
+    border-radius: 16px;
+    position:relative;
+    z-index:1;
+  }
+  th, td{
+    padding: 12px 12px;
+    text-align:left;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    font-size: 14px;
+  }
+  td:nth-child(n+2), th:nth-child(n+2){
+    text-align:right;
+  }
+  th{
+    position:sticky;
+    top:0;
+    z-index:2;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.86);
+    border-bottom: 1px solid rgba(0,0,0,.18);
+  }
+
+  tr{
+    background: rgba(0,0,0,.12);
+  }
+  tr:nth-child(even){
+    background: rgba(255,255,255,.03);
+  }
+  tbody tr:hover{
+    background: rgba(255,255,255,.06);
+  }
+
+  /* Keep your original header classes but upgrade the look */
+  .th-vencedor{ background: linear-gradient(135deg,#ffd66b,#d4af37); color:#1a1200; }
+  .th-perdedor{ background: linear-gradient(135deg,#ff5c5c,#e53935); color:#160607; }
+  .th-dif{ background: linear-gradient(135deg,#58b0ff,#1e88e5); color:#061019; }
+  .th-rod{ background: linear-gradient(135deg,#c38bff,#8e24aa); color:#120516; }
+  .th-pontos{ background: linear-gradient(135deg,#74ff9f,#43a047); color:#07140a; }
+  .th-media{ background: linear-gradient(135deg,#49ffd7,#00c853); color:#03130c; }
+  .th-lan{ background: linear-gradient(135deg,#c7c7c7,#757575); color:#111; }
+  .th-pun{ background: linear-gradient(135deg,#ffd66b,var(--accent)); color:#140900; }
+
+  /* Name chip */
+  .nome{
+    padding:7px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    color:#06070a;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    min-width: 92px;
+    box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    border: 1px solid rgba(0,0,0,.25);
+    letter-spacing:.2px;
+    white-space:nowrap;
+  }
+  .nome::before{
+    content:"";
+    width:10px;height:10px;border-radius:999px;
+    background: rgba(255,255,255,.75);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+  }
+
+  .campeao{
+    box-shadow: 0 0 0 2px rgba(255,214,107,.45), 0 18px 40px rgba(0,0,0,.35), 0 0 28px rgba(255,214,107,.16);
+    border-color: rgba(255,214,107,.55);
+  }
+
+  /* Chart block */
+  .chartWrap{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    align-items:center;
+  }
+  canvas{
+    width:100% !important;
+    max-width:none;
+    height: 320px !important;
+    margin: 2px auto 0;
+    display:block;
+  }
+  @media (max-width: 520px){
+    canvas{ height: 280px !important; }
+  }
+
+  /* Reveal animations */
+  .reveal{
+    opacity:0;
+    transform: translateY(14px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  footer{
+    margin-top: 18px;
+    color: rgba(234,240,255,.55);
+    font-size: 12px;
+    text-align:center;
+  }
 </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <header class="reveal">
+      <section class="hero" aria-label="Cabeçalho da liga">
+        <div class="hero-inner">
+          <div>
+            <div class="kicker"><span class="k-dot" aria-hidden="true"></span> Dashboard da liga • visão geral da temporada</div>
+            <h1>Liga Cartola</h1>
+            <p class="sub">Vitórias, lanternas, maiores pontuações e estatísticas por rodada — com visual de “noite de jogo”, contraste alto e tabelas mais legíveis.</p>
+          </div>
+        </div>
+      </section>
 
-<h1>🏆 Liga Cartola — Temporada</h1>
+      <aside class="meta">
+        <div class="metaPanel reveal" style="transition-delay:.08s">
+          <div class="metaTitle">
+            <h2>Atual campeão</h2>
+            <span class="pill">Destaque</span>
+          </div>
+          <div class="champRow">
+            <div id="campeao"></div>
+            <div class="champHint">Última vitória registrada</div>
+          </div>
+        </div>
+
+        <div class="metaPanel reveal" style="transition-delay:.16s">
+          <div class="metaTitle">
+            <h2>Resumo</h2>
+            <span class="pill" style="background:linear-gradient(135deg,#9fffd5,#49ffd7)">Live</span>
+          </div>
+          <div class="champHint" id="resumo">
+            Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong id="qtdMembros">0</strong>
+          </div>
+        </div>
+      </aside>
+    </header>
+
+    <main>
+      <div class="topGrid">
+        <section class="section reveal" style="transition-delay:.08s">
+          <div class="sectionHead">
+            <h2>Vitórias por rodada</h2>
+            <div class="hint">Passe o mouse no gráfico para ver as rodadas vencidas</div>
+          </div>
+          <div class="chartWrap">
+            <canvas id="pizza" aria-label="Gráfico de vitórias por rodada"></canvas>
+          </div>
+        </section>
+
+        <section class="section reveal" style="transition-delay:.12s">
+          <div class="sectionHead">
+            <h2>Legenda</h2>
+            <div class="hint">Cores por membro</div>
+          </div>
+          <div id="legenda" style="display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:1"></div>
+        </section>
+      </div>
+
+      <section class="section reveal" style="transition-delay:.06s">
+        <div class="sectionHead">
+          <h2>Maiores pontuações (1 rodada)</h2>
+          <div class="hint">Top 10</div>
+        </div>
+        <table id="rankMax"></table>
+      </section>
+
+      <section class="section reveal" style="transition-delay:.08s">
+        <div class="sectionHead">
+          <h2>Lanternas</h2>
+          <div class="hint">Vezes em último + rodadas</div>
+        </div>
+        <table id="rankLan"></table>
+      </section>
+
+      <section class="section reveal" style="transition-delay:.10s">
+        <div class="sectionHead">
+          <h2>Pontos totais</h2>
+          <div class="hint">Acumulado com punições</div>
+        </div>
+        <table id="rankTot"></table>
+      </section>
+
+      <section class="section reveal" style="transition-delay:.12s">
+        <div class="sectionHead">
+          <h2>Média de pontos</h2>
+          <div class="hint">Total / rodadas</div>
+        </div>
+        <table id="rankMed"></table>
+      </section>
+
+      <section class="section reveal" style="transition-delay:.14s">
+        <div class="sectionHead">
+          <h2>Vitórias por menor diferença</h2>
+          <div class="hint">Top 10 mais apertadas</div>
+        </div>
+        <table id="rankA"></table>
+      </section>
+
+      <section class="section reveal" style="transition-delay:.16s">
+        <div class="sectionHead">
+          <h2>Vitórias por maior diferença</h2>
+          <div class="hint">Top 10 mais “humilhantes”</div>
+        </div>
+        <table id="rankH"></table>
+      </section>
+
+      <section class="section reveal" style="transition-delay:.18s">
+        <div class="sectionHead">
+          <h2>Punições</h2>
+          <div class="hint">Quantidade aplicada</div>
+        </div>
+        <table id="rankP"></table>
+      </section>
+    </main>
+
+    <footer class="reveal" style="transition-delay:.2s">
+      Liga Cartola — Dashboard • Design atualizado (apenas visual)
+    </footer>
+  </div>
 
 <script>
 // ===== JOGADORES =====
@@ -98,57 +573,68 @@ rodadas.forEach((r,i)=>{
   humilhantes.push({v:v[0], p:u[0], d:v[1]-u[1], r:rodada});
 });
 
-// ===== FUNÇÕES =====
+// ===== FUNÇÕES (mantidas) =====
 const nome = (n,extra="") =>
  `<span class="nome ${extra}" style="background:${cores[n]}">${n}</span>`;
 
 const tabela = (id,ths,linhas)=>{
- let h="<tr>"+ths.join("")+"</tr>";
+ let h="<thead><tr>"+ths.join("")+"</tr></thead><tbody>";
  linhas.forEach(l=>{
   h+="<tr>"+l.map(c=>`<td>${c}</td>`).join("")+"</tr>";
  });
+ h+="</tbody>";
  document.getElementById(id).innerHTML=h;
 };
-</script>
 
-<!-- ===== GRÁFICO ===== -->
-<div class="section">
-<h2>🥧 Vitórias por Rodada</h2>
-<canvas id="pizza"></canvas>
-</div>
+// ===== Design-only extras: legenda + resumo + reveals =====
+document.getElementById("qtdRodadas").textContent = rodadas.length;
+document.getElementById("qtdMembros").textContent = membros.length;
 
-<div class="section">
-<h2>👑 Atual Campeão</h2>
-<div id="campeao" style="text-align:center;font-size:22px;"></div>
-</div>
+const legenda = document.getElementById("legenda");
+legenda.innerHTML = membros.map(m => nome(m)).join("");
 
-<div class="section"><h2>🥇 Maiores Pontuações (1 Rodada)</h2><table id="rankMax"></table></div>
-<div class="section"><h2>📉 Lanternas</h2><table id="rankLan"></table></div>
-<div class="section"><h2>📊 Pontos Totais</h2><table id="rankTot"></table></div>
-<div class="section"><h2>📈 Média de Pontos</h2><table id="rankMed"></table></div>
-<div class="section"><h2>⚔️ Vitórias por MENOR Diferença</h2><table id="rankA"></table></div>
-<div class="section"><h2>💥 Vitórias por MAIOR Diferença</h2><table id="rankH"></table></div>
-<div class="section"><h2>⚠️ Punições</h2><table id="rankP"></table></div>
-
-<script>
 // ===== GRÁFICO =====
+Chart.defaults.color = "rgba(234,240,255,.85)";
+Chart.defaults.font.family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+
 new Chart(document.getElementById("pizza"),{
  type:"pie",
  data:{
   labels:membros,
   datasets:[{
     data:membros.map(m=>vitorias[m]),
-    backgroundColor:membros.map(m=>cores[m])
+    backgroundColor:membros.map(m=>cores[m]),
+    borderColor:"rgba(0,0,0,.25)",
+    borderWidth:2,
+    hoverOffset:10
   }]
  },
  options:{
+  responsive:true,
+  maintainAspectRatio:false,
   plugins:{
+   legend:{
+     position:"bottom",
+     labels:{
+       boxWidth: 14,
+       boxHeight: 14,
+       padding: 16,
+       usePointStyle:true,
+       pointStyle:"circle"
+     }
+   },
    tooltip:{
+    backgroundColor:"rgba(10,12,18,.92)",
+    borderColor:"rgba(255,255,255,.14)",
+    borderWidth:1,
+    padding:12,
+    titleColor:"rgba(234,240,255,.95)",
+    bodyColor:"rgba(234,240,255,.85)",
     callbacks:{
      afterLabel:(ctx)=>{
       let j=ctx.label;
       let rs=vencedoresRodada.filter(v=>v.j===j).map(v=>v.r);
-      return "Rodadas: "+rs.join(", ");
+      return "Rodadas: "+(rs.length ? rs.join(", ") : "—");
      }
     }
    }
@@ -159,7 +645,7 @@ new Chart(document.getElementById("pizza"),{
 // ===== CAMPEÃO =====
 let ult=vencedoresRodada.at(-1);
 document.getElementById("campeao").innerHTML =
- nome(ult.j,"campeao")+" — Rodada "+ult.r;
+  `<div class="champBig">${nome(ult.j,"campeao")} <span class="champHint">— Rodada ${ult.r}</span></div>`;
 
 // ===== TABELAS =====
 tabela("rankMax",
@@ -169,7 +655,7 @@ tabela("rankMax",
 
 tabela("rankLan",
  ["<th class='th-lan'>Jogador</th>","<th class='th-lan'>Vezes</th>"],
- membros.map(m=>[nome(m),`${lanternas[m]} (${lanternasRodadas[m].join(", ")})`])
+ membros.map(m=>[nome(m),`${lanternas[m]} ${lanternasRodadas[m].length?`(${lanternasRodadas[m].join(", ")})`:"(—)"}`])
        .sort((a,b)=>parseInt(b[1])-parseInt(a[1]))
 );
 
@@ -200,7 +686,18 @@ tabela("rankP",
  ["<th class='th-pun'>Jogador</th>","<th class='th-pun'>Punições</th>"],
  Object.entries(punicoes).map(([m,p])=>[nome(m),p.length])
 );
-</script>
 
+// ===== Scroll reveal =====
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add("in");
+      io.unobserve(e.target);
+    }
+  });
+},{ threshold: 0.12 });
+
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+</script>
 </body>
 </html>
