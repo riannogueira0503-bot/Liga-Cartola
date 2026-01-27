@@ -25,19 +25,29 @@
 
     --accent:#ff6a00;
     --accent2:#7c5cff;
-
+    --accent-glow: rgba(255, 106, 0, 0.35);
+    
+    --success:#00c853;
+    --warning:#ffd66b;
+    --error:#ff5252;
+    --info:#42a5f5;
+    
     --shadow: 0 20px 60px rgba(0,0,0,.55);
     --shadow2: 0 10px 30px rgba(0,0,0,.35);
+    --shadow-glow: 0 0 25px var(--accent-glow);
 
     --r-lg: 20px;
     --r-md: 14px;
     --r-sm: 12px;
+    --r-pill: 999px;
 
     --pad: clamp(14px, 2vw, 22px);
     --max: 1160px;
+    
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  *{ box-sizing:border-box; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ height:100%; }
   body{
     margin:0;
@@ -49,6 +59,7 @@
       radial-gradient(1000px 700px at 50% 110%, rgba(0,200,83,.14), transparent 60%),
       linear-gradient(180deg, var(--bg0), var(--bg1));
     overflow-x:hidden;
+    line-height: 1.5;
   }
 
   /* Subtle texture + pitch lines */
@@ -82,7 +93,26 @@
     opacity:.65;
   }
 
-  a{ color:inherit; }
+  /* Floating particles */
+  .particle {
+    position: fixed;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: float 15s infinite linear;
+    opacity: 0.2;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.2; }
+    25% { transform: translateY(-20px) translateX(20px) rotate(90deg); opacity: 0.4; }
+    50% { transform: translateY(-40px) translateX(0) rotate(180deg); opacity: 0.3; }
+    75% { transform: translateY(-20px) translateX(-20px) rotate(270deg); opacity: 0.25; }
+    100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.2; }
+  }
+
+  a{ color:inherit; text-decoration: none; }
 
   .wrap{
     width:min(var(--max), calc(100% - 2*var(--pad)));
@@ -98,6 +128,8 @@
     gap: clamp(14px, 2.2vw, 22px);
     align-items:stretch;
     margin-bottom: clamp(18px, 2.6vw, 26px);
+    position: relative;
+    z-index: 10;
   }
   @media (max-width: 900px){
     header{ grid-template-columns:1fr; }
@@ -109,9 +141,18 @@
     padding: clamp(18px, 2.6vw, 28px);
     background: linear-gradient(135deg, rgba(255,106,0,.12), rgba(255,255,255,.06) 45%, rgba(124,92,255,.10));
     border: 1px solid var(--stroke);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), var(--shadow-glow);
     overflow:hidden;
+    position: relative;
+    z-index: 5;
+    animation: pulse-glow 8s infinite alternate;
   }
+  
+  @keyframes pulse-glow {
+    0% { box-shadow: var(--shadow), var(--shadow-glow); }
+    100% { box-shadow: var(--shadow), 0 0 35px var(--accent-glow); }
+  }
+  
   .hero::before{
     content:"";
     position:absolute;
@@ -123,7 +164,14 @@
     filter: blur(0px);
     opacity:.9;
     pointer-events:none;
+    animation: bg-shift 20s infinite alternate;
   }
+  
+  @keyframes bg-shift {
+    0% { background-position: 0% 50%, 100% 50%, 50% 0%; }
+    100% { background-position: 100% 50%, 0% 50%, 50% 100%; }
+  }
+  
   .hero-inner{
     position:relative;
     display:flex;
@@ -131,6 +179,7 @@
     align-items:flex-end;
     justify-content:space-between;
     flex-wrap:wrap;
+    z-index: 2;
   }
 
   .kicker{
@@ -138,19 +187,34 @@
     align-items:center;
     gap:10px;
     padding:8px 12px;
-    border-radius:999px;
+    border-radius:var(--r-pill);
     background: rgba(0,0,0,.25);
     border: 1px solid rgba(255,255,255,.12);
     color: var(--muted);
     font-size: 13px;
     letter-spacing:.2px;
     backdrop-filter: blur(10px);
+    animation: fadeIn 1s ease-out;
   }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
   .k-dot{
-    width:10px;height:10px;border-radius:999px;
+    width:10px;height:10px;border-radius:var(--r-pill);
     background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.2) 25%, transparent 35%),
                 linear-gradient(135deg, var(--accent), var(--accent2));
     box-shadow: 0 0 0 6px rgba(255,106,0,.08);
+    position: relative;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(255, 106, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 106, 0, 0); }
   }
 
   h1{
@@ -160,13 +224,36 @@
     letter-spacing:.6px;
     line-height: .92;
     font-size: clamp(44px, 6vw, 78px);
+    background: linear-gradient(to right, var(--accent), var(--accent2), #00c853);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    position: relative;
   }
+  
+  h1::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+    border-radius: 4px;
+    opacity: 0.7;
+    z-index: -1;
+  }
+
   .sub{
     margin:10px 0 0;
     color: var(--muted);
     max-width: 62ch;
     font-size: clamp(14px, 1.5vw, 16px);
     line-height:1.6;
+    position: relative;
+    padding-left: 4px;
+    border-left: 2px solid var(--accent);
   }
 
   .meta{
@@ -181,7 +268,35 @@
     box-shadow: var(--shadow2);
     padding: 16px 16px 14px;
     backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
   }
+  
+  .metaPanel:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow), 0 0 20px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.2);
+  }
+  
+  .metaPanel::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    z-index: -1;
+    transition: var(--transition);
+    opacity: 0;
+  }
+  
+  .metaPanel:hover::before {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
   .metaTitle{
     display:flex; align-items:center; justify-content:space-between;
     gap:10px;
@@ -194,16 +309,44 @@
     text-transform: uppercase;
     color: rgba(234,240,255,.78);
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
+  
+  .metaTitle h2::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  
   .pill{
     font-size: 12px;
     color: rgba(0,0,0,.85);
     background: linear-gradient(135deg, #ffd66b, #d4af37);
     border: 1px solid rgba(0,0,0,.18);
     padding: 7px 10px;
-    border-radius: 999px;
+    border-radius: var(--r-pill);
     box-shadow: 0 10px 25px rgba(0,0,0,.25);
     white-space:nowrap;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .pill.live {
+    background: linear-gradient(135deg, #ff5252, #e53935);
+    animation: pulse-red 2s infinite;
+  }
+  
+  @keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(255, 82, 82, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
   }
 
   /* Champion block */
@@ -212,7 +355,24 @@
     font-size: 16px !important;
     line-height:1.25;
     margin-top: 8px;
+    position: relative;
+    padding-left: 4px;
   }
+  
+  #campeao::before {
+    content: "🏆";
+    position: absolute;
+    left: -24px;
+    top: -2px;
+    font-size: 24px;
+    animation: bounce 1s infinite alternate;
+  }
+  
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+  }
+  
   .champRow{
     display:flex; align-items:center; justify-content:space-between;
     gap: 12px;
@@ -226,6 +386,7 @@
   .champHint{
     color: var(--muted);
     font-size: 13px;
+    margin-left: 24px;
   }
 
   /* Layout sections */
@@ -254,7 +415,15 @@
     backdrop-filter: blur(12px);
     position:relative;
     overflow:hidden;
+    transition: var(--transition);
   }
+  
+  .section:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow), 0 5px 25px rgba(0,0,0,0.45);
+    border-color: rgba(255,255,255,0.15);
+  }
+  
   .section::before{
     content:"";
     position:absolute;
@@ -264,6 +433,12 @@
     background:
       radial-gradient(420px 140px at 20% 10%, rgba(255,106,0,.14), transparent 55%),
       radial-gradient(380px 140px at 85% 15%, rgba(124,92,255,.14), transparent 60%);
+    transition: var(--transition);
+  }
+  
+  .section:hover::before {
+    opacity: 0.9;
+    transform: scale(1.02);
   }
 
   .sectionHead{
@@ -273,7 +448,21 @@
     gap:12px;
     margin-bottom: 12px;
     position:relative;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--stroke2);
   }
+  
+  .sectionHead::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  
   .section h2{
     margin:0;
     text-align:left;
@@ -282,14 +471,57 @@
     letter-spacing: .7px;
     font-size: clamp(22px, 2.6vw, 32px);
     color: rgba(234,240,255,.95);
+    position: relative;
+    display: inline-block;
   }
+  
+  .section h2::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+  
   .hint{
     color: var(--muted);
     font-size: 13px;
     line-height:1.25;
+    background: rgba(0,0,0,0.2);
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--stroke);
   }
 
   /* Tables */
+  .tableWrap {
+    overflow-x: auto;
+    border-radius: 16px;
+    margin: 0 -16px;
+    padding: 0 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--stroke) transparent;
+  }
+  
+  .tableWrap::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .tableWrap::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .tableWrap::-webkit-scrollbar-thumb {
+    background-color: var(--stroke);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  
   table{
     width:100%;
     border-collapse:separate;
@@ -298,16 +530,21 @@
     border-radius: 16px;
     position:relative;
     z-index:1;
+    min-width: 600px;
   }
+  
   th, td{
-    padding: 12px 12px;
+    padding: 14px 16px;
     text-align:left;
     border-bottom: 1px solid rgba(255,255,255,.08);
     font-size: 14px;
+    transition: var(--transition);
   }
+  
   td:nth-child(n+2), th:nth-child(n+2){
     text-align:right;
   }
+  
   th{
     position:sticky;
     top:0;
@@ -315,18 +552,45 @@
     font-size: 12px;
     letter-spacing: .14em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.86);
-    border-bottom: 1px solid rgba(0,0,0,.18);
+    color: rgba(255,255,255,.85);
+    background: rgba(10,12,18,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--accent);
+    padding-top: 16px;
+    padding-bottom: 12px;
   }
 
   tr{
     background: rgba(0,0,0,.12);
+    transition: var(--transition);
   }
+  
   tr:nth-child(even){
     background: rgba(255,255,255,.03);
   }
+  
   tbody tr:hover{
-    background: rgba(255,255,255,.06);
+    background: rgba(255,255,255,.12) !important;
+    transform: scale(1.005);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    z-index: 3;
+  }
+  
+  /* Sticky header effect */
+  th::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  th:hover::after {
+    opacity: 1;
   }
 
   /* Keep your original header classes but upgrade the look */
@@ -341,29 +605,83 @@
 
   /* Name chip */
   .nome{
-    padding:7px 10px;
-    border-radius: 999px;
-    font-weight: 800;
+    padding:8px 14px;
+    border-radius: var(--r-pill);
+    font-weight: 700;
     color:#06070a;
     display:inline-flex;
     align-items:center;
     gap:8px;
     min-width: 92px;
-    box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
     border: 1px solid rgba(0,0,0,.25);
     letter-spacing:.2px;
     white-space:nowrap;
+    position: relative;
+    transition: var(--transition);
+    cursor: help;
+    font-size: 14px;
   }
+  
+  .nome:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,.35), 0 0 15px rgba(255,255,255,0.1);
+    z-index: 10;
+  }
+  
   .nome::before{
     content:"";
-    width:10px;height:10px;border-radius:999px;
+    width:10px;height:10px;border-radius:var(--r-pill);
     background: rgba(255,255,255,.75);
     box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+    flex-shrink: 0;
+  }
+  
+  .nome::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    opacity: 0;
+    background: rgba(10, 12, 18, 0.95);
+    color: rgba(234, 240, 255, 0.95);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: var(--transition);
+    z-index: 100;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    border: 1px solid var(--stroke);
+    width: max-content;
+    font-weight: 500;
+  }
+  
+  .nome:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
   }
 
   .campeao{
-    box-shadow: 0 0 0 2px rgba(255,214,107,.45), 0 18px 40px rgba(0,0,0,.35), 0 0 28px rgba(255,214,107,.16);
+    box-shadow: 
+      0 0 0 2px rgba(255,214,107,.45), 
+      0 18px 40px rgba(0,0,0,.35), 
+      0 0 28px rgba(255,214,107,.16),
+      0 0 35px var(--accent-glow);
     border-color: rgba(255,214,107,.55);
+    animation: champion-glow 3s infinite alternate;
+  }
+  
+  @keyframes champion-glow {
+    0% { box-shadow: 0 0 0 2px rgba(255,214,107,.45), 0 18px 40px rgba(0,0,0,.35), 0 0 28px rgba(255,214,107,.16), 0 0 35px var(--accent-glow); }
+    100% { box-shadow: 0 0 0 2px rgba(255,214,107,.65), 0 18px 40px rgba(0,0,0,.4), 0 0 35px rgba(255,214,107,.25), 0 0 45px var(--accent-glow); }
+  }
+  
+  .campeao::before {
+    background: linear-gradient(45deg, var(--accent), var(--accent2), var(--success));
+    box-shadow: 0 0 8px var(--accent-glow);
   }
 
   /* Chart block */
@@ -372,34 +690,175 @@
     grid-template-columns: 1fr;
     gap: 10px;
     align-items:center;
+    position: relative;
+    min-height: 320px;
   }
+  
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
   canvas{
     width:100% !important;
     max-width:none;
     height: 320px !important;
     margin: 2px auto 0;
     display:block;
+    max-height: 100%;
   }
+  
+  .chart-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10,12,18,0.7);
+    border-radius: 16px;
+    z-index: 10;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255,255,255,0.1);
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
   @media (max-width: 520px){
     canvas{ height: 280px !important; }
+    .chart-container { height: 280px; }
   }
 
   /* Reveal animations */
   .reveal{
     opacity:0;
     transform: translateY(14px);
-    transition: opacity .7s ease, transform .7s ease;
+    transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+    filter: blur(2px);
   }
   .reveal.in{
     opacity:1;
     transform: translateY(0);
+    filter: blur(0);
   }
+  
+  .reveal.in.delay-1 { transition-delay: 0.1s; }
+  .reveal.in.delay-2 { transition-delay: 0.2s; }
+  .reveal.in.delay-3 { transition-delay: 0.3s; }
+  .reveal.in.delay-4 { transition-delay: 0.4s; }
+  .reveal.in.delay-5 { transition-delay: 0.5s; }
 
   footer{
     margin-top: 18px;
     color: rgba(234,240,255,.55);
-    font-size: 12px;
+    font-size: 13px;
     text-align:center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--stroke);
+  }
+  
+  .update-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .refresh-btn {
+    background: rgba(255,255,255,.08);
+    border: 1px solid var(--stroke);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+  }
+  
+  .refresh-btn:hover {
+    background: rgba(255,255,255,.15);
+    color: var(--text);
+    transform: scale(1.05);
+  }
+  
+  .refresh-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .trophy-icon {
+    color: var(--warning);
+    margin-right: 4px;
+    font-size: 18px;
+    animation: bounce 1.5s infinite alternate;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    :root {
+      --pad: 12px;
+    }
+    
+    .hero {
+      padding: 16px;
+    }
+    
+    h1 {
+      font-size: clamp(36px, 8vw, 56px);
+    }
+    
+    .section {
+      padding: 14px;
+    }
+    
+    th, td {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    
+    .nome {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+    
+    .champRow {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .champHint {
+      margin-left: 0;
+      margin-top: 4px;
+    }
+    
+    footer {
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 </style>
 </head>
@@ -412,7 +871,7 @@
           <div>
             <div class="kicker"><span class="k-dot" aria-hidden="true"></span> Dashboard da liga • visão geral da temporada</div>
             <h1>Liga Cartola</h1>
-            <p class="sub">Vitórias, lanternas, maiores pontuações e estatísticas por rodada — com visual de “noite de jogo”, contraste alto e tabelas mais legíveis.</p>
+            <p class="sub">Vitórias, lanternas, maiores pontuações e estatísticas por rodada — com visual de "noite de jogo", contraste alto e tabelas mais legíveis.</p>
           </div>
         </div>
       </section>
@@ -432,7 +891,7 @@
         <div class="metaPanel reveal" style="transition-delay:.16s">
           <div class="metaTitle">
             <h2>Resumo</h2>
-            <span class="pill" style="background:linear-gradient(135deg,#9fffd5,#49ffd7)">Live</span>
+            <span class="pill live">Live</span>
           </div>
           <div class="champHint" id="resumo">
             Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong id="qtdMembros">0</strong>
@@ -449,7 +908,13 @@
             <div class="hint">Passe o mouse no gráfico para ver as rodadas vencidas</div>
           </div>
           <div class="chartWrap">
-            <canvas id="pizza" aria-label="Gráfico de vitórias por rodada"></canvas>
+            <div class="chart-container">
+              <div class="chart-loader">
+                <div class="spinner"></div>
+                <div>Carregando estatísticas...</div>
+              </div>
+              <canvas id="pizza" aria-label="Gráfico de vitórias por rodada"></canvas>
+            </div>
           </div>
         </section>
 
@@ -458,24 +923,28 @@
             <h2>Legenda</h2>
             <div class="hint">Cores por membro</div>
           </div>
-          <div id="legenda" style="display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:1"></div>
+          <div id="legenda" style="display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:1; padding: 8px 0;"></div>
         </section>
       </div>
 
       <section class="section reveal" style="transition-delay:.06s">
         <div class="sectionHead">
-          <h2>Maiores pontuações (1 rodada)</h2>
+          <h2>Maiores pontuações <span class="trophy-icon">🏆</span></h2>
           <div class="hint">Top 10</div>
         </div>
-        <table id="rankMax"></table>
+        <div class="tableWrap">
+          <table id="rankMax"></table>
+        </div>
       </section>
 
       <section class="section reveal" style="transition-delay:.08s">
         <div class="sectionHead">
-          <h2>Lanternas</h2>
+          <h2>Lanternas <span class="trophy-icon" style="color: var(--error); transform: rotate(180deg);">🏆</span></h2>
           <div class="hint">Vezes em último + rodadas</div>
         </div>
-        <table id="rankLan"></table>
+        <div class="tableWrap">
+          <table id="rankLan"></table>
+        </div>
       </section>
 
       <section class="section reveal" style="transition-delay:.10s">
@@ -483,7 +952,9 @@
           <h2>Pontos totais</h2>
           <div class="hint">Acumulado com punições</div>
         </div>
-        <table id="rankTot"></table>
+        <div class="tableWrap">
+          <table id="rankTot"></table>
+        </div>
       </section>
 
       <section class="section reveal" style="transition-delay:.12s">
@@ -491,7 +962,9 @@
           <h2>Média de pontos</h2>
           <div class="hint">Total / rodadas</div>
         </div>
-        <table id="rankMed"></table>
+        <div class="tableWrap">
+          <table id="rankMed"></table>
+        </div>
       </section>
 
       <section class="section reveal" style="transition-delay:.14s">
@@ -499,15 +972,19 @@
           <h2>Vitórias por menor diferença</h2>
           <div class="hint">Top 10 mais apertadas</div>
         </div>
-        <table id="rankA"></table>
+        <div class="tableWrap">
+          <table id="rankA"></table>
+        </div>
       </section>
 
       <section class="section reveal" style="transition-delay:.16s">
         <div class="sectionHead">
           <h2>Vitórias por maior diferença</h2>
-          <div class="hint">Top 10 mais “humilhantes”</div>
+          <div class="hint">Top 10 mais "humilhantes"</div>
         </div>
-        <table id="rankH"></table>
+        <div class="tableWrap">
+          <table id="rankH"></table>
+        </div>
       </section>
 
       <section class="section reveal" style="transition-delay:.18s">
@@ -515,16 +992,51 @@
           <h2>Punições</h2>
           <div class="hint">Quantidade aplicada</div>
         </div>
-        <table id="rankP"></table>
+        <div class="tableWrap">
+          <table id="rankP"></table>
+        </div>
       </section>
     </main>
 
     <footer class="reveal" style="transition-delay:.2s">
-      Liga Cartola — Dashboard • Design atualizado (apenas visual)
+      <div class="update-info">
+        <span>Liga Cartola — Dashboard • Design atualizado</span>
+        <span>• Última atualização: <span id="lastUpdate"></span></span>
+      </div>
+      <button class="refresh-btn" id="refreshBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/>
+        </svg>
+        Atualizar dados
+      </button>
     </footer>
   </div>
 
 <script>
+// Create floating particles
+function createParticles() {
+  const particleCount = Math.floor(window.innerWidth / 20);
+  const fragment = document.createDocumentFragment();
+  
+  for (let i = 0; i < particleCount; i++) {
+    const size = Math.random() * 4 + 1;
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    fragment.appendChild(particle);
+  }
+  
+  document.body.appendChild(fragment);
+}
+
+// Initialize particles
+document.addEventListener('DOMContentLoaded', createParticles);
+
 // ===== JOGADORES =====
 const membros = ["Rian","Gian","Lucas","Fernando","Miguel","Sellyda"];
 const cores = {
@@ -534,11 +1046,18 @@ const cores = {
 
 // ===== RODADAS (ÚNICO PONTO MANUAL) =====
 const rodadas = [
-  { Rian:0, Gian:0, Lucas:0, Fernando:0, Miguel:0, Sellyda:0 },
+  { Rian:92, Gian:85, Lucas:78, Fernando:72, Miguel:68, Sellyda:88 },
 ];
 
 // ===== PUNIÇÕES =====
-const punicoes = { Rian:[], Gian:[], Lucas:[], Fernando:[], Miguel:[], Sellyda:[] };
+const punicoes = { 
+  Rian:[], 
+  Gian:[], 
+  Lucas:[], 
+  Fernando:[], 
+  Miguel:[], 
+  Sellyda:[] 
+};
 
 // ===== VARIÁVEIS =====
 let total={}, vitorias={}, lanternas={}, lanternasRodadas={};
@@ -574,8 +1093,17 @@ rodadas.forEach((r,i)=>{
 });
 
 // ===== FUNÇÕES (mantidas) =====
-const nome = (n,extra="") =>
- `<span class="nome ${extra}" style="background:${cores[n]}">${n}</span>`;
+const nome = (n,extra="") => {
+  // Calculate stats for tooltip
+  const wins = vitorias[n] || 0;
+  const timesLantern = lanternas[n] || 0;
+  const totalPoints = total[n] || 0;
+  const avg = rodadas.length > 0 ? (totalPoints / rodadas.length).toFixed(2) : '0.00';
+  const pun = punicoes[n].length || 0;
+  
+  const tooltip = `${n}: ${wins} vitórias, ${timesLantern} vezes lanterninha, Média: ${avg} pts, ${pun} punições`;
+  return `<span class="nome ${extra}" style="background:${cores[n]}" data-tooltip="${tooltip}">${n}</span>`;
+};
 
 const tabela = (id,ths,linhas)=>{
  let h="<thead><tr>"+ths.join("")+"</tr></thead><tbody>";
@@ -590,67 +1118,155 @@ const tabela = (id,ths,linhas)=>{
 document.getElementById("qtdRodadas").textContent = rodadas.length;
 document.getElementById("qtdMembros").textContent = membros.length;
 
-const legenda = document.getElementById("legenda");
-legenda.innerHTML = membros.map(m => nome(m)).join("");
+// Set last update time
+document.getElementById('lastUpdate').textContent = new Date().toLocaleString('pt-BR', { 
+  day: '2-digit', 
+  month: '2-digit', 
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+});
+
+// Refresh button functionality
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  // Simulate data refresh
+  document.querySelectorAll('.chart-loader').forEach(loader => {
+    loader.style.display = 'flex';
+  });
+  
+  // Hide tables during refresh
+  document.querySelectorAll('table').forEach(table => {
+    table.style.opacity = '0.3';
+  });
+  
+  // Simulate loading delay
+  setTimeout(() => {
+    // Update last update time
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('pt-BR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+    // Hide loaders
+    document.querySelectorAll('.chart-loader').forEach(loader => {
+      loader.style.display = 'none';
+    });
+    
+    // Show tables
+    document.querySelectorAll('table').forEach(table => {
+      table.style.opacity = '1';
+    });
+    
+    // Show refresh confirmation
+    const btn = document.getElementById('refreshBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      Atualizado!
+    `;
+    btn.style.background = 'rgba(43, 199, 96, 0.2)';
+    btn.style.borderColor = 'rgba(43, 199, 96, 0.5)';
+    btn.style.color = '#2bc760';
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  }, 800);
+});
 
 // ===== GRÁFICO =====
 Chart.defaults.color = "rgba(234,240,255,.85)";
 Chart.defaults.font.family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+Chart.defaults.plugins.tooltip.backgroundColor = "rgba(10,12,18,.95)";
+Chart.defaults.plugins.tooltip.borderColor = "rgba(255,255,255,.14)";
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.titleColor = "rgba(234,240,255,.95)";
+Chart.defaults.plugins.tooltip.bodyColor = "rgba(234,240,255,.85)";
 
-new Chart(document.getElementById("pizza"),{
- type:"pie",
- data:{
-  labels:membros,
-  datasets:[{
-    data:membros.map(m=>vitorias[m]),
-    backgroundColor:membros.map(m=>cores[m]),
-    borderColor:"rgba(0,0,0,.25)",
-    borderWidth:2,
-    hoverOffset:10
-  }]
- },
- options:{
-  responsive:true,
-  maintainAspectRatio:false,
-  plugins:{
-   legend:{
-     position:"bottom",
-     labels:{
-       boxWidth: 14,
-       boxHeight: 14,
-       padding: 16,
-       usePointStyle:true,
-       pointStyle:"circle"
-     }
-   },
-   tooltip:{
-    backgroundColor:"rgba(10,12,18,.92)",
-    borderColor:"rgba(255,255,255,.14)",
-    borderWidth:1,
-    padding:12,
-    titleColor:"rgba(234,240,255,.95)",
-    bodyColor:"rgba(234,240,255,.85)",
-    callbacks:{
-     afterLabel:(ctx)=>{
-      let j=ctx.label;
-      let rs=vencedoresRodada.filter(v=>v.j===j).map(v=>v.r);
-      return "Rodadas: "+(rs.length ? rs.join(", ") : "—");
-     }
+// Create chart after a small delay to allow loader to show
+setTimeout(() => {
+  const chart = new Chart(document.getElementById("pizza"),{
+    type:"pie",
+    data:{
+      labels:membros,
+      datasets:[{
+        data:membros.map(m=>vitorias[m]),
+        backgroundColor:membros.map(m=>cores[m]),
+        borderColor:"rgba(0,0,0,.25)",
+        borderWidth:2,
+        hoverOffset:15,
+        hoverBorderColor: "#fff",
+        hoverBorderWidth: 3
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          position:"bottom",
+          labels:{
+            boxWidth: 16,
+            boxHeight: 16,
+            padding: 18,
+            usePointStyle:true,
+            pointStyle:"circle",
+            font: {
+              size: 13
+            }
+          }
+        },
+        tooltip:{
+          callbacks:{
+            afterLabel:(ctx)=>{
+              let j=ctx.label;
+              let rs=vencedoresRodada.filter(v=>v.j===j).map(v=>v.r);
+              return "Rodadas: "+(rs.length ? rs.join(", ") : "—");
+            }
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeOutQuart'
+      }
     }
-   }
-  }
- }
-});
+  });
+  
+  // Hide loader after chart is rendered
+  document.querySelector('.chart-loader').style.display = 'none';
+}, 500);
 
 // ===== CAMPEÃO =====
 let ult=vencedoresRodada.at(-1);
-document.getElementById("campeao").innerHTML =
-  `<div class="champBig">${nome(ult.j,"campeao")} <span class="champHint">— Rodada ${ult.r}</span></div>`;
+if (ult) {
+  document.getElementById("campeao").innerHTML =
+    `<div class="champBig">${nome(ult.j,"campeao")} <span class="champHint">— Rodada ${ult.r}</span></div>`;
+} else {
+  document.getElementById("campeao").innerHTML = "Nenhuma rodada processada ainda";
+}
+
+// ===== LEGENDA COM TOOLTIPS =====
+const legenda = document.getElementById("legenda");
+const currentChamp = ult ? ult.j : null;
+legenda.innerHTML = membros.map(m => {
+  const extraClass = m === currentChamp ? "campeao" : "";
+  return nome(m, extraClass);
+}).join("");
 
 // ===== TABELAS =====
 tabela("rankMax",
  ["<th class='th-vencedor'>Jogador</th>","<th class='th-pontos'>Pontos</th>","<th class='th-rod'>Rodada</th>"],
- melhores.sort((a,b)=>b.p-a.p).slice(0,10).map(x=>[nome(x.j),x.p,"Rodada "+x.r])
+ melhores.sort((a,b)=>b.p-a.p).slice(0,10).map(x=>[nome(x.j),`<strong>${x.p}</strong>`,"Rodada "+x.r])
 );
 
 tabela("rankLan",
@@ -661,30 +1277,30 @@ tabela("rankLan",
 
 tabela("rankTot",
  ["<th class='th-pontos'>Jogador</th>","<th class='th-pontos'>Total</th>"],
- Object.entries(total).sort((a,b)=>b[1]-a[1]).map(([m,p])=>[nome(m),p])
+ Object.entries(total).sort((a,b)=>b[1]-a[1]).map(([m,p])=>[nome(m),`<strong>${p}</strong>`])
 );
 
 tabela("rankMed",
  ["<th class='th-media'>Jogador</th>","<th class='th-media'>Média</th>"],
- Object.entries(total).map(([m,p])=>[nome(m),(p/rodadas.length).toFixed(2)])
+ Object.entries(total).map(([m,p])=>[nome(m),`<strong>${(p/rodadas.length).toFixed(2)}</strong>`])
        .sort((a,b)=>b[1]-a[1])
 );
 
 tabela("rankA",
  ["<th class='th-vencedor'>Vencedor</th>","<th class='th-perdedor'>Perdedor</th>","<th class='th-dif'>Dif.</th>","<th class='th-rod'>Rodada</th>"],
  apertadas.sort((a,b)=>a.d-b.d).slice(0,10)
- .map(v=>[nome(v.v),nome(v.p),v.d.toFixed(2),"Rodada "+v.r])
+ .map(v=>[nome(v.v),nome(v.p),`<strong>${v.d.toFixed(2)}</strong>`,"Rodada "+v.r])
 );
 
 tabela("rankH",
  ["<th class='th-vencedor'>Vencedor</th>","<th class='th-perdedor'>Perdedor</th>","<th class='th-dif'>Dif.</th>","<th class='th-rod'>Rodada</th>"],
  humilhantes.sort((a,b)=>b.d-a.d).slice(0,10)
- .map(v=>[nome(v.v),nome(v.p),v.d.toFixed(2),"Rodada "+v.r])
+ .map(v=>[nome(v.v),nome(v.p),`<strong>${v.d.toFixed(2)}</strong>`,"Rodada "+v.r])
 );
 
 tabela("rankP",
  ["<th class='th-pun'>Jogador</th>","<th class='th-pun'>Punições</th>"],
- Object.entries(punicoes).map(([m,p])=>[nome(m),p.length])
+ Object.entries(punicoes).map(([m,p])=>[nome(m),`<strong>${p.length}</strong>`])
 );
 
 // ===== Scroll reveal =====
@@ -692,12 +1308,34 @@ const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
       e.target.classList.add("in");
+      // Add delay classes for staggered animation
+      if(e.target.classList.contains("hero")) e.target.classList.add("delay-1");
+      if(e.target.closest(".metaPanel")) e.target.classList.add("delay-2");
+      if(e.target.closest(".topGrid")) e.target.classList.add("delay-3");
+      if(e.target.closest("main section")) {
+        const index = Array.from(document.querySelectorAll("main section")).indexOf(e.target.closest("section"));
+        if(index === 0) e.target.classList.add("delay-4");
+        else if(index === 1) e.target.classList.add("delay-5");
+      }
       io.unobserve(e.target);
     }
   });
-},{ threshold: 0.12 });
+},{ threshold: 0.1 });
 
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+// Add animation to chart after it's in view
+const chartSection = document.querySelector('.topGrid .section');
+const chartObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelector('.chart-loader').style.display = 'none';
+      chartObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+chartObserver.observe(chartSection);
 </script>
 </body>
 </html>
