@@ -1244,6 +1244,19 @@
   .light-theme .streak-badge {
     box-shadow: 0 0 8px rgba(255, 167, 38, 0.2);
   }
+  
+  /* Punishment detail styling */
+  .pun-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-style: italic;
+  }
+  
+  .light-theme .pun-detail {
+    color: #666;
+  }
 </style>
 </head>
 
@@ -1421,7 +1434,7 @@
       <section class="section reveal" style="transition-delay:.23s">
         <div class="sectionHead">
           <h2>Punições</h2>
-          <div class="hint">Quantidade aplicada</div>
+          <div class="hint">Quantidade e rodadas aplicadas</div>
         </div>
         <div class="tableWrap">
           <table id="rankP"></table>
@@ -1914,9 +1927,21 @@ tabela("rankH",
  .map(v=>[nome(v.v),nome(v.p),`<strong>${v.d.toFixed(2)}</strong>`,"Rodada "+v.r])
 );
 
+// ===== TABELA DE PUNIÇÕES COM RODADAS =====
 tabela("rankP",
- ["<th class='th-pun'>Jogador</th>","<th class='th-pun'>Punições</th>"],
- Object.entries(punicoes).map(([m,p])=>[nome(m),`<strong>${p.length}</strong>`])
+  ["<th class='th-pun'>Jogador</th>","<th class='th-pun'>Punições</th>"],
+  Object.entries(punicoes).map(([m, rodadasPun]) => {
+    const count = rodadasPun.length;
+    let punContent = `<strong>${count}</strong>`;
+    
+    if (count > 0) {
+      // Format the rounds list with proper Portuguese formatting
+      const rodadasStr = rodadasPun.join(', ');
+      punContent += `<span class="pun-detail">(Rodadas: ${rodadasStr})</span>`;
+    }
+    
+    return [nome(m), punContent];
+  })
 );
 
 // ===== Scroll reveal =====
