@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Liga Cartola - Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body { background:#1e1e1e; color:#fff; font-family:Arial; padding:20px; }
+h1,h2 { text-align:center; color:#ff6a00; }
+
+.section {
+  background:#2a2a2a;
+  padding:20px;
+  margin:20px 0;
+  border-radius:12px;
+}
+
+table { width:100%; border-collapse:collapse; }
+th,td { padding:10px; text-align:center; border-bottom:1px solid #444; }
+
+.th-vencedor { background:#d4af37; color:#000; }
+.th-perdedor { background:#e53935; }
+.th-dif { background:#1e88e5; }
+.th-rod { background:#8e24aa; }
+.th-pontos { background:#43a047; }
+.th-media { background:#00c853; }
+.th-lan { background:#757575; }
+.th-pun { background:#ff6a00; color:#000; }
+
+.nome {
+  padding:6px 10px;
+  border-radius:6px;
+  font-weight:bold;
+  color:#000;
+  display:inline-block;
+  min-width:90px;
+}
+
+.campeao {
+  box-shadow:0 0 12px gold;
+}
+
+canvas { max-width:420px; margin:auto; }
+</style>
+</head>
+
+<body>
+
+<h1>🏆 Liga Cartola — Temporada</h1>
+
+<script>
+// ===== JOGADORES =====
+const membros = ["Rian","Gian","Lucas","Fernando","Miguel","Sellyda"];
+const cores = {
+  Rian:"#ff6a00", Gian:"#00c853", Lucas:"#42a5f5",
+  Fernando:"#ab47bc", Miguel:"#ef5350", Sellyda:"#ffcc00"
+};
+
+// ===== RODADAS (ÚNICO PONTO MANUAL) =====
+const rodadas = [
+  { Rian:72, Gian:65, Lucas:60, Fernando:55, Miguel:40, Sellyda:30 },
+  { Rian:80, Gian:73, Lucas:75, Fernando:70, Miguel:68, Sellyda:82 }
+];
+
+// ===== PUNIÇÕES =====
+const punicoes = { Rian:[], Gian:[], Lucas:[2], Fernando:[], Miguel:[], Sellyda:[] };
+
+// ===== VARIÁVEIS =====
+let total={}, vitorias={}, lanternas={}, lanternasRodadas={};
+let melhores=[], apertadas=[], humilhantes=[], vencedoresRodada=[];
+
+membros.forEach(m=>{
+  total[m]=0; vitorias[m]=0; lanternas[m]=0; lanternasRodadas[m]=[];
+});
+
+// ===== PROCESSAMENTO =====
+rodadas.forEach((r,i)=>{
+  let rodada=i+1, ajustado={};
+
+  for(let m in r){
+    let pts=r[m];
+    if(punicoes[m].includes(rodada)) pts-=20;
+    ajustado[m]=pts;
+    total[m]+=pts;
+    melhores.push({j:m,p:pts,r:rodada});
+  }
+
+  let ord=Object.entries(ajustado).sort((a,b)=>b[1]-a[1]);
+  let v=ord[0], s=ord[1], u=ord.at(-1);
+
+  vitorias[v[0]]++;
+  vencedoresRodada.push({j:v[0], r:rodada});
+  lanternas[u[0]]++;
+  lanternasRodadas[u[0]].push(rodada);
+
+  let dif=v[1]-s[1];
+  apertadas.push({v:v[0], p:s[0], d:dif, r:rodada});
+  humilhantes.push({v:v[0], p:u[0], d:v[1]-u[1], r:rodada});
+});
+
+// ===== FUNÇÕES =====
+const nome = (n,extra="") =>
+ `<span class="nome ${extra}" style="background:${cores[n]}">${n}</span>`;
+
+const tabela = (id,ths,linhas)=>{
+ let h="<tr>"+ths.join("")+"</tr>";
+ linhas.forEach(l=>{
+  h+="<tr>"+l.map(c=>`<td>${c}</td>`).join("")+"</tr>";
+ });
+ document.getElementById(id).innerHTML=h;
+};
+</script>
+
+<!-- ===== GRÁFICO ===== -->
+<div class="section">
+<h2>🥧 Vitórias por Rodada</h2>
+<canvas id="pizza"></canvas>
+</div>
+
+<div class="section">
+<h2>👑 Atual Campeão</h2>
+<div id="campeao" style="text-align:center;font-size:22px;"></div>
+</div>
+
+<div class="section"><h2>🥇 Maiores Pontuações (1 Rodada)</h2><table id="rankMax"></table></div>
+<div class="section"><h2>📉 Lanternas</h2><table id="rankLan"></table></div>
+<div class="section"><h2>📊 Pontos Totais</h2><table id="rankTot"></table></div>
+<div class="section"><h2>📈 Média de Pontos</h2><table id="rankMed"></table></div>
+<div class="section"><h2>⚔️ Vitórias por MENOR Diferença</h2><table id="rankA"></table></div>
+<div class="section"><h2>💥 Vitórias por MAIOR Diferença</h2><table id="rankH"></table></div>
+<div class="section"><h2>⚠️ Punições</h2><table id="rankP"></table></div>
+
+<script>
+// ===== GRÁFICO =====
+new Chart(document.getElementById("pizza"),{
+ type:"pie",
+ data:{
+  labels:membros,
+  datasets:[{
+    data:membros.map(m=>vitorias[m]),
+    backgroundColor:membros.map(m=>cores[m])
+  }]
+ },
+ options:{
+  plugins:{
+   tooltip:{
+    callbacks:{
+     afterLabel:(ctx)=>{
+      let j=ctx.label;
+      let rs=vencedoresRodada.filter(v=>v.j===j).map(v=>v.r);
+      return "Rodadas: "+rs.join(", ");
+     }
+    }
+   }
+  }
+ }
+});
+
+// ===== CAMPEÃO =====
+let ult=vencedoresRodada.at(-1);
+document.getElementById("campeao").innerHTML =
+ nome(ult.j,"campeao")+" — Rodada "+ult.r;
+
+// ===== TABELAS =====
+tabela("rankMax",
+ ["<th class='th-vencedor'>Jogador</th>","<th class='th-pontos'>Pontos</th>","<th class='th-rod'>Rodada</th>"],
+ melhores.sort((a,b)=>b.p-a.p).slice(0,10).map(x=>[nome(x.j),x.p,"Rodada "+x.r])
+);
+
+tabela("rankLan",
+ ["<th class='th-lan'>Jogador</th>","<th class='th-lan'>Vezes</th>"],
+ membros.map(m=>[nome(m),`${lanternas[m]} (${lanternasRodadas[m].join(", ")})`])
+       .sort((a,b)=>parseInt(b[1])-parseInt(a[1]))
+);
+
+tabela("rankTot",
+ ["<th class='th-pontos'>Jogador</th>","<th class='th-pontos'>Total</th>"],
+ Object.entries(total).sort((a,b)=>b[1]-a[1]).map(([m,p])=>[nome(m),p])
+);
+
+tabela("rankMed",
+ ["<th class='th-media'>Jogador</th>","<th class='th-media'>Média</th>"],
+ Object.entries(total).map(([m,p])=>[nome(m),(p/rodadas.length).toFixed(2)])
+       .sort((a,b)=>b[1]-a[1])
+);
+
+tabela("rankA",
+ ["<th class='th-vencedor'>Vencedor</th>","<th class='th-perdedor'>Perdedor</th>","<th class='th-dif'>Dif.</th>","<th class='th-rod'>Rodada</th>"],
+ apertadas.sort((a,b)=>a.d-b.d).slice(0,10)
+ .map(v=>[nome(v.v),nome(v.p),v.d.toFixed(2),"Rodada "+v.r])
+);
+
+tabela("rankH",
+ ["<th class='th-vencedor'>Vencedor</th>","<th class='th-perdedor'>Perdedor</th>","<th class='th-dif'>Dif.</th>","<th class='th-rod'>Rodada</th>"],
+ humilhantes.sort((a,b)=>b.d-a.d).slice(0,10)
+ .map(v=>[nome(v.v),nome(v.p),v.d.toFixed(2),"Rodada "+v.r])
+);
+
+tabela("rankP",
+ ["<th class='th-pun'>Jogador</th>","<th class='th-pun'>Punições</th>"],
+ Object.entries(punicoes).map(([m,p])=>[nome(m),p.length])
+);
+</script>
+
+</body>
+</html>
