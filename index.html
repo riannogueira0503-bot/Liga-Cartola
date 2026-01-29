@@ -1791,7 +1791,7 @@
                 <i class="fas fa-times"></i>
             </button>
             <h2 class="text-2xl font-bold mb-4">Aplicar Punição</h2>
-            <form id="punishmentForm" novalidate>
+            <form id="punishmentForm">
                 <div class="form-group">
                     <label><i class="fas fa-user"></i> Jogador Punido</label>
                     <select id="punishedPlayer" class="form-select" required>
@@ -1814,7 +1814,7 @@
                 </div>
                 <div class="flex gap-2">
                     <button type="button" class="btn btn-danger flex-1" id="cancelPunishmentBtn">Cancelar</button>
-                    <button type="submit" class="btn btn-primary flex-1" id="applyPunishmentBtn">Aplicar Punição</button>
+                    <button type="submit" class="btn btn-primary flex-1">Aplicar Punição</button>
                 </div>
             </form>
         </div>
@@ -1954,9 +1954,10 @@
                 modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
             });
 
-            ['cancelRoundBtn','cancelPunishmentBtn','cancelDeleteRoundBtn','cancelDeletePunishmentBtn'].forEach(id => {
-                document.getElementById(id).addEventListener('click', () => document.getElementById(id.replace('cancel','').replace('Btn','')+'Modal').classList.remove('active'));
-            });
+            document.getElementById('cancelRoundBtn').addEventListener('click', () => document.getElementById('roundModal').classList.remove('active'));
+            document.getElementById('cancelPunishmentBtn').addEventListener('click', () => document.getElementById('punishmentModal').classList.remove('active'));
+            document.getElementById('cancelDeleteRoundBtn').addEventListener('click', () => document.getElementById('deleteRoundModal').classList.remove('active'));
+            document.getElementById('cancelDeletePunishmentBtn').addEventListener('click', () => document.getElementById('deletePunishmentModal').classList.remove('active'));
 
             document.getElementById('roundForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -1981,67 +1982,61 @@
                     rounds.sort((a,b) => a.number - b.number);
                     localStorage.setItem('cartolaRounds2026', JSON.stringify(rounds));
                     document.getElementById('roundModal').classList.remove('active');
-                    try {
-                        updateAllTabs();
-                    } catch (err) {
-                        console.error('Erro em updateAllTabs:', err);
-                    }
-                    // Ensure rounds list refreshes even if other updates fail
-                    try { updateRoundsDisplay(); } catch (err) { console.error('Erro ao atualizar rodadas:', err); }
+                    updateAllTabs();
                     showNotification(`✅ Rodada ${num} adicionada!`);
                 } catch (err) {
+                    console.error('Erro ao adicionar rodada:', err);
                     alert(`Erro: ${err.message}`);
                 }
             });
 
-            // Submit handler for punishment form (manual validation; form has novalidate)
+            // ✅ CORREÇÃO COMPLETA DAS PUNIÇÕES
             document.getElementById('punishmentForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                console.log('punishmentForm submit handler triggered');
                 try {
-                    const player = document.getElementById('punishedPlayer').value;
+                    const playerSelect = document.getElementById('punishedPlayer');
+                    const playerValue = playerSelect.value;
+                    const playerName = playerSelect.options[playerSelect.selectedIndex].text;
+                    
+                    // ✅ VALIDAÇÃO CORRIGIDA: Verifica se jogador foi selecionado
+                    if (!playerValue || playerValue === '') throw new Error('Selecione um jogador para punir');
+                    
                     const round = parseInt(document.getElementById('punishmentRound').value);
-                    const reason = document.getElementById('punishmentReason').value.trim();
-
-                    if (!player) {
-                        alert('Selecione um jogador');
-                        return;
-                    }
-                    if (isNaN(round) || round <= 0) {
-                        alert('Número de rodada inválido');
-                        return;
-                    }
-
+                    if (isNaN(round) || round <= 0) throw new Error('Rodada inválida');
+                    
+                    // Verifica se rodada existe (opcional)
                     if (rounds.length > 0 && !rounds.some(r => r.number === round)) {
-                        if (!confirm(`Rodada ${round} não existe. Deseja aplicar a punição mesmo assim?`)) return;
+                        if (!confirm(`A Rodada ${round} ainda não existe. Deseja aplicar a punição mesmo assim?`)) {
+                            return;
+                        }
                     }
-
-                    const name = player.charAt(0).toUpperCase() + player.slice(1);
+                    
+                    const reason = document.getElementById('punishmentReason').value.trim() || 'Não especificado';
+                    
+                    // ✅ CRIA PUNIÇÃO COM TODOS OS DADOS NECESSÁRIOS
                     const newPunishment = {
-                        player,
-                        playerName: name,
-                        round,
-                        reason: reason || 'Não especificado',
+                        player: playerValue,
+                        playerName: playerName,
+                        round: round,
+                        reason: reason,
                         points: -20,
                         date: new Date().toISOString()
                     };
-
+                    
                     punishments.push(newPunishment);
                     punishments.sort((a,b) => a.round - b.round);
                     localStorage.setItem('cartolaPunishments2026', JSON.stringify(punishments));
-
+                    
                     document.getElementById('punishmentModal').classList.remove('active');
-                    this.reset();
-
+                    document.getElementById('punishmentForm').reset();
+                    
+                    // ✅ ATUALIZA TODAS AS ABAS PARA REFLETIR OS -20 PONTOS
                     updateAllTabs();
-                    initDashboardChart();
-                    initWinsChart();
-
-                    console.log('Punishment saved', newPunishment);
-                    showNotification(`⚖️ Punição aplicada a ${name}!`);
+                    
+                    showNotification(`⚖️ Punição aplicada a ${playerName} na Rodada ${round}! (${newPunishment.points} pts)`);
                 } catch (err) {
-                    console.error('Erro ao aplicar punição', err);
-                    alert(`Erro: ${err.message}`);
+                    console.error('Erro ao aplicar punição:', err);
+                    alert(`Erro ao aplicar punição: ${err.message}`);
                 }
             });
 
@@ -2074,6 +2069,71 @@
             });
         }
 
+        // ✅ FUNÇÃO CRÍTICA: Calcula pontuação AJUSTADA com punições
+        function getAdjustedScore(playerKey, roundNumber) {
+            // Encontra a rodada
+            const round = rounds.find(r => r.number === roundNumber);
+            if (!round) return 0;
+            
+            // Pontuação bruta
+            let score = round.scores[playerKey];
+            
+            // ✅ SUBTRAI 20 PONTOS POR CADA PUNIÇÃO NA RODADA ESPECÍFICA
+            const roundPunishments = punishments.filter(p => 
+                p.player === playerKey && p.round === roundNumber
+            );
+            
+            score -= (roundPunishments.length * 20);
+            return score;
+        }
+
+        // ✅ FUNÇÃO CRÍTICA: Ranking AJUSTADO com punições
+        function getAdjustedRanking(round) {
+            const players = [
+                { name: 'Rian', key: 'rian', class: 'rian-card', rawScore: round.scores.rian },
+                { name: 'Fernando', key: 'fernando', class: 'fernando-card', rawScore: round.scores.fernando },
+                { name: 'Gian', key: 'gian', class: 'gian-card', rawScore: round.scores.gian },
+                { name: 'Sellyda', key: 'sellyda', class: 'sellyda-card', rawScore: round.scores.sellyda },
+                { name: 'Lucas', key: 'lucas', class: 'lucas-card', rawScore: round.scores.lucas },
+                { name: 'Miguel', key: 'miguel', class: 'miguel-card', rawScore: round.scores.miguel }
+            ];
+            
+            // ✅ CALCULA PONTUAÇÃO AJUSTADA PARA CADA JOGADOR
+            players.forEach(player => {
+                player.score = getAdjustedScore(player.key, round.number);
+            });
+            
+            // Ordena pelo score ajustado (decrescente)
+            return players.sort((a, b) => b.score - a.score);
+        }
+
+        // ✅ FUNÇÃO CRÍTICA: Estatísticas AJUSTADAS com punições
+        function getStats() {
+            const totals = {rian:0, fernando:0, gian:0, sellyda:0, lucas:0, miguel:0};
+            const wins = {...totals};
+            const lanterns = {...totals};
+            
+            // Processa cada rodada com scores AJUSTADOS
+            rounds.forEach(round => {
+                const ranking = getAdjustedRanking(round);
+                wins[ranking[0].key]++;
+                lanterns[ranking[5].key]++;
+                
+                // Soma os scores AJUSTADOS para o total
+                ranking.forEach(player => {
+                    totals[player.key] += player.score;
+                });
+            });
+            
+            // Calcula médias
+            const averages = {};
+            for (const key in totals) {
+                averages[key] = rounds.length > 0 ? totals[key] / rounds.length : 0;
+            }
+            
+            return { totals, wins, lanterns, averages };
+        }
+
         function updateAllTabs() {
             updateDashboard();
             updateRoundsDisplay();
@@ -2091,11 +2151,14 @@
                 initDashboardChart();
                 return;
             }
-            const last = rounds[rounds.length-1];
-            const players = getRanking(last);
+            
+            const lastRound = rounds[rounds.length-1];
+            const players = getAdjustedRanking(lastRound);
             const champ = players[0], lantern = players[5];
             const streaks = getWinStreaks(), best = streaks[0] || null;
-            tab.innerHTML = `<div class="grid-3"><div class="card ${champ.class}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold gradient-text"><i class="fas fa-crown mr-2"></i>Campeão Rodada ${last.number}</h2><span class="badge crown-badge pulse"><i class="fas fa-star"></i> 1º Lugar</span></div><div class="text-center py-6"><div class="text-6xl font-bold mb-3 gradient-text">${champ.score.toFixed(1)}</div><div class="text-2xl font-bold mb-2">${champ.name}</div><div class="text-sm opacity-75">${(champ.score - players[1].score).toFixed(1)} pts do 2º</div></div><div class="flex justify-center gap-4 mt-4"><div class="stats-card"><div class="stats-number">${getStats().wins[champ.key]}</div><div class="stats-label">Vitórias</div></div><div class="stats-card"><div class="stats-number">${getStats().averages[champ.key].toFixed(1)}</div><div class="stats-label">Média</div></div></div></div></div><div class="card ${lantern.class}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold text-red-400"><i class="fas fa-skull-crossbones mr-2"></i>Último Lanterna</h2><span class="badge skull-badge"><i class="fas fa-fire"></i> 6º Lugar</span></div><div class="text-center py-6"><div class="text-6xl font-bold mb-3 text-red-400">${lantern.score.toFixed(1)}</div><div class="text-2xl font-bold mb-2">${lantern.name}</div><div class="text-sm opacity-75">${(players[4].score - lantern.score).toFixed(1)} pts do 5º</div></div><div class="flex justify-center gap-4 mt-4"><div class="stats-card"><div class="stats-number">${getStats().lanterns[lantern.key]}</div><div class="stats-label">Lanternas</div></div><div class="stats-card"><div class="stats-number">${getStats().averages[lantern.key].toFixed(1)}</div><div class="stats-label">Média</div></div></div></div></div><div class="card ${best ? getPlayerClass(best.player) : 'fernando-card'}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold"><i class="fas fa-fire mr-2"></i>Sequência Ativa</h2><span class="badge fire-badge"><i class="fas fa-bolt"></i> ${best ? best.streak : 0} Vitórias</span></div><div class="text-center py-6"><div class="text-5xl font-bold mb-3">${best ? '🔥'.repeat(Math.min(best.streak,5)) : '-'}</div><div class="text-2xl font-bold mb-2">${best ? best.playerName : 'Nenhuma'}</div><div class="text-sm opacity-75">${best ? `Rodadas ${best.startRound}-${best.endRound}` : 'Aguardando vitórias'}</div></div>${best ? `<div class="space-y-3 mt-4"><div class="flex justify-between items-center"><span class="font-bold">Próximo Recorde:</span><span class="text-yellow-400 font-bold">${best.streak+1} vitórias</span></div><div class="progress-container"><div class="progress-bar" style="width: ${Math.min(best.streak*33,100)}%; background: linear-gradient(90deg, #3B82F6, #06b6d4);"></div></div></div>` : ''}</div></div></div></div><div class="grid-2"><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-bar mr-2"></i>Ranking Total - Temporada 2026</h2>${getRankingHTML()}</div></div><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-pie-chart mr-2"></i>Distribuição de Vitórias</h2><div class="chart-container"><canvas id="winsChart"></canvas></div><div class="grid grid-cols-3 gap-3 mt-6">${Object.entries(getStats().wins).map(([k,v]) => `<div class="text-center"><div class="text-3xl font-bold ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-400':k==='gian'?'text-green-400':k==='sellyda'?'text-pink-400':k==='lucas'?'text-orange-400':'text-red-400'}">${v}</div><div class="text-sm">${k.charAt(0).toUpperCase()+k.slice(1)}</div></div>`).join('')}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4">${[rounds.length,6,punishments.length,rounds.length].map((v,i) => `<div class="stats-card"><i class="fas fa-${['calendar-alt','users','gavel','trophy'][i]} text-3xl mb-2"></i><div class="stats-number">${v}</div><div class="stats-label">${['Rodadas','Jogadores','Punições','Vitórias'][i]}</div></div>`).join('')}</div>`;
+            const stats = getStats();
+            
+            tab.innerHTML = `<div class="grid-3"><div class="card ${champ.class}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold gradient-text"><i class="fas fa-crown mr-2"></i>Campeão Rodada ${lastRound.number}</h2><span class="badge crown-badge pulse"><i class="fas fa-star"></i> 1º Lugar</span></div><div class="text-center py-6"><div class="text-6xl font-bold mb-3 gradient-text">${champ.score.toFixed(1)}</div><div class="text-2xl font-bold mb-2">${champ.name}</div><div class="text-sm opacity-75">${champ.score > players[1].score ? `+${(champ.score - players[1].score).toFixed(1)} pts do 2º` : 'Empatado'}</div></div><div class="flex justify-center gap-4 mt-4"><div class="stats-card"><div class="stats-number">${stats.wins[champ.key]}</div><div class="stats-label">Vitórias</div></div><div class="stats-card"><div class="stats-number">${stats.averages[champ.key].toFixed(1)}</div><div class="stats-label">Média</div></div></div></div></div><div class="card ${lantern.class}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold text-red-400"><i class="fas fa-skull-crossbones mr-2"></i>Último Lanterna</h2><span class="badge skull-badge"><i class="fas fa-fire"></i> 6º Lugar</span></div><div class="text-center py-6"><div class="text-6xl font-bold mb-3 text-red-400">${lantern.score.toFixed(1)}</div><div class="text-2xl font-bold mb-2">${lantern.name}</div><div class="text-sm opacity-75">${lantern.score < players[4].score ? `-${(players[4].score - lantern.score).toFixed(1)} pts do 5º` : 'Empatado'}</div></div><div class="flex justify-center gap-4 mt-4"><div class="stats-card"><div class="stats-number">${stats.lanterns[lantern.key]}</div><div class="stats-label">Lanternas</div></div><div class="stats-card"><div class="stats-number">${stats.averages[lantern.key].toFixed(1)}</div><div class="stats-label">Média</div></div></div></div></div><div class="card ${best ? getPlayerClass(best.player) : 'fernando-card'}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold"><i class="fas fa-fire mr-2"></i>Sequência Ativa</h2><span class="badge fire-badge"><i class="fas fa-bolt"></i> ${best ? best.streak : 0} Vitórias</span></div><div class="text-center py-6"><div class="text-5xl font-bold mb-3">${best ? '🔥'.repeat(Math.min(best.streak,5)) : '-'}</div><div class="text-2xl font-bold mb-2">${best ? best.playerName : 'Nenhuma'}</div><div class="text-sm opacity-75">${best ? `Rodadas ${best.startRound}-${best.endRound}` : 'Aguardando vitórias'}</div></div>${best ? `<div class="space-y-3 mt-4"><div class="flex justify-between items-center"><span class="font-bold">Próximo Recorde:</span><span class="text-yellow-400 font-bold">${best.streak+1} vitórias</span></div><div class="progress-container"><div class="progress-bar" style="width: ${Math.min(best.streak*33,100)}%; background: linear-gradient(90deg, #3B82F6, #06b6d4);"></div></div></div>` : ''}</div></div></div></div><div class="grid-2"><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-bar mr-2"></i>Ranking Total - Temporada 2026</h2>${getRankingHTML()}</div></div><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-pie-chart mr-2"></i>Distribuição de Vitórias</h2><div class="chart-container"><canvas id="winsChart"></canvas></div><div class="grid grid-cols-3 gap-3 mt-6">${Object.entries(stats.wins).map(([k,v]) => `<div class="text-center"><div class="text-3xl font-bold ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-400':k==='gian'?'text-green-400':k==='sellyda'?'text-pink-400':k==='lucas'?'text-orange-400':'text-red-400'}">${v}</div><div class="text-sm">${k.charAt(0).toUpperCase()+k.slice(1)}</div></div>`).join('')}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4">${[rounds.length,6,punishments.length,rounds.length].map((v,i) => `<div class="stats-card"><i class="fas fa-${['calendar-alt','users','gavel','trophy'][i]} text-3xl mb-2"></i><div class="stats-number">${v}</div><div class="stats-label">${['Rodadas','Jogadores','Punições','Vitórias'][i]}</div></div>`).join('')}</div>`;
             initDashboardChart();
         }
 
@@ -2109,8 +2172,15 @@
             const sorted = [...rounds].sort((a,b) => b.number - a.number);
             let html = `<div class="round-grid">`;
             sorted.forEach((r,i) => {
-                const p = getRanking(r);
-                html += `<div class="card round-card ${i===0?'last-round':''}" data-round="${r.number}"><div class="card-content"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold gradient-text">🏆 Rodada ${r.number}</h3><div class="round-actions"><button class="action-btn edit-btn" title="Editar" onclick="editRound(${r.number})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" title="Excluir" onclick="confirmDeleteRound(${r.number})"><i class="fas fa-trash-alt"></i></button></div></div><div class="space-y-3">${p.map((pl,idx) => `<div class="player-card ${pl.class}"><div class="flex justify-between items-center"><span><strong>${idx+1}º</strong> ${pl.name}${idx===1?'<span class="text-blue-300 ml-2 text-sm">(Fatal)</span>':idx===5?'<span class="text-red-400 ml-2 text-sm">(Model)</span>':''}</span><span class="text-xl font-bold">${pl.score.toFixed(1)}</span></div></div>`).join('')}</div></div></div>`;
+                const p = getAdjustedRanking(r);
+                html += `<div class="card round-card ${i===0?'last-round':''}" data-round="${r.number}"><div class="card-content"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold gradient-text">🏆 Rodada ${r.number}</h3><div class="round-actions"><button class="action-btn edit-btn" title="Editar" onclick="editRound(${r.number})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" title="Excluir" onclick="confirmDeleteRound(${r.number})"><i class="fas fa-trash-alt"></i></button></div></div><div class="space-y-3">${p.map((pl,idx) => {
+                    const rawScore = r.scores[pl.key];
+                    const adjustedScore = pl.score;
+                    const diff = rawScore - adjustedScore;
+                    const punishmentText = diff > 0 ? `<span class="text-red-400 ml-1 text-sm">(-${diff} pts)</span>` : '';
+                    
+                    return `<div class="player-card ${pl.class}"><div class="flex justify-between items-center"><span><strong>${idx+1}º</strong> ${pl.name}${idx===1?'<span class="text-blue-300 ml-2 text-sm">(Fatal)</span>':idx===5?'<span class="text-red-400 ml-2 text-sm">(Model)</span>':''}</span><span class="text-xl font-bold">${adjustedScore.toFixed(1)}${punishmentText}</span></div></div>`;
+                }).join('')}</div></div></div>`;
             });
             html += `</div>`;
             cont.innerHTML = html;
@@ -2119,20 +2189,22 @@
 
         function updateScores() {
             const tab = document.getElementById('scores');
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 gradient-text"><i class="fas fa-chart-line mr-2"></i>Estatísticas de Pontuação - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-trophy mr-2"></i>Pontuação Total</h3>${getPlayerScores('total')}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-calculator mr-2"></i>Média de Pontos por Rodada</h3>${getPlayerScores('average')}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-star mr-2"></i>Maiores Pontuações Individuais</h3>${rounds.length===0?`<div class="text-center py-8"><i class="fas fa-chart-line text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem dados ainda</h4><p class="opacity-75">Aguardando conclusão das primeiras rodadas</p></div>`:`<div class="grid grid-cols-1 md:grid-cols-3 gap-4">${getTopScores()}</div>`}</div></div>`;
+            const stats = getStats();
+            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 gradient-text"><i class="fas fa-chart-line mr-2"></i>Estatísticas de Pontuação - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-trophy mr-2"></i>Pontuação Total</h3>${getPlayerScores('total', stats)}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-calculator mr-2"></i>Média de Pontos por Rodada</h3>${getPlayerScores('average', stats)}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-star mr-2"></i>Maiores Pontuações Individuais</h3>${rounds.length===0?`<div class="text-center py-8"><i class="fas fa-chart-line text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem dados ainda</h4><p class="opacity-75">Aguardando conclusão das primeiras rodadas</p></div>`:`<div class="grid grid-cols-1 md:grid-cols-3 gap-4">${getTopScores()}</div>`}</div></div>`;
         }
 
         function updateWins() {
             const tab = document.getElementById('wins');
             const streaks = getWinStreaks();
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 gradient-text"><i class="fas fa-trophy mr-2"></i>Vitórias e Desempenho - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-pie mr-2"></i>Distribuição de Vitórias</h3><div class="chart-container"><canvas id="winsDistributionChart"></canvas></div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-fire mr-2"></i>Sequências de Vitórias</h3>${streaks.length===0?`<div class="text-center py-8"><i class="fas fa-trophy text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem sequências ainda</h4><p class="opacity-75">Aguardando vitórias consecutivas</p></div>`:`<div class="space-y-5">${streaks.map(s => `<div class="player-card ${getPlayerClass(s.player)}"><div class="flex justify-between items-center"><div><div class="font-bold text-xl mb-1">${s.playerName}</div><div class="text-sm opacity-75">${s.streak===2?'Sequência atual':'Melhor sequência'}</div></div><div class="text-right"><div class="text-2xl font-bold">${'🔥'.repeat(Math.min(s.streak,5))}</div><div class="text-sm">${s.streak} vitórias seguidas (Rodadas ${s.startRound}-${s.endRound})</div></div></div></div>`).join('')}</div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-medal mr-2"></i>Ranking de Vitórias</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${Object.entries(getStats().wins).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="text-center"><div class="text-5xl font-bold mb-2 ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-300':k==='gian'?'text-green-300':k==='sellyda'?'text-pink-300':k==='lucas'?'text-orange-300':'text-red-300'}">${v}</div><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${v===0?'Ainda não venceu':v===1?'1 vitória':`${v} vitórias`}</div></div></div>`).join('')}</div></div></div>`;
+            const stats = getStats();
+            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 gradient-text"><i class="fas fa-trophy mr-2"></i>Vitórias e Desempenho - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-pie mr-2"></i>Distribuição de Vitórias</h3><div class="chart-container"><canvas id="winsDistributionChart"></canvas></div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-fire mr-2"></i>Sequências de Vitórias</h3>${streaks.length===0?`<div class="text-center py-8"><i class="fas fa-trophy text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem sequências ainda</h4><p class="opacity-75">Aguardando vitórias consecutivas</p></div>`:`<div class="space-y-5">${streaks.map(s => `<div class="player-card ${getPlayerClass(s.player)}"><div class="flex justify-between items-center"><div><div class="font-bold text-xl mb-1">${s.playerName}</div><div class="text-sm opacity-75">${s.streak===2?'Sequência atual':'Melhor sequência'}</div></div><div class="text-right"><div class="text-2xl font-bold">${'🔥'.repeat(Math.min(s.streak,5))}</div><div class="text-sm">${s.streak} vitórias seguidas (Rodadas ${s.startRound}-${s.endRound})</div></div></div></div>`).join('')}</div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-medal mr-2"></i>Ranking de Vitórias</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${Object.entries(stats.wins).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="text-center"><div class="text-5xl font-bold mb-2 ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-300':k==='gian'?'text-green-300':k==='sellyda'?'text-pink-300':k==='lucas'?'text-orange-300':'text-red-300'}">${v}</div><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${v===0?'Ainda não venceu':v===1?'1 vitória':`${v} vitórias`}</div></div></div>`).join('')}</div></div></div>`;
             initWinsChart();
         }
 
         function updateLanterns() {
             const tab = document.getElementById('lanterns');
             const stats = getStats();
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 text-red-400"><i class="fas fa-fire mr-2"></i>Lanterna da Rodada - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-skull-crossbones mr-2"></i>Ranking de Lanternas (Model)</h3>${Object.entries(stats.lanterns).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="flex justify-between items-center"><div class="flex-1"><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${k==='rian'||k==='gian'?'Sempre no top 3':k==='fernando'?'Fatal':'Model'}</div></div><div class="text-right"><div class="text-3xl font-bold ${k==='miguel'?'text-red-300':k==='lucas'?'text-orange-300':k==='sellyda'?'text-pink-300':''}">${v}</div><div class="text-sm">${v===1?'vez lanterna':'vezes lanterna'}</div></div></div></div>`).join('')}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-history mr-2"></i>Histórico por Rodada</h3>${rounds.length===0?`<div class="text-center py-8"><i class="fas fa-fire text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem lanternas ainda</h4><p class="opacity-75">Aguardando conclusão das primeiras rodadas</p></div>`:`<div class="space-y-4">${[...rounds].sort((a,b)=>b.number-a.number).slice(0,10).map(r => {const l=getRanking(r)[5]; return `<div class="flex justify-between items-center p-3 bg-opacity-10 rounded"><span class="font-bold">Rodada ${r.number}:</span><span class="font-bold ${l.class.includes('red')?'text-red-400':l.class.includes('orange')?'text-orange-400':l.class.includes('pink')?'text-pink-400':''}">${l.name}</span></div>`;}).join('')}</div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-chart-bar mr-2"></i>Estatísticas de Lanternas</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4">${[...Object.entries(stats.lanterns).sort((a,b)=>b[1]-a[1])].slice(0,1).map(([k,v])=>`<div class="stats-card bg-red-900/30 border-red-500/30"><i class="fas fa-fire text-3xl mb-2 text-red-400"></i><div class="stats-number text-red-400">${v}</div><div class="stats-label">${k.charAt(0).toUpperCase()+k.slice(1)} - Model</div></div>`).join('')}<div class="stats-card bg-purple-900/30 border-purple-500/30"><i class="fas fa-shield-alt text-3xl mb-2 text-purple-400"></i><div class="stats-number text-purple-400">${stats.lanterns.rian===0?'✓':stats.lanterns.rian}</div><div class="stats-label">Rian - ${stats.lanterns.rian===0?'Nunca Lanterna':'Top 3'}</div></div><div class="stats-card bg-green-900/30 border-green-500/30"><i class="fas fa-medal text-3xl mb-2 text-green-400"></i><div class="stats-number text-green-400">${stats.lanterns.gian===0?'✓':stats.lanterns.gian}</div><div class="stats-label">Gian - ${stats.lanterns.gian===0?'Nunca Lanterna':'Top 3'}</div></div></div></div></div>`;
+            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 text-red-400"><i class="fas fa-fire mr-2"></i>Lanterna da Rodada - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-skull-crossbones mr-2"></i>Ranking de Lanternas (Model)</h3>${Object.entries(stats.lanterns).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="flex justify-between items-center"><div class="flex-1"><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${k==='rian'||k==='gian'?'Sempre no top 3':k==='fernando'?'Fatal':'Model'}</div></div><div class="text-right"><div class="text-3xl font-bold ${k==='miguel'?'text-red-300':k==='lucas'?'text-orange-300':k==='sellyda'?'text-pink-300':''}">${v}</div><div class="text-sm">${v===1?'vez lanterna':'vezes lanterna'}</div></div></div></div>`).join('')}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-history mr-2"></i>Histórico por Rodada</h3>${rounds.length===0?`<div class="text-center py-8"><i class="fas fa-fire text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem lanternas ainda</h4><p class="opacity-75">Aguardando conclusão das primeiras rodadas</p></div>`:`<div class="space-y-4">${[...rounds].sort((a,b)=>b.number-a.number).slice(0,10).map(r => {const l=getAdjustedRanking(r)[5]; return `<div class="flex justify-between items-center p-3 bg-opacity-10 rounded"><span class="font-bold">Rodada ${r.number}:</span><span class="font-bold ${l.class.includes('red')?'text-red-400':l.class.includes('orange')?'text-orange-400':l.class.includes('pink')?'text-pink-400':''}">${l.name}</span></div>`;}).join('')}</div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-chart-bar mr-2"></i>Estatísticas de Lanternas</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4">${[...Object.entries(stats.lanterns).sort((a,b)=>b[1]-a[1])].slice(0,1).map(([k,v])=>`<div class="stats-card bg-red-900/30 border-red-500/30"><i class="fas fa-fire text-3xl mb-2 text-red-400"></i><div class="stats-number text-red-400">${v}</div><div class="stats-label">${k.charAt(0).toUpperCase()+k.slice(1)} - Model</div></div>`).join('')}<div class="stats-card bg-purple-900/30 border-purple-500/30"><i class="fas fa-shield-alt text-3xl mb-2 text-purple-400"></i><div class="stats-number text-purple-400">${stats.lanterns.rian===0?'✓':stats.lanterns.rian}</div><div class="stats-label">Rian - ${stats.lanterns.rian===0?'Nunca Lanterna':'Top 3'}</div></div><div class="stats-card bg-green-900/30 border-green-500/30"><i class="fas fa-medal text-3xl mb-2 text-green-400"></i><div class="stats-number text-green-400">${stats.lanterns.gian===0?'✓':stats.lanterns.gian}</div><div class="stats-label">Gian - ${stats.lanterns.gian===0?'Nunca Lanterna':'Top 3'}</div></div></div></div></div>`;
         }
 
         function updatePunishmentsDisplay() {
@@ -2150,43 +2222,23 @@
             }
         }
 
-        // Funções auxiliares compactas
-        function getRanking(round) {
-            return [{name:'Rian',score:round.scores.rian,class:'rian-card',key:'rian'},{name:'Fernando',score:round.scores.fernando,class:'fernando-card',key:'fernando'},{name:'Gian',score:round.scores.gian,class:'gian-card',key:'gian'},{name:'Sellyda',score:round.scores.sellyda,class:'sellyda-card',key:'sellyda'},{name:'Lucas',score:round.scores.lucas,class:'lucas-card',key:'lucas'},{name:'Miguel',score:round.scores.miguel,class:'miguel-card',key:'miguel'}].sort((a,b)=>b.score-a.score);
-        }
         function getPlayerClass(key) { return `${key}-card`; }
-        function getStats() {
-            const t={rian:0,fernando:0,gian:0,sellyda:0,lucas:0,miguel:0},w={...t},l={...t};
-            // Sum scores from rounds
-            rounds.forEach(r=>{
-                const p=getRanking(r);
-                w[p[0].key]++;
-                l[p[5].key]++;
-                ['rian','fernando','gian','sellyda','lucas','miguel'].forEach(k=>t[k]+=r.scores[k]);
-            });
-            // Apply season punishments (points are negative, so just add)
-            if (Array.isArray(punishments) && punishments.length>0) {
-                punishments.forEach(p => {
-                    if (p && p.player && Object.prototype.hasOwnProperty.call(t, p.player)) {
-                        t[p.player] += p.points;
-                    }
-                });
-            }
-            const a={};
-            for(const k in t) a[k] = rounds.length>0 ? t[k]/rounds.length : 0;
-            return {totals:t,wins:w,lanterns:l,averages:a};
-        }
         function getRankingHTML() {
-            const s=getStats(),p=Object.entries(s.totals).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,name:k.charAt(0).toUpperCase()+k.slice(1),v,a:s.averages[k],c:getPlayerClass(k)}));
+            const s = getStats();
+            const p = Object.entries(s.totals).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,name:k.charAt(0).toUpperCase()+k.slice(1),v,a:s.averages[k],c:getPlayerClass(k)}));
             return `<div class="space-y-4">${p.map((pl,i)=>`<div class="player-card ${pl.c}"><div class="flex justify-between items-center"><div class="flex items-center gap-4"><span class="text-2xl font-bold ${i===0?'gradient-text':i===1?'text-blue-300':i===2?'text-green-300':i===3?'text-pink-300':i===4?'text-orange-300':'text-red-300'}">${i+1}º</span><div><div class="font-bold text-xl">${pl.name}</div><div class="text-sm opacity-75">${i===0?'Líder absoluto':i===1?'Vice-líder • Fatal':i===2?'Terceiro lugar':i===3?'Quarta posição':i===4?'Quinta posição':'Último colocado • Model'}</div></div></div><div class="text-right"><div class="text-3xl font-bold ${i===0?'gradient-text':i===1?'text-blue-300':i===2?'text-green-300':i===3?'text-pink-300':i===4?'text-orange-300':'text-red-300'}">${Math.round(pl.v)}</div><div class="text-sm">pontos totais</div></div></div><div class="progress-container mt-4"><div class="progress-bar" style="width: ${Math.min(pl.v/(rounds.length*150)*100,100)}%; background: var(--${pl.k}-gradient);"></div></div></div>`).join('')}</div>`;
         }
-        function getPlayerScores(type) {
-            const s=getStats(),p=Object.entries(type==='total'?s.totals:s.averages).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,name:k.charAt(0).toUpperCase()+k.slice(1),v,c:getPlayerClass(k)}));
+        function getPlayerScores(type, stats) {
+            if (!stats) stats = getStats();
+            const p = Object.entries(type==='total'?stats.totals:stats.averages).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,name:k.charAt(0).toUpperCase()+k.slice(1),v,c:getPlayerClass(k)}));
             return `<div class="space-y-5">${p.map((pl,i)=>`<div class="player-card ${pl.c}"><div class="flex justify-between items-center"><div class="flex-1"><div class="font-bold text-xl mb-1">${pl.name}</div><div class="text-sm opacity-75">${i===0?'Líder absoluto':i===1?'Vice-líder • Fatal':i===2?'Terceiro lugar':i===3?'Quarta posição':i===4?'Quinta posição':'Último colocado • Model'}</div></div><div class="text-right"><div class="text-3xl font-bold ${i===0?'gradient-text':i===1?'text-blue-300':i===2?'text-green-300':i===3?'text-pink-300':i===4?'text-orange-300':'text-red-300'}">${type==='total'?Math.round(pl.v):pl.v.toFixed(1)}</div><div class="text-sm">${type==='total'?'pontos totais':'pts/rodada'}</div></div></div></div>`).join('')}</div>`;
         }
         function getTopScores() {
             const scores=[];
-            rounds.forEach(r=>{const p=getRanking(r)[0];scores.push({name:p.name,score:p.score,round:r.number,class:p.class});});
+            rounds.forEach(r=>{
+                const p = getAdjustedRanking(r)[0];
+                scores.push({name:p.name,score:p.score,round:r.number,class:p.class});
+            });
             scores.sort((a,b)=>b.score-a.score);
             return scores.slice(0,3).map(s=>`<div class="player-card ${s.class}"><div class="text-center"><div class="text-4xl font-bold mb-2">${s.score.toFixed(1)}</div><div class="font-bold text-lg">${s.name}</div><div class="text-sm opacity-75">Rodada ${s.round}</div></div></div>`).join('');
         }
@@ -2194,26 +2246,59 @@
             if(rounds.length===0)return[];
             const sorted=[...rounds].sort((a,b)=>a.number-b.number),streaks=[],keys={rian:'Rian',fernando:'Fernando',gian:'Gian',sellyda:'Sellyda',lucas:'Lucas',miguel:'Miguel'};
             let curr=null;
-            for(let i=0;i<sorted.length;i++){const r=sorted[i],w=getRanking(r)[0].key;if(!curr||curr.player!==w){if(curr&&curr.streak>=2)streaks.push(curr);curr={player:w,playerName:keys[w],streak:1,startRound:r.number,endRound:r.number};}else{curr.streak++;curr.endRound=r.number;}}
+            for(let i=0;i<sorted.length;i++){
+                const r=sorted[i];
+                const winner = getAdjustedRanking(r)[0].key;
+                if(!curr||curr.player!==winner){
+                    if(curr&&curr.streak>=2)streaks.push(curr);
+                    curr={player:winner,playerName:keys[winner],streak:1,startRound:r.number,endRound:r.number};
+                }else{
+                    curr.streak++;
+                    curr.endRound=r.number;
+                }
+            }
             if(curr&&curr.streak>=2)streaks.push(curr);
             return streaks.sort((a,b)=>b.streak-a.streak);
         }
         function initDashboardChart() {
             const ctx=document.getElementById('winsChart').getContext('2d');
-            if (window.dashChartInstance && typeof window.dashChartInstance.destroy === 'function') window.dashChartInstance.destroy();
-            window.dashChartInstance = new Chart(ctx, {type:'doughnut',data:{labels:['Rian','Fernando','Gian','Sellyda','Lucas','Miguel'],datasets:[{data:Object.values(getStats().wins),backgroundColor:['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12}}}},cutout:'60%'}});
+            if(window.dashChartInstance && typeof window.dashChartInstance.destroy === 'function') window.dashChartInstance.destroy();
+            const stats = getStats();
+            window.dashChartInstance = new Chart(ctx,{type:'doughnut',data:{labels:['Rian','Fernando','Gian','Sellyda','Lucas','Miguel'],datasets:[{data:Object.values(stats.wins),backgroundColor:['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12}}}},cutout:'60%'}});
         }
         function initWinsChart() {
             const ctx=document.getElementById('winsDistributionChart').getContext('2d');
-            if (window.winsChartInstance && typeof window.winsChartInstance.destroy === 'function') window.winsChartInstance.destroy();
-            const s=getStats();
-            window.winsChartInstance = new Chart(ctx, {type:'pie',data:{labels:Object.entries(s.wins).map(([k,v])=>`${k.charAt(0).toUpperCase()+k.slice(1)} (${v})`),datasets:[{data:Object.values(s.wins),backgroundColor:['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12}}}}}});
+            if(window.winsChartInstance && typeof window.winsChartInstance.destroy === 'function') window.winsChartInstance.destroy();
+            const stats = getStats();
+            window.winsChartInstance = new Chart(ctx,{type:'pie',data:{labels:Object.entries(stats.wins).map(([k,v])=>`${k.charAt(0).toUpperCase()+k.slice(1)} (${v})`),datasets:[{data:Object.values(stats.wins),backgroundColor:['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12}}}}}});
         }
-        function editRound(num){const r=rounds.find(x=>x.number===num);if(!r)return;document.getElementById('roundNumber').value=r.number;['rian','fernando','gian','sellyda','lucas','miguel'].forEach(k=>document.getElementById(`${k}Score`).value=r.scores[k]);document.getElementById('roundModal').classList.add('active');}
-        function confirmDeleteRound(num){currentDeleteRound=num;document.getElementById('deleteRoundNumber').textContent=num;document.getElementById('deleteRoundModal').classList.add('active');}
-        function confirmDeletePunishment(idx){currentDeletePunishmentIndex=idx;document.getElementById('deletePunishedPlayer').textContent=punishments[idx].playerName;document.getElementById('deletePunishmentModal').classList.add('active');}
-        function showNotification(msg){const n=document.createElement('div');n.className='notification';n.innerHTML=`<i class="fas fa-check-circle mr-2"></i> ${msg}`;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);}
-        window.editRound=editRound;window.confirmDeleteRound=confirmDeleteRound;window.confirmDeletePunishment=confirmDeletePunishment;
+        function editRound(num){
+            const r=rounds.find(x=>x.number===num);
+            if(!r)return;
+            document.getElementById('roundNumber').value=r.number;
+            ['rian','fernando','gian','sellyda','lucas','miguel'].forEach(k=>document.getElementById(`${k}Score`).value=r.scores[k]);
+            document.getElementById('roundModal').classList.add('active');
+        }
+        function confirmDeleteRound(num){
+            currentDeleteRound=num;
+            document.getElementById('deleteRoundNumber').textContent=num;
+            document.getElementById('deleteRoundModal').classList.add('active');
+        }
+        function confirmDeletePunishment(idx){
+            currentDeletePunishmentIndex=idx;
+            document.getElementById('deletePunishedPlayer').textContent=punishments[idx].playerName;
+            document.getElementById('deletePunishmentModal').classList.add('active');
+        }
+        function showNotification(msg){
+            const n=document.createElement('div');
+            n.className='notification';
+            n.innerHTML=`<i class="fas fa-check-circle mr-2"></i> ${msg}`;
+            document.body.appendChild(n);
+            setTimeout(()=>n.remove(),3000);
+        }
+        window.editRound=editRound;
+        window.confirmDeleteRound=confirmDeleteRound;
+        window.confirmDeletePunishment=confirmDeletePunishment;
     </script>
 </body>
 </html>
