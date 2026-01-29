@@ -1,3 +1,8 @@
+# Cartola da Família 2026 - Versão Final com Senha e Layout Mobile Aprimorado
+
+Aqui está a versão completa e funcional com proteção por senha e layout mobile aprimorado:
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -284,6 +289,12 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 165, 0, 0.4);
         }
 
         /* Main Content Premium */
@@ -901,48 +912,256 @@
             opacity: 0.7;
         }
 
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .password-modal.active {
+            display: flex;
+            animation: modalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .password-container {
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .password-container i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #667eea;
+        }
+
+        .password-container h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .password-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 padding: 1rem;
                 gap: 1rem;
+                position: relative;
+                height: auto;
             }
 
             .logo {
-                font-size: 1.25rem;
+                font-size: 1.5rem;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .trophy-icon {
+                font-size: 1.8rem;
+            }
+
+            .theme-selector {
+                padding: 0.3rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .admin-btns {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.75rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+                width: auto;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                padding: 0.5rem;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+                min-width: 120px;
+                justify-content: center;
+            }
+
+            .grid-2, .grid-3, .round-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem;
+            }
+
+            .main-content {
+                padding: 1.25rem;
+                margin-top: 110px;
+            }
+
+            .card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+
+            .player-card {
+                padding: 1.2rem;
+                margin: 0.5rem 0;
+            }
+
+            .stats-card {
+                padding: 1.2rem;
+            }
+
+            .stats-number {
+                font-size: 2rem;
+            }
+
+            .modal-content {
+                padding: 1.8rem;
+                width: 95%;
+                max-width: 95%;
+            }
+
+            .form-group label {
+                font-size: 0.95rem;
+            }
+
+            .form-control, .form-select {
+                padding: 0.85rem;
+                font-size: 0.95rem;
+            }
+
+            .password-container {
+                padding: 1.8rem;
+                width: 95%;
+            }
+
+            .password-input {
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+
+            .round-actions {
+                flex-direction: column;
+                right: 0.75rem;
+            }
+
+            .action-btn {
+                width: 36px;
+                height: 36px;
+                margin: 0.25rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.3rem;
             }
 
             .trophy-icon {
                 font-size: 1.5rem;
             }
 
-            .tabs {
-                overflow-x: auto;
-                padding: 0.5rem;
+            .theme-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
             }
 
-            .tab {
+            .btn {
                 padding: 0.5rem 1rem;
-                font-size: 0.85rem;
-                white-space: nowrap;
-            }
-
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
+                font-size: 0.8rem;
+                border-radius: 1.25rem;
             }
 
             .main-content {
-                padding: 1.5rem;
-                margin-top: 90px;
+                padding: 1rem;
+                margin-top: 100px;
             }
 
             .card {
-                padding: 1.5rem;
+                padding: 1.25rem;
             }
 
             .chart-container {
-                height: 300px;
+                height: 250px;
+            }
+
+            .player-card {
+                padding: 1rem;
+            }
+
+            .stats-number {
+                font-size: 1.8rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .password-container {
+                padding: 1.5rem;
+            }
+
+            .password-input {
+                padding: 0.9rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -976,6 +1195,12 @@
             </button>
             <button class="btn btn-danger" id="addPunishmentBtn">
                 <i class="fas fa-gavel"></i> Punição
+            </button>
+            <button class="btn btn-warning" id="adminToggleBtn" style="margin-left: 1rem;">
+                <i class="fas fa-lock"></i> Modo Admin
+            </button>
+            <button class="btn btn-secondary" id="adminExitBtn" style="margin-left: 0.5rem; display: none;">
+                <i class="fas fa-sign-out-alt"></i> Sair Admin
             </button>
         </div>
     </header>
@@ -1852,9 +2077,25 @@
         </div>
     </div>
 
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-container">
+            <i class="fas fa-lock"></i>
+            <h3>Autenticação Necessária</h3>
+            <p class="mb-4 opacity-75">Digite a senha para realizar esta ação</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="Senha" autocomplete="off">
+            <div class="password-btns">
+                <button class="btn btn-danger" id="cancelPasswordBtn">Cancelar</button>
+                <button class="btn btn-primary" id="confirmPasswordBtn">Confirmar</button>
+            </div>
+            <p id="passwordError" class="text-red-400 mt-3 opacity-0 transition-opacity">Senha incorreta!</p>
+        </div>
+    </div>
+
     <script>
         // Estado do usuário e dados
-        const isAdmin = true;
+        let isAdminMode = false;
+        const ADMIN_PASSWORD = "0503rian"; // Senha para ativar modo admin
         let currentTheme = 'dark';
         let rounds = JSON.parse(localStorage.getItem('cartolaRounds2026')) || [];
         let punishments = JSON.parse(localStorage.getItem('cartolaPunishments2026')) || [];
@@ -1875,147 +2116,321 @@
         function createPremiumParticles() {
             const container = document.getElementById('particles');
             container.innerHTML = '';
+            
             const particleCount = 80;
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
+                
                 const size = Math.random() * 8 + 2;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
+                
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
+                
                 particle.style.setProperty('--duration', `${Math.random() * 10 + 10}s`);
                 particle.style.setProperty('--opacity', `${Math.random() * 0.4 + 0.3}`);
                 particle.style.setProperty('--offset', `${Math.random() * 100 - 50}px`);
+                
                 container.appendChild(particle);
             }
         }
 
         function initPremiumCharts() {
             const ctx1 = document.getElementById('winsChart').getContext('2d');
-            new Chart(ctx1, {
+            if (window.dashboardChart && typeof window.dashboardChart.destroy === 'function') {
+                window.dashboardChart.destroy();
+            }
+            window.dashboardChart = new Chart(ctx1, {
                 type: 'doughnut',
                 data: {
                     labels: ['Rian', 'Fernando', 'Gian', 'Sellyda', 'Lucas', 'Miguel'],
-                    datasets: [{ data: [0,0,0,0,0,0], backgroundColor: ['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'], borderWidth: 0 }]
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#8B5CF6',
+                            '#3B82F6',
+                            '#10B981',
+                            '#EC4899',
+                            '#F97316',
+                            '#EF4444'
+                        ],
+                        borderWidth: 0
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0', font: { size: 12 } } } }, cutout: '60%' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e2e8f0',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
             });
+
             const ctx2 = document.getElementById('winsDistributionChart').getContext('2d');
-            new Chart(ctx2, {
+            if (window.winsChart && typeof window.winsChart.destroy === 'function') {
+                window.winsChart.destroy();
+            }
+            window.winsChart = new Chart(ctx2, {
                 type: 'pie',
                 data: {
                     labels: ['Rian (0)', 'Fernando (0)', 'Gian (0)', 'Sellyda (0)', 'Lucas (0)', 'Miguel (0)'],
-                    datasets: [{ data: [0,0,0,0,0,0], backgroundColor: ['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'], borderWidth: 0 }]
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#8B5CF6',
+                            '#3B82F6',
+                            '#10B981',
+                            '#EC4899',
+                            '#F97316',
+                            '#EF4444'
+                        ],
+                        borderWidth: 0
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0', font: { size: 12 } } } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e2e8f0',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
 
         function setupEventListeners() {
+            // Mudança de temas
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
+                    
                     currentTheme = this.dataset.theme;
                     document.body.className = `theme-${currentTheme}`;
+                    
                     showNotification(`🎨 Tema ${currentTheme} ativado!`);
                     createPremiumParticles();
                 });
             });
 
+            // Tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
                     this.classList.add('active');
                     document.getElementById(this.dataset.tab).classList.add('active');
                 });
             });
 
-            if (!isAdmin) document.getElementById('adminBtns').style.display = 'none';
+            // Botões admin - CONTROLADOS POR MODO ADMIN
+            document.getElementById('adminToggleBtn').addEventListener('click', function() {
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordError').classList.remove('show');
+                document.getElementById('passwordModal').classList.add('active');
+            });
+            
+            document.getElementById('adminExitBtn').addEventListener('click', function() {
+                isAdminMode = false;
+                updateAdminUI();
+                showNotification('🔒 Modo admin desativado');
+            });
 
             document.getElementById('addRoundBtn').addEventListener('click', function() {
+                if (!isAdminMode) {
+                    showNotification('⚠️ Ative o modo admin para adicionar rodadas');
+                    return;
+                }
                 document.getElementById('roundModal').classList.add('active');
                 document.getElementById('roundNumber').value = rounds.length > 0 ? Math.max(...rounds.map(r => r.number)) + 1 : 1;
-                ['rianScore','fernandoScore','gianScore','sellydaScore','lucasScore','miguelScore'].forEach(id => document.getElementById(id).value = '0');
+                ['rianScore','fernandoScore','gianScore','sellydaScore','lucasScore','miguelScore'].forEach(id => {
+                    document.getElementById(id).value = '0';
+                });
             });
 
             document.getElementById('addPunishmentBtn').addEventListener('click', function() {
+                if (!isAdminMode) {
+                    showNotification('⚠️ Ative o modo admin para adicionar punições');
+                    return;
+                }
                 document.getElementById('punishmentModal').classList.add('active');
                 document.getElementById('punishmentRound').value = rounds.length > 0 ? Math.max(...rounds.map(r => r.number)) : 1;
             });
 
+            updateAdminUI();
+
+            // Fechar modals com botão X
             document.querySelectorAll('.modal-close').forEach(btn => {
-                btn.addEventListener('click', function() { this.closest('.modal').classList.remove('active'); });
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').classList.remove('active');
+                });
             });
 
+            // Fechar modals ao clicar fora
             document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
             });
 
-            document.getElementById('cancelRoundBtn').addEventListener('click', () => document.getElementById('roundModal').classList.remove('active'));
-            document.getElementById('cancelPunishmentBtn').addEventListener('click', () => document.getElementById('punishmentModal').classList.remove('active'));
-            document.getElementById('cancelDeleteRoundBtn').addEventListener('click', () => document.getElementById('deleteRoundModal').classList.remove('active'));
-            document.getElementById('cancelDeletePunishmentBtn').addEventListener('click', () => document.getElementById('deletePunishmentModal').classList.remove('active'));
+            // Cancelar modals
+            document.getElementById('cancelRoundBtn').addEventListener('click', () => {
+                document.getElementById('roundModal').classList.remove('active');
+            });
 
-            document.getElementById('roundForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                try {
-                    const num = parseInt(document.getElementById('roundNumber').value);
-                    if (isNaN(num) || num <= 0) throw new Error('Número inválido');
-                    const idx = rounds.findIndex(r => r.number === num);
-                    if (idx !== -1 && !confirm(`Rodada ${num} existe. Substituir?`)) return;
-                    if (idx !== -1) rounds.splice(idx, 1);
-                    rounds.push({
-                        number: num,
-                        scores: {
-                            rian: parseFloat(document.getElementById('rianScore').value),
-                            fernando: parseFloat(document.getElementById('fernandoScore').value),
-                            gian: parseFloat(document.getElementById('gianScore').value),
-                            sellyda: parseFloat(document.getElementById('sellydaScore').value),
-                            lucas: parseFloat(document.getElementById('lucasScore').value),
-                            miguel: parseFloat(document.getElementById('miguelScore').value)
-                        },
-                        date: new Date().toISOString()
-                    });
-                    rounds.sort((a,b) => a.number - b.number);
-                    localStorage.setItem('cartolaRounds2026', JSON.stringify(rounds));
-                    document.getElementById('roundModal').classList.remove('active');
-                    updateAllTabs();
-                    showNotification(`✅ Rodada ${num} adicionada!`);
-                } catch (err) {
-                    console.error('Erro ao adicionar rodada:', err);
-                    alert(`Erro: ${err.message}`);
+            document.getElementById('cancelPunishmentBtn').addEventListener('click', () => {
+                document.getElementById('punishmentModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelDeleteRoundBtn').addEventListener('click', () => {
+                document.getElementById('deleteRoundModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelDeletePunishmentBtn').addEventListener('click', () => {
+                document.getElementById('deletePunishmentModal').classList.remove('active');
+            });
+
+            // Password modal buttons
+            document.getElementById('cancelPasswordBtn').addEventListener('click', () => {
+                document.getElementById('passwordModal').classList.remove('active');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordError').classList.remove('show');
+            });
+
+            document.getElementById('confirmPasswordBtn').addEventListener('click', () => {
+                const password = document.getElementById('passwordInput').value;
+                const errorElement = document.getElementById('passwordError');
+                
+                if (password === ADMIN_PASSWORD) {
+                    isAdminMode = true;
+                    updateAdminUI();
+                    document.getElementById('passwordModal').classList.remove('active');
+                    document.getElementById('passwordInput').value = '';
+                    errorElement.classList.remove('show');
+                    showNotification('🔓 Modo admin ativado!');
+                } else {
+                    errorElement.classList.add('show');
+                    errorElement.style.opacity = '1';
+                    
+                    // Remover erro após 2 segundos
+                    setTimeout(() => {
+                        errorElement.classList.remove('show');
+                    }, 2000);
                 }
             });
 
-            // ✅ CORREÇÃO COMPLETA DAS PUNIÇÕES
+            // Permitir Enter no campo de senha
+            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('confirmPasswordBtn').click();
+                }
+            });
+
+            // Formulário de Rodada
+            document.getElementById('roundForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                try {
+                    const roundNumber = parseInt(document.getElementById('roundNumber').value);
+                    const rianScore = parseFloat(document.getElementById('rianScore').value);
+                    const fernandoScore = parseFloat(document.getElementById('fernandoScore').value);
+                    const gianScore = parseFloat(document.getElementById('gianScore').value);
+                    const sellydaScore = parseFloat(document.getElementById('sellydaScore').value);
+                    const lucasScore = parseFloat(document.getElementById('lucasScore').value);
+                    const miguelScore = parseFloat(document.getElementById('miguelScore').value);
+                    
+                    if (isNaN(roundNumber) || roundNumber <= 0) {
+                        throw new Error('Número da rodada inválido');
+                    }
+                    
+                    // Verificar se rodada já existe
+                    const existingRoundIndex = rounds.findIndex(r => r.number === roundNumber);
+                    if (existingRoundIndex !== -1) {
+                        if (!confirm(`A Rodada ${roundNumber} já existe. Deseja substituí-la?`)) {
+                            return;
+                        }
+                        rounds.splice(existingRoundIndex, 1);
+                    }
+                    
+                    const newRound = {
+                        number: roundNumber,
+                        scores: {
+                            rian: rianScore,
+                            fernando: fernandoScore,
+                            gian: gianScore,
+                            sellyda: sellydaScore,
+                            lucas: lucasScore,
+                            miguel: miguelScore
+                        },
+                        date: new Date().toISOString()
+                    };
+                    
+                    rounds.push(newRound);
+                    rounds.sort((a, b) => a.number - b.number);
+                    
+                    localStorage.setItem('cartolaRounds2026', JSON.stringify(rounds));
+                    
+                    document.getElementById('roundModal').classList.remove('active');
+                    document.getElementById('roundForm').reset();
+                    
+                    updateAllTabs();
+                    showNotification(`✅ Rodada ${roundNumber} adicionada com sucesso!`);
+                    
+                } catch (error) {
+                    console.error('Erro ao adicionar rodada:', error);
+                    alert(`Erro ao adicionar rodada: ${error.message}`);
+                }
+            });
+
+            // Formulário de Punição
             document.getElementById('punishmentForm').addEventListener('submit', function(e) {
                 e.preventDefault();
+                
                 try {
-                    const playerSelect = document.getElementById('punishedPlayer');
-                    const playerValue = playerSelect.value;
-                    const playerName = playerSelect.options[playerSelect.selectedIndex].text;
-                    
-                    // ✅ VALIDAÇÃO CORRIGIDA: Verifica se jogador foi selecionado
-                    if (!playerValue || playerValue === '') throw new Error('Selecione um jogador para punir');
-                    
+                    const player = document.getElementById('punishedPlayer').value;
                     const round = parseInt(document.getElementById('punishmentRound').value);
-                    if (isNaN(round) || round <= 0) throw new Error('Rodada inválida');
+                    const reason = document.getElementById('punishmentReason').value.trim() || 'Não especificado';
                     
-                    // Verifica se rodada existe (opcional)
+                    if (!player) {
+                        throw new Error('Selecione um jogador');
+                    }
+                    
+                    if (isNaN(round) || round <= 0) {
+                        throw new Error('Número de rodada inválido');
+                    }
+                    
+                    // Verificar se existe rodada com este número
                     if (rounds.length > 0 && !rounds.some(r => r.number === round)) {
                         if (!confirm(`A Rodada ${round} ainda não existe. Deseja aplicar a punição mesmo assim?`)) {
                             return;
                         }
                     }
                     
-                    const reason = document.getElementById('punishmentReason').value.trim() || 'Não especificado';
+                    const playerName = player.charAt(0).toUpperCase() + player.slice(1);
                     
-                    // ✅ CRIA PUNIÇÃO COM TODOS OS DADOS NECESSÁRIOS
                     const newPunishment = {
-                        player: playerValue,
+                        player: player,
                         playerName: playerName,
                         round: round,
                         reason: reason,
@@ -2024,116 +2439,88 @@
                     };
                     
                     punishments.push(newPunishment);
-                    punishments.sort((a,b) => a.round - b.round);
+                    punishments.sort((a, b) => a.round - b.round);
+                    
                     localStorage.setItem('cartolaPunishments2026', JSON.stringify(punishments));
                     
                     document.getElementById('punishmentModal').classList.remove('active');
                     document.getElementById('punishmentForm').reset();
                     
-                    // ✅ ATUALIZA TODAS AS ABAS PARA REFLETIR OS -20 PONTOS
                     updateAllTabs();
+                    showNotification(`⚖️ Punição aplicada a ${playerName} na Rodada ${round}!`);
                     
-                    showNotification(`⚖️ Punição aplicada a ${playerName} na Rodada ${round}! (${newPunishment.points} pts)`);
-                } catch (err) {
-                    console.error('Erro ao aplicar punição:', err);
-                    alert(`Erro ao aplicar punição: ${err.message}`);
+                } catch (error) {
+                    console.error('Erro ao aplicar punição:', error);
+                    alert(`Erro: ${error.message}`);
                 }
             });
 
+            // Confirmação de exclusão de rodada
             document.getElementById('confirmDeleteRoundBtn').addEventListener('click', function() {
                 if (currentDeleteRound !== null) {
                     rounds = rounds.filter(r => r.number !== currentDeleteRound);
                     localStorage.setItem('cartolaRounds2026', JSON.stringify(rounds));
+                    
                     updateAllTabs();
-                    showNotification(`🗑️ Rodada ${currentDeleteRound} excluída!`);
+                    showNotification(`🗑️ Rodada ${currentDeleteRound} excluída com sucesso!`);
+                    
                     document.getElementById('deleteRoundModal').classList.remove('active');
                     currentDeleteRound = null;
                 }
             });
 
+            // Confirmação de exclusão de punição
             document.getElementById('confirmDeletePunishmentBtn').addEventListener('click', function() {
                 if (currentDeletePunishmentIndex !== null) {
                     punishments.splice(currentDeletePunishmentIndex, 1);
                     localStorage.setItem('cartolaPunishments2026', JSON.stringify(punishments));
+                    
                     updateAllTabs();
-                    showNotification('🗑️ Punição excluída!');
+                    showNotification('🗑️ Punição excluída com sucesso!');
+                    
                     document.getElementById('deletePunishmentModal').classList.remove('active');
                     currentDeletePunishmentIndex = null;
                 }
             });
 
+            // Expandable content
             document.querySelectorAll('.expandable').forEach(item => {
                 item.addEventListener('click', function(e) {
-                    if (!e.target.closest('.expandable-content')) this.classList.toggle('active');
+                    if (!e.target.closest('.expandable-content')) {
+                        this.classList.toggle('active');
+                    }
                 });
             });
         }
 
-        // ✅ FUNÇÃO CRÍTICA: Calcula pontuação AJUSTADA com punições
-        function getAdjustedScore(playerKey, roundNumber) {
-            // Encontra a rodada
-            const round = rounds.find(r => r.number === roundNumber);
-            if (!round) return 0;
+        // Função para solicitar senha antes de uma ação
+        function updateAdminUI() {
+            const toggleBtn = document.getElementById('adminToggleBtn');
+            const exitBtn = document.getElementById('adminExitBtn');
+            const addRoundBtn = document.getElementById('addRoundBtn');
+            const addPunishmentBtn = document.getElementById('addPunishmentBtn');
             
-            // Pontuação bruta
-            let score = round.scores[playerKey];
-            
-            // ✅ SUBTRAI 20 PONTOS POR CADA PUNIÇÃO NA RODADA ESPECÍFICA
-            const roundPunishments = punishments.filter(p => 
-                p.player === playerKey && p.round === roundNumber
-            );
-            
-            score -= (roundPunishments.length * 20);
-            return score;
-        }
-
-        // ✅ FUNÇÃO CRÍTICA: Ranking AJUSTADO com punições
-        function getAdjustedRanking(round) {
-            const players = [
-                { name: 'Rian', key: 'rian', class: 'rian-card', rawScore: round.scores.rian },
-                { name: 'Fernando', key: 'fernando', class: 'fernando-card', rawScore: round.scores.fernando },
-                { name: 'Gian', key: 'gian', class: 'gian-card', rawScore: round.scores.gian },
-                { name: 'Sellyda', key: 'sellyda', class: 'sellyda-card', rawScore: round.scores.sellyda },
-                { name: 'Lucas', key: 'lucas', class: 'lucas-card', rawScore: round.scores.lucas },
-                { name: 'Miguel', key: 'miguel', class: 'miguel-card', rawScore: round.scores.miguel }
-            ];
-            
-            // ✅ CALCULA PONTUAÇÃO AJUSTADA PARA CADA JOGADOR
-            players.forEach(player => {
-                player.score = getAdjustedScore(player.key, round.number);
-            });
-            
-            // Ordena pelo score ajustado (decrescente)
-            return players.sort((a, b) => b.score - a.score);
-        }
-
-        // ✅ FUNÇÃO CRÍTICA: Estatísticas AJUSTADAS com punições
-        function getStats() {
-            const totals = {rian:0, fernando:0, gian:0, sellyda:0, lucas:0, miguel:0};
-            const wins = {...totals};
-            const lanterns = {...totals};
-            
-            // Processa cada rodada com scores AJUSTADOS
-            rounds.forEach(round => {
-                const ranking = getAdjustedRanking(round);
-                wins[ranking[0].key]++;
-                lanterns[ranking[5].key]++;
-                
-                // Soma os scores AJUSTADOS para o total
-                ranking.forEach(player => {
-                    totals[player.key] += player.score;
-                });
-            });
-            
-            // Calcula médias
-            const averages = {};
-            for (const key in totals) {
-                averages[key] = rounds.length > 0 ? totals[key] / rounds.length : 0;
+            if (isAdminMode) {
+                toggleBtn.style.display = 'none';
+                exitBtn.style.display = 'inline-block';
+                addRoundBtn.disabled = false;
+                addPunishmentBtn.disabled = false;
+                toggleBtn.innerHTML = '<i class="fas fa-unlock"></i> Modo Admin';
+            } else {
+                toggleBtn.style.display = 'inline-block';
+                exitBtn.style.display = 'none';
+                addRoundBtn.disabled = true;
+                addPunishmentBtn.disabled = true;
+                toggleBtn.innerHTML = '<i class="fas fa-lock"></i> Modo Admin';
             }
             
-            return { totals, wins, lanterns, averages };
+            // Atualizar botões de editar/excluir rodadas
+            document.querySelectorAll('.action-btn.edit-btn, .action-btn.delete-btn').forEach(btn => {
+                btn.disabled = !isAdminMode;
+            });
         }
 
+        // Função para atualizar TODAS as abas
         function updateAllTabs() {
             updateDashboard();
             updateRoundsDisplay();
@@ -2144,161 +2531,995 @@
             updateDashboardStats();
         }
 
+        // Função para atualizar o Dashboard
         function updateDashboard() {
-            const tab = document.getElementById('dashboard');
+            const dashboardTab = document.getElementById('dashboard');
+            
             if (rounds.length === 0) {
-                tab.innerHTML = `<div class="grid-3"><div class="card"><div class="card-content text-center"><h2 class="text-2xl font-bold gradient-text mb-4"><i class="fas fa-crown mr-2"></i>Nenhuma Rodada</h2><div class="text-6xl font-bold mb-3 opacity-30">-</div><div class="text-2xl font-bold mb-2 opacity-30">-</div><div class="text-sm opacity-50 mt-4"><i class="fas fa-info-circle mr-2"></i>Aguardando primeira rodada</div></div></div><div class="card"><div class="card-content text-center"><h2 class="text-2xl font-bold text-red-400 mb-4"><i class="fas fa-skull-crossbones mr-2"></i>Sem Lanterna</h2><div class="text-6xl font-bold mb-3 opacity-30">-</div><div class="text-2xl font-bold mb-2 opacity-30">-</div><div class="text-sm opacity-50 mt-4"><i class="fas fa-info-circle mr-2"></i>Nenhuma rodada concluída</div></div></div><div class="card"><div class="card-content text-center"><h2 class="text-2xl font-bold mb-4"><i class="fas fa-fire mr-2"></i>Sem Sequências</h2><div class="text-5xl font-bold mb-3 opacity-30">-</div><div class="text-2xl font-bold mb-2 opacity-30">-</div><div class="text-sm opacity-50 mt-4"><i class="fas fa-info-circle mr-2"></i>Aguardando primeiras vitórias</div></div></div></div><div class="grid-2"><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-bar mr-2"></i>Ranking Total - Temporada 2026</h2>${getRankingHTML()}</div></div><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-pie-chart mr-2"></i>Distribuição de Vitórias</h2><div class="chart-container"><canvas id="winsChart"></canvas></div><div class="grid grid-cols-3 gap-3 mt-6">${[...Array(6)].map((_,i) => `<div class="text-center"><div class="text-3xl font-bold ${['gradient-text','text-blue-400','text-green-400','text-pink-400','text-orange-400','text-red-400'][i]}">0</div><div class="text-sm">${['Rian','Fernando','Gian','Sellyda','Lucas','Miguel'][i]}</div></div>`).join('')}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4">${[0,6,0,0].map((v,i) => `<div class="stats-card"><i class="fas fa-${['calendar-alt','users','gavel','trophy'][i]} text-3xl mb-2"></i><div class="stats-number">${v}</div><div class="stats-label">${['Rodadas','Jogadores','Punições','Vitórias'][i]}</div></div>`).join('')}</div>`;
+                dashboardTab.innerHTML = `
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-content text-center">
+                                <h2 class="text-2xl font-bold gradient-text mb-4">
+                                    <i class="fas fa-crown mr-2"></i>Nenhuma Rodada
+                                </h2>
+                                <div class="text-6xl font-bold mb-3 opacity-30">-</div>
+                                <div class="text-2xl font-bold mb-2 opacity-30">-</div>
+                                <div class="text-sm opacity-50 mt-4">
+                                    <i class="fas fa-info-circle mr-2"></i>Aguardando primeira rodada
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content text-center">
+                                <h2 class="text-2xl font-bold text-red-400 mb-4">
+                                    <i class="fas fa-skull-crossbones mr-2"></i>Sem Lanterna
+                                </h2>
+                                <div class="text-6xl font-bold mb-3 opacity-30">-</div>
+                                <div class="text-2xl font-bold mb-2 opacity-30">-</div>
+                                <div class="text-sm opacity-50 mt-4">
+                                    <i class="fas fa-info-circle mr-2"></i>Nenhuma rodada concluída
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content text-center">
+                                <h2 class="text-2xl font-bold mb-4">
+                                    <i class="fas fa-fire mr-2"></i>Sem Sequências
+                                </h2>
+                                <div class="text-5xl font-bold mb-3 opacity-30">-</div>
+                                <div class="text-2xl font-bold mb-2 opacity-30">-</div>
+                                <div class="text-sm opacity-50 mt-4">
+                                    <i class="fas fa-info-circle mr-2"></i>Aguardando primeiras vitórias
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-content">
+                                <h2 class="text-2xl font-bold mb-6 gradient-text">
+                                    <i class="fas fa-chart-bar mr-2"></i>Ranking Total - Temporada 2026
+                                </h2>
+                                ${getRankingTotalHTML()}
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content">
+                                <h2 class="text-2xl font-bold mb-6 gradient-text">
+                                    <i class="fas fa-pie-chart mr-2"></i>Distribuição de Vitórias
+                                </h2>
+                                <div class="chart-container">
+                                    <canvas id="winsChart"></canvas>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 mt-6">
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold gradient-text">0</div>
+                                        <div class="text-sm">Rian</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-blue-400">0</div>
+                                        <div class="text-sm">Fernando</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-green-400">0</div>
+                                        <div class="text-sm">Gian</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-pink-400">0</div>
+                                        <div class="text-sm">Sellyda</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-orange-400">0</div>
+                                        <div class="text-sm">Lucas</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-red-400">0</div>
+                                        <div class="text-sm">Miguel</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stats-card">
+                            <i class="fas fa-calendar-alt text-3xl mb-2"></i>
+                            <div class="stats-number">0</div>
+                            <div class="stats-label">Rodadas</div>
+                        </div>
+                        <div class="stats-card">
+                            <i class="fas fa-users text-3xl mb-2"></i>
+                            <div class="stats-number">6</div>
+                            <div class="stats-label">Jogadores</div>
+                        </div>
+                        <div class="stats-card">
+                            <i class="fas fa-gavel text-3xl mb-2"></i>
+                            <div class="stats-number">0</div>
+                            <div class="stats-label">Punições</div>
+                        </div>
+                        <div class="stats-card">
+                            <i class="fas fa-trophy text-3xl mb-2"></i>
+                            <div class="stats-number">0</div>
+                            <div class="stats-label">Vitórias</div>
+                        </div>
+                    </div>
+                `;
                 initDashboardChart();
                 return;
             }
             
-            const lastRound = rounds[rounds.length-1];
-            const players = getAdjustedRanking(lastRound);
-            const champ = players[0], lantern = players[5];
-            const streaks = getWinStreaks(), best = streaks[0] || null;
-            const stats = getStats();
+            // Calcular estatísticas
+            const stats = calculateStats();
+            const lastRound = rounds[rounds.length - 1];
             
-            tab.innerHTML = `<div class="grid-3"><div class="card ${champ.class}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold gradient-text"><i class="fas fa-crown mr-2"></i>Campeão Rodada ${lastRound.number}</h2><span class="badge crown-badge pulse"><i class="fas fa-star"></i> 1º Lugar</span></div><div class="text-center py-6"><div class="text-6xl font-bold mb-3 gradient-text">${champ.score.toFixed(1)}</div><div class="text-2xl font-bold mb-2">${champ.name}</div><div class="text-sm opacity-75">${champ.score > players[1].score ? `+${(champ.score - players[1].score).toFixed(1)} pts do 2º` : 'Empatado'}</div></div><div class="flex justify-center gap-4 mt-4"><div class="stats-card"><div class="stats-number">${stats.wins[champ.key]}</div><div class="stats-label">Vitórias</div></div><div class="stats-card"><div class="stats-number">${stats.averages[champ.key].toFixed(1)}</div><div class="stats-label">Média</div></div></div></div></div><div class="card ${lantern.class}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold text-red-400"><i class="fas fa-skull-crossbones mr-2"></i>Último Lanterna</h2><span class="badge skull-badge"><i class="fas fa-fire"></i> 6º Lugar</span></div><div class="text-center py-6"><div class="text-6xl font-bold mb-3 text-red-400">${lantern.score.toFixed(1)}</div><div class="text-2xl font-bold mb-2">${lantern.name}</div><div class="text-sm opacity-75">${lantern.score < players[4].score ? `-${(players[4].score - lantern.score).toFixed(1)} pts do 5º` : 'Empatado'}</div></div><div class="flex justify-center gap-4 mt-4"><div class="stats-card"><div class="stats-number">${stats.lanterns[lantern.key]}</div><div class="stats-label">Lanternas</div></div><div class="stats-card"><div class="stats-number">${stats.averages[lantern.key].toFixed(1)}</div><div class="stats-label">Média</div></div></div></div></div><div class="card ${best ? getPlayerClass(best.player) : 'fernando-card'}"><div class="card-content"><div class="flex justify-between items-start mb-4"><h2 class="text-2xl font-bold"><i class="fas fa-fire mr-2"></i>Sequência Ativa</h2><span class="badge fire-badge"><i class="fas fa-bolt"></i> ${best ? best.streak : 0} Vitórias</span></div><div class="text-center py-6"><div class="text-5xl font-bold mb-3">${best ? '🔥'.repeat(Math.min(best.streak,5)) : '-'}</div><div class="text-2xl font-bold mb-2">${best ? best.playerName : 'Nenhuma'}</div><div class="text-sm opacity-75">${best ? `Rodadas ${best.startRound}-${best.endRound}` : 'Aguardando vitórias'}</div></div>${best ? `<div class="space-y-3 mt-4"><div class="flex justify-between items-center"><span class="font-bold">Próximo Recorde:</span><span class="text-yellow-400 font-bold">${best.streak+1} vitórias</span></div><div class="progress-container"><div class="progress-bar" style="width: ${Math.min(best.streak*33,100)}%; background: linear-gradient(90deg, #3B82F6, #06b6d4);"></div></div></div>` : ''}</div></div></div></div><div class="grid-2"><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-bar mr-2"></i>Ranking Total - Temporada 2026</h2>${getRankingHTML()}</div></div><div class="card"><div class="card-content"><h2 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-pie-chart mr-2"></i>Distribuição de Vitórias</h2><div class="chart-container"><canvas id="winsChart"></canvas></div><div class="grid grid-cols-3 gap-3 mt-6">${Object.entries(stats.wins).map(([k,v]) => `<div class="text-center"><div class="text-3xl font-bold ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-400':k==='gian'?'text-green-400':k==='sellyda'?'text-pink-400':k==='lucas'?'text-orange-400':'text-red-400'}">${v}</div><div class="text-sm">${k.charAt(0).toUpperCase()+k.slice(1)}</div></div>`).join('')}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4">${[rounds.length,6,punishments.length,rounds.length].map((v,i) => `<div class="stats-card"><i class="fas fa-${['calendar-alt','users','gavel','trophy'][i]} text-3xl mb-2"></i><div class="stats-number">${v}</div><div class="stats-label">${['Rodadas','Jogadores','Punições','Vitórias'][i]}</div></div>`).join('')}</div>`;
+            // Calcular ranking da última rodada com punições aplicadas
+            const players = getAdjustedRanking(lastRound);
+            const champion = players[0];
+            const lantern = players[5];
+            
+            // Calcular sequências de vitórias
+            const winStreaks = calculateWinStreaks();
+            const bestStreak = winStreaks.length > 0 ? winStreaks[0] : null;
+            
+            dashboardTab.innerHTML = `
+                <div class="grid-3">
+                    <div class="card ${champion.class}">
+                        <div class="card-content">
+                            <div class="flex justify-between items-start mb-4">
+                                <h2 class="text-2xl font-bold gradient-text">
+                                    <i class="fas fa-crown mr-2"></i>Campeão Rodada ${lastRound.number}
+                                </h2>
+                                <span class="badge crown-badge pulse">
+                                    <i class="fas fa-star"></i> 1º Lugar
+                                </span>
+                            </div>
+                            <div class="text-center py-6">
+                                <div class="text-6xl font-bold mb-3 gradient-text">${champion.score.toFixed(1)}</div>
+                                <div class="text-2xl font-bold mb-2">${champion.name}</div>
+                                <div class="text-sm opacity-75">${champion.score - players[1].score > 0 ? `+${(champion.score - players[1].score).toFixed(1)} pts do 2º` : 'Empatado'}</div>
+                            </div>
+                            <div class="flex justify-center gap-4 mt-4">
+                                <div class="stats-card">
+                                    <div class="stats-number">${stats.wins[champion.key]}</div>
+                                    <div class="stats-label">Vitórias</div>
+                                </div>
+                                <div class="stats-card">
+                                    <div class="stats-number">${stats.averages[champion.key].toFixed(1)}</div>
+                                    <div class="stats-label">Média</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card ${lantern.class}">
+                        <div class="card-content">
+                            <div class="flex justify-between items-start mb-4">
+                                <h2 class="text-2xl font-bold text-red-400">
+                                    <i class="fas fa-skull-crossbones mr-2"></i>Último Lanterna
+                                </h2>
+                                <span class="badge skull-badge">
+                                    <i class="fas fa-fire"></i> 6º Lugar
+                                </span>
+                            </div>
+                            <div class="text-center py-6">
+                                <div class="text-6xl font-bold mb-3 text-red-400">${lantern.score.toFixed(1)}</div>
+                                <div class="text-2xl font-bold mb-2">${lantern.name}</div>
+                                <div class="text-sm opacity-75">${players[4].score - lantern.score > 0 ? `-${(players[4].score - lantern.score).toFixed(1)} pts do 5º` : 'Empatado'}</div>
+                            </div>
+                            <div class="flex justify-center gap-4 mt-4">
+                                <div class="stats-card">
+                                    <div class="stats-number">${stats.lanterns[lantern.key]}</div>
+                                    <div class="stats-label">Lanternas</div>
+                                </div>
+                                <div class="stats-card">
+                                    <div class="stats-number">${stats.averages[lantern.key].toFixed(1)}</div>
+                                    <div class="stats-label">Média</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card ${bestStreak ? getPlayerCardClass(bestStreak.player) : 'fernando-card'}">
+                        <div class="card-content">
+                            <div class="flex justify-between items-start mb-4">
+                                <h2 class="text-2xl font-bold">
+                                    <i class="fas fa-fire mr-2"></i>Sequência Ativa
+                                </h2>
+                                <span class="badge fire-badge">
+                                    <i class="fas fa-bolt"></i> ${bestStreak ? bestStreak.streak : 0} Vitórias
+                                </span>
+                            </div>
+                            <div class="text-center py-6">
+                                <div class="text-5xl font-bold mb-3">${bestStreak ? '🔥'.repeat(Math.min(bestStreak.streak, 5)) : '-'}</div>
+                                <div class="text-2xl font-bold mb-2">${bestStreak ? bestStreak.playerName : 'Nenhuma'}</div>
+                                <div class="text-sm opacity-75">${bestStreak ? `Rodadas ${bestStreak.startRound} a ${bestStreak.endRound}` : 'Aguardando vitórias'}</div>
+                            </div>
+                            ${bestStreak ? `
+                                <div class="space-y-3 mt-4">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold">Próximo Recorde:</span>
+                                        <span class="text-yellow-400 font-bold">${bestStreak.streak + 1} vitórias</span>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: ${Math.min(bestStreak.streak * 33, 100)}%; background: linear-gradient(90deg, #3B82F6, #06b6d4);"></div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-content">
+                            <h2 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-chart-bar mr-2"></i>Ranking Total - Temporada 2026
+                            </h2>
+                            ${getRankingTotalHTML()}
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content">
+                            <h2 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-pie-chart mr-2"></i>Distribuição de Vitórias
+                            </h2>
+                            <div class="chart-container">
+                                <canvas id="winsChart"></canvas>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 mt-6">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold gradient-text">${stats.wins.rian}</div>
+                                    <div class="text-sm">Rian</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-blue-400">${stats.wins.fernando}</div>
+                                    <div class="text-sm">Fernando</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-green-400">${stats.wins.gian}</div>
+                                    <div class="text-sm">Gian</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-pink-400">${stats.wins.sellyda}</div>
+                                    <div class="text-sm">Sellyda</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-orange-400">${stats.wins.lucas}</div>
+                                    <div class="text-sm">Lucas</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-red-400">${stats.wins.miguel}</div>
+                                    <div class="text-sm">Miguel</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stats-card">
+                        <i class="fas fa-calendar-alt text-3xl mb-2"></i>
+                        <div class="stats-number">${rounds.length}</div>
+                        <div class="stats-label">Rodadas</div>
+                    </div>
+                    <div class="stats-card">
+                        <i class="fas fa-users text-3xl mb-2"></i>
+                        <div class="stats-number">6</div>
+                        <div class="stats-label">Jogadores</div>
+                    </div>
+                    <div class="stats-card">
+                        <i class="fas fa-gavel text-3xl mb-2"></i>
+                        <div class="stats-number">${punishments.length}</div>
+                        <div class="stats-label">Punições</div>
+                    </div>
+                    <div class="stats-card">
+                        <i class="fas fa-trophy text-3xl mb-2"></i>
+                        <div class="stats-number">${rounds.length}</div>
+                        <div class="stats-label">Vitórias</div>
+                    </div>
+                </div>
+            `;
+            
             initDashboardChart();
         }
 
+        // Função para atualizar a exibição das rodadas
         function updateRoundsDisplay() {
-            const cont = document.getElementById('roundsContainer');
+            const roundsContainer = document.getElementById('roundsContainer');
+            
             if (rounds.length === 0) {
-                cont.innerHTML = `<i class="fas fa-calendar-times"></i><h3>Nenhuma Rodada Cadastrada</h3><p>Ainda não há rodadas nesta temporada. Clique em "Nova Rodada" para adicionar a primeira!</p>`;
-                cont.className = 'no-data';
+                roundsContainer.innerHTML = `
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>Nenhuma Rodada Cadastrada</h3>
+                    <p>Ainda não há rodadas nesta temporada. Clique em "Nova Rodada" para adicionar a primeira!</p>
+                `;
+                roundsContainer.className = 'no-data';
                 return;
             }
-            const sorted = [...rounds].sort((a,b) => b.number - a.number);
+            
+            // Ordenar rodadas em ordem decrescente (mais recente primeiro)
+            const sortedRounds = [...rounds].sort((a, b) => b.number - a.number);
+            
             let html = `<div class="round-grid">`;
-            sorted.forEach((r,i) => {
-                const p = getAdjustedRanking(r);
-                html += `<div class="card round-card ${i===0?'last-round':''}" data-round="${r.number}"><div class="card-content"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold gradient-text">🏆 Rodada ${r.number}</h3><div class="round-actions"><button class="action-btn edit-btn" title="Editar" onclick="editRound(${r.number})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" title="Excluir" onclick="confirmDeleteRound(${r.number})"><i class="fas fa-trash-alt"></i></button></div></div><div class="space-y-3">${p.map((pl,idx) => {
-                    const rawScore = r.scores[pl.key];
-                    const adjustedScore = pl.score;
-                    const diff = rawScore - adjustedScore;
-                    const punishmentText = diff > 0 ? `<span class="text-red-400 ml-1 text-sm">(-${diff} pts)</span>` : '';
+            
+            sortedRounds.forEach((round, index) => {
+                // Calcular ranking da rodada com punições aplicadas
+                const players = getAdjustedRanking(round);
+                
+                html += `
+                    <div class="card round-card ${index === 0 ? 'last-round' : ''}" data-round="${round.number}">
+                        <div class="card-content">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-2xl font-bold gradient-text">🏆 Rodada ${round.number}</h3>
+                                <div class="round-actions">
+                                    <button class="action-btn edit-btn" title="Editar" onclick="editRoundProtected(${round.number})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir" onclick="deleteRoundProtected(${round.number})">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                `;
+                
+                players.forEach((player, idx) => {
+                    const position = idx + 1;
+                    const positionText = position === 1 ? 'Campeão' : 
+                                       position === 2 ? 'Fatal' : 
+                                       position === 6 ? 'Model' : 
+                                       `${position}º`;
                     
-                    return `<div class="player-card ${pl.class}"><div class="flex justify-between items-center"><span><strong>${idx+1}º</strong> ${pl.name}${idx===1?'<span class="text-blue-300 ml-2 text-sm">(Fatal)</span>':idx===5?'<span class="text-red-400 ml-2 text-sm">(Model)</span>':''}</span><span class="text-xl font-bold">${adjustedScore.toFixed(1)}${punishmentText}</span></div></div>`;
-                }).join('')}</div></div></div>`;
+                    // Calcular diferença de pontos da punição
+                    const rawScore = round.scores[player.key];
+                    const adjustedScore = player.score;
+                    const punishmentDiff = rawScore - adjustedScore;
+                    const punishmentText = punishmentDiff > 0 ? 
+                        `<span class="text-red-400 text-sm ml-1">(-${punishmentDiff} pts)</span>` : '';
+                    
+                    html += `
+                        <div class="player-card ${player.class}">
+                            <div class="flex justify-between">
+                                <span>
+                                    <strong>${position}º</strong> ${player.name}
+                                    ${position === 2 ? '<span class="text-blue-300 text-sm ml-1">(Fatal)</span>' : ''}
+                                    ${position === 6 ? '<span class="text-red-400 text-sm ml-1">(Model)</span>' : ''}
+                                </span>
+                                <span class="text-xl font-bold">${adjustedScore.toFixed(1)}${punishmentText}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
+            
             html += `</div>`;
-            cont.innerHTML = html;
-            cont.className = '';
+            roundsContainer.innerHTML = html;
+            roundsContainer.className = ''; // Remover classe no-data
         }
 
-        function updateScores() {
-            const tab = document.getElementById('scores');
-            const stats = getStats();
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 gradient-text"><i class="fas fa-chart-line mr-2"></i>Estatísticas de Pontuação - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-trophy mr-2"></i>Pontuação Total</h3>${getPlayerScores('total', stats)}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-calculator mr-2"></i>Média de Pontos por Rodada</h3>${getPlayerScores('average', stats)}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-star mr-2"></i>Maiores Pontuações Individuais</h3>${rounds.length===0?`<div class="text-center py-8"><i class="fas fa-chart-line text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem dados ainda</h4><p class="opacity-75">Aguardando conclusão das primeiras rodadas</p></div>`:`<div class="grid grid-cols-1 md:grid-cols-3 gap-4">${getTopScores()}</div>`}</div></div>`;
+        // Funções auxiliares para cálculos com punições
+        function getAdjustedScore(playerKey, roundNumber) {
+            // Encontrar a rodada
+            const round = rounds.find(r => r.number === roundNumber);
+            if (!round) return 0;
+            
+            // Pontuação bruta
+            let score = round.scores[playerKey];
+            
+            // Subtrair 20 pontos para cada punição do jogador nesta rodada
+            const roundPunishments = punishments.filter(p => 
+                p.player === playerKey && p.round === roundNumber
+            );
+            
+            score -= (roundPunishments.length * 20);
+            return score;
         }
 
-        function updateWins() {
-            const tab = document.getElementById('wins');
-            const streaks = getWinStreaks();
-            const stats = getStats();
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 gradient-text"><i class="fas fa-trophy mr-2"></i>Vitórias e Desempenho - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-chart-pie mr-2"></i>Distribuição de Vitórias</h3><div class="chart-container"><canvas id="winsDistributionChart"></canvas></div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-fire mr-2"></i>Sequências de Vitórias</h3>${streaks.length===0?`<div class="text-center py-8"><i class="fas fa-trophy text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem sequências ainda</h4><p class="opacity-75">Aguardando vitórias consecutivas</p></div>`:`<div class="space-y-5">${streaks.map(s => `<div class="player-card ${getPlayerClass(s.player)}"><div class="flex justify-between items-center"><div><div class="font-bold text-xl mb-1">${s.playerName}</div><div class="text-sm opacity-75">${s.streak===2?'Sequência atual':'Melhor sequência'}</div></div><div class="text-right"><div class="text-2xl font-bold">${'🔥'.repeat(Math.min(s.streak,5))}</div><div class="text-sm">${s.streak} vitórias seguidas (Rodadas ${s.startRound}-${s.endRound})</div></div></div></div>`).join('')}</div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 gradient-text"><i class="fas fa-medal mr-2"></i>Ranking de Vitórias</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${Object.entries(stats.wins).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="text-center"><div class="text-5xl font-bold mb-2 ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-300':k==='gian'?'text-green-300':k==='sellyda'?'text-pink-300':k==='lucas'?'text-orange-300':'text-red-300'}">${v}</div><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${v===0?'Ainda não venceu':v===1?'1 vitória':`${v} vitórias`}</div></div></div>`).join('')}</div></div></div>`;
-            initWinsChart();
+        function getAdjustedRanking(round) {
+            const players = [
+                { name: 'Rian', score: getAdjustedScore('rian', round.number), class: 'rian-card', key: 'rian' },
+                { name: 'Fernando', score: getAdjustedScore('fernando', round.number), class: 'fernando-card', key: 'fernando' },
+                { name: 'Gian', score: getAdjustedScore('gian', round.number), class: 'gian-card', key: 'gian' },
+                { name: 'Sellyda', score: getAdjustedScore('sellyda', round.number), class: 'sellyda-card', key: 'sellyda' },
+                { name: 'Lucas', score: getAdjustedScore('lucas', round.number), class: 'lucas-card', key: 'lucas' },
+                { name: 'Miguel', score: getAdjustedScore('miguel', round.number), class: 'miguel-card', key: 'miguel' }
+            ];
+            
+            // Ordenar por pontuação (decrescente)
+            return players.sort((a, b) => b.score - a.score);
         }
 
-        function updateLanterns() {
-            const tab = document.getElementById('lanterns');
-            const stats = getStats();
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 text-red-400"><i class="fas fa-fire mr-2"></i>Lanterna da Rodada - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-skull-crossbones mr-2"></i>Ranking de Lanternas (Model)</h3>${Object.entries(stats.lanterns).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="flex justify-between items-center"><div class="flex-1"><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${k==='rian'||k==='gian'?'Sempre no top 3':k==='fernando'?'Fatal':'Model'}</div></div><div class="text-right"><div class="text-3xl font-bold ${k==='miguel'?'text-red-300':k==='lucas'?'text-orange-300':k==='sellyda'?'text-pink-300':''}">${v}</div><div class="text-sm">${v===1?'vez lanterna':'vezes lanterna'}</div></div></div></div>`).join('')}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-history mr-2"></i>Histórico por Rodada</h3>${rounds.length===0?`<div class="text-center py-8"><i class="fas fa-fire text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem lanternas ainda</h4><p class="opacity-75">Aguardando conclusão das primeiras rodadas</p></div>`:`<div class="space-y-4">${[...rounds].sort((a,b)=>b.number-a.number).slice(0,10).map(r => {const l=getAdjustedRanking(r)[5]; return `<div class="flex justify-between items-center p-3 bg-opacity-10 rounded"><span class="font-bold">Rodada ${r.number}:</span><span class="font-bold ${l.class.includes('red')?'text-red-400':l.class.includes('orange')?'text-orange-400':l.class.includes('pink')?'text-pink-400':''}">${l.name}</span></div>`;}).join('')}</div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-red-400"><i class="fas fa-chart-bar mr-2"></i>Estatísticas de Lanternas</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4">${[...Object.entries(stats.lanterns).sort((a,b)=>b[1]-a[1])].slice(0,1).map(([k,v])=>`<div class="stats-card bg-red-900/30 border-red-500/30"><i class="fas fa-fire text-3xl mb-2 text-red-400"></i><div class="stats-number text-red-400">${v}</div><div class="stats-label">${k.charAt(0).toUpperCase()+k.slice(1)} - Model</div></div>`).join('')}<div class="stats-card bg-purple-900/30 border-purple-500/30"><i class="fas fa-shield-alt text-3xl mb-2 text-purple-400"></i><div class="stats-number text-purple-400">${stats.lanterns.rian===0?'✓':stats.lanterns.rian}</div><div class="stats-label">Rian - ${stats.lanterns.rian===0?'Nunca Lanterna':'Top 3'}</div></div><div class="stats-card bg-green-900/30 border-green-500/30"><i class="fas fa-medal text-3xl mb-2 text-green-400"></i><div class="stats-number text-green-400">${stats.lanterns.gian===0?'✓':stats.lanterns.gian}</div><div class="stats-label">Gian - ${stats.lanterns.gian===0?'Nunca Lanterna':'Top 3'}</div></div></div></div></div>`;
-        }
-
-        function updatePunishmentsDisplay() {
-            const tab = document.getElementById('punishments');
-            const counts = {rian:0,fernando:0,gian:0,sellyda:0,lucas:0,miguel:0};
-            punishments.forEach(p => counts[p.player]++);
-            tab.innerHTML = `<h2 class="text-3xl font-bold mb-6 text-yellow-400"><i class="fas fa-gavel mr-2"></i>Punições - Temporada 2026</h2><div class="grid-2"><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-yellow-400"><i class="fas fa-list mr-2"></i>Ranking de Punições</h3>${Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="flex justify-between items-center"><div class="flex-1"><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">${k==='rian'?'Mais disciplinado':k==='fernando'?'Fatal':k==='gian'?'Sem punições':'Model'}</div></div><div class="text-right"><div class="text-3xl font-bold ${k==='rian'?'gradient-text':k==='fernando'?'text-blue-300':k==='gian'?'text-green-300':k==='sellyda'?'text-pink-300':k==='lucas'?'text-orange-300':'text-red-300'}">${v}</div><div class="text-sm">${v===1?'punição':'punições'} • ${v*-20} pts</div></div></div></div>`).join('')}</div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-yellow-400"><i class="fas fa-chart-line mr-2"></i>Impacto nas Pontuações</h3>${punishments.length===0?`<div class="text-center py-8"><i class="fas fa-gavel text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Sem punições ainda</h4><p class="opacity-75">Nenhuma punição aplicada nesta temporada</p></div>`:`<div class="space-y-4">${Object.entries(counts).filter(([_,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<div class="player-card ${getPlayerClass(k)}"><div class="flex justify-between items-center"><div><div class="font-bold text-xl mb-1">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="text-sm opacity-75">Impacto total</div></div><div class="text-right"><div class="text-2xl font-bold ${k==='miguel'?'text-red-400':k==='lucas'?'text-orange-400':''}">-${v*20} pts</div><div class="text-sm">${punishments.filter(p=>p.player===k).length} punições</div></div></div><div class="progress-container mt-3"><div class="progress-bar" style="width: ${(v/punishments.length)*100}%; background: linear-gradient(90deg, var(--${k}-gradient), ${k==='miguel'?'#f97316':k==='lucas'?'#f59e0b':'#999'});"></div></div></div>`).join('')}<div class="bg-opacity-20 rounded p-4 mt-4"><h4 class="font-bold text-lg mb-3 text-yellow-400"><i class="fas fa-info-circle mr-2"></i>Regras de Punição</h4><ul class="space-y-2 text-sm"><li>• Cada punição desconta <strong>20 pontos</strong></li><li>• Punições são aplicadas na rodada específica</li><li>• Total de punições na temporada: <strong>${punishments.length}</strong></li><li>• Total de pontos descontados: <strong>${punishments.length*20} pts</strong></li></ul></div></div>`}</div></div></div><div class="card"><div class="card-content"><h3 class="text-2xl font-bold mb-6 text-yellow-400"><i class="fas fa-history mr-2"></i>Histórico Completo de Punições</h3>${punishments.length===0?`<div class="text-center py-8"><i class="fas fa-ban text-6xl opacity-30 mb-4"></i><h4 class="text-xl font-bold mb-2">Nenhuma punição registrada</h4><p class="opacity-75">Aguardando primeiras punições</p></div>`:`<div class="space-y-3">${[...punishments].sort((a,b)=>b.round-a.round).map((p,i) => `<div class="flex justify-between items-center p-4 bg-red-900/20 rounded-lg border border-red-500/30"><div><div class="font-bold text-lg text-red-300">${p.playerName}</div><div class="text-sm opacity-75">Rodada ${p.round} • ${p.reason}</div></div><div class="flex items-center gap-2"><div class="text-2xl font-bold text-red-400">${p.points} pts</div><button class="action-btn delete-btn" title="Excluir" onclick="confirmDeletePunishment(${i})"><i class="fas fa-trash-alt"></i></button></div></div>`).join('')}</div>`}</div></div>`;
-        }
-
-        function updateDashboardStats() {
-            const els = document.querySelectorAll('.stats-number');
-            if (els.length >= 4) {
-                els[0].textContent = rounds.length;
-                els[2].textContent = punishments.length;
-            }
-        }
-
-        function getPlayerClass(key) { return `${key}-card`; }
-        function getRankingHTML() {
-            const s = getStats();
-            const p = Object.entries(s.totals).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,name:k.charAt(0).toUpperCase()+k.slice(1),v,a:s.averages[k],c:getPlayerClass(k)}));
-            return `<div class="space-y-4">${p.map((pl,i)=>`<div class="player-card ${pl.c}"><div class="flex justify-between items-center"><div class="flex items-center gap-4"><span class="text-2xl font-bold ${i===0?'gradient-text':i===1?'text-blue-300':i===2?'text-green-300':i===3?'text-pink-300':i===4?'text-orange-300':'text-red-300'}">${i+1}º</span><div><div class="font-bold text-xl">${pl.name}</div><div class="text-sm opacity-75">${i===0?'Líder absoluto':i===1?'Vice-líder • Fatal':i===2?'Terceiro lugar':i===3?'Quarta posição':i===4?'Quinta posição':'Último colocado • Model'}</div></div></div><div class="text-right"><div class="text-3xl font-bold ${i===0?'gradient-text':i===1?'text-blue-300':i===2?'text-green-300':i===3?'text-pink-300':i===4?'text-orange-300':'text-red-300'}">${Math.round(pl.v)}</div><div class="text-sm">pontos totais</div></div></div><div class="progress-container mt-4"><div class="progress-bar" style="width: ${Math.min(pl.v/(rounds.length*150)*100,100)}%; background: var(--${pl.k}-gradient);"></div></div></div>`).join('')}</div>`;
-        }
-        function getPlayerScores(type, stats) {
-            if (!stats) stats = getStats();
-            const p = Object.entries(type==='total'?stats.totals:stats.averages).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,name:k.charAt(0).toUpperCase()+k.slice(1),v,c:getPlayerClass(k)}));
-            return `<div class="space-y-5">${p.map((pl,i)=>`<div class="player-card ${pl.c}"><div class="flex justify-between items-center"><div class="flex-1"><div class="font-bold text-xl mb-1">${pl.name}</div><div class="text-sm opacity-75">${i===0?'Líder absoluto':i===1?'Vice-líder • Fatal':i===2?'Terceiro lugar':i===3?'Quarta posição':i===4?'Quinta posição':'Último colocado • Model'}</div></div><div class="text-right"><div class="text-3xl font-bold ${i===0?'gradient-text':i===1?'text-blue-300':i===2?'text-green-300':i===3?'text-pink-300':i===4?'text-orange-300':'text-red-300'}">${type==='total'?Math.round(pl.v):pl.v.toFixed(1)}</div><div class="text-sm">${type==='total'?'pontos totais':'pts/rodada'}</div></div></div></div>`).join('')}</div>`;
-        }
-        function getTopScores() {
-            const scores=[];
-            rounds.forEach(r=>{
-                const p = getAdjustedRanking(r)[0];
-                scores.push({name:p.name,score:p.score,round:r.number,class:p.class});
+        function calculateStats() {
+            const totals = { rian: 0, fernando: 0, gian: 0, sellyda: 0, lucas: 0, miguel: 0 };
+            const wins = { rian: 0, fernando: 0, gian: 0, sellyda: 0, lucas: 0, miguel: 0 };
+            const lanterns = { rian: 0, fernando: 0, gian: 0, sellyda: 0, lucas: 0, miguel: 0 };
+            
+            rounds.forEach(round => {
+                const ranking = getAdjustedRanking(round);
+                wins[ranking[0].key]++;
+                lanterns[ranking[5].key]++;
+                
+                totals.rian += getAdjustedScore('rian', round.number);
+                totals.fernando += getAdjustedScore('fernando', round.number);
+                totals.gian += getAdjustedScore('gian', round.number);
+                totals.sellyda += getAdjustedScore('sellyda', round.number);
+                totals.lucas += getAdjustedScore('lucas', round.number);
+                totals.miguel += getAdjustedScore('miguel', round.number);
             });
-            scores.sort((a,b)=>b.score-a.score);
-            return scores.slice(0,3).map(s=>`<div class="player-card ${s.class}"><div class="text-center"><div class="text-4xl font-bold mb-2">${s.score.toFixed(1)}</div><div class="font-bold text-lg">${s.name}</div><div class="text-sm opacity-75">Rodada ${s.round}</div></div></div>`).join('');
+            
+            const averages = {};
+            for (const key in totals) {
+                averages[key] = rounds.length > 0 ? totals[key] / rounds.length : 0;
+            }
+            
+            return { totals, wins, lanterns, averages };
         }
-        function getWinStreaks() {
-            if(rounds.length===0)return[];
-            const sorted=[...rounds].sort((a,b)=>a.number-b.number),streaks=[],keys={rian:'Rian',fernando:'Fernando',gian:'Gian',sellyda:'Sellyda',lucas:'Lucas',miguel:'Miguel'};
-            let curr=null;
-            for(let i=0;i<sorted.length;i++){
-                const r=sorted[i];
-                const winner = getAdjustedRanking(r)[0].key;
-                if(!curr||curr.player!==winner){
-                    if(curr&&curr.streak>=2)streaks.push(curr);
-                    curr={player:winner,playerName:keys[winner],streak:1,startRound:r.number,endRound:r.number};
-                }else{
-                    curr.streak++;
-                    curr.endRound=r.number;
+
+        function calculateWinStreaks() {
+            if (rounds.length === 0) return [];
+            
+            const sortedRounds = [...rounds].sort((a, b) => a.number - b.number);
+            const streaks = [];
+            let currentStreak = null;
+            
+            for (let i = 0; i < sortedRounds.length; i++) {
+                const round = sortedRounds[i];
+                const winner = getAdjustedRanking(round)[0].key;
+                
+                if (!currentStreak || currentStreak.player !== winner) {
+                    if (currentStreak && currentStreak.streak >= 2) {
+                        streaks.push(currentStreak);
+                    }
+                    currentStreak = {
+                        player: winner,
+                        playerName: getPlayerName(winner),
+                        streak: 1,
+                        startRound: round.number,
+                        endRound: round.number
+                    };
+                } else {
+                    currentStreak.streak++;
+                    currentStreak.endRound = round.number;
                 }
             }
-            if(curr&&curr.streak>=2)streaks.push(curr);
-            return streaks.sort((a,b)=>b.streak-a.streak);
+            
+            if (currentStreak && currentStreak.streak >= 2) {
+                streaks.push(currentStreak);
+            }
+            
+            return streaks.sort((a, b) => b.streak - a.streak);
         }
+
+        function getPlayerName(key) {
+            const names = {
+                'rian': 'Rian',
+                'fernando': 'Fernando',
+                'gian': 'Gian',
+                'sellyda': 'Sellyda',
+                'lucas': 'Lucas',
+                'miguel': 'Miguel'
+            };
+            return names[key] || key;
+        }
+
+        function getPlayerCardClass(key) {
+            const classes = {
+                'rian': 'rian-card',
+                'fernando': 'fernando-card',
+                'gian': 'gian-card',
+                'sellyda': 'sellyda-card',
+                'lucas': 'lucas-card',
+                'miguel': 'miguel-card'
+            };
+            return classes[key] || 'rian-card';
+        }
+
+        // Funções HTML auxiliares
+        function getRankingTotalHTML() {
+            const stats = calculateStats();
+            
+            // Ordenar jogadores por total de pontos
+            const players = [
+                { key: 'rian', name: 'Rian', total: stats.totals.rian, average: stats.averages.rian, class: 'rian-card' },
+                { key: 'fernando', name: 'Fernando', total: stats.totals.fernando, average: stats.averages.fernando, class: 'fernando-card' },
+                { key: 'gian', name: 'Gian', total: stats.totals.gian, average: stats.averages.gian, class: 'gian-card' },
+                { key: 'sellyda', name: 'Sellyda', total: stats.totals.sellyda, average: stats.averages.sellyda, class: 'sellyda-card' },
+                { key: 'lucas', name: 'Lucas', total: stats.totals.lucas, average: stats.averages.lucas, class: 'lucas-card' },
+                { key: 'miguel', name: 'Miguel', total: stats.totals.miguel, average: stats.averages.miguel, class: 'miguel-card' }
+            ].sort((a, b) => b.total - a.total);
+            
+            let html = `<div class="space-y-4">`;
+            
+            players.forEach((player, index) => {
+                const position = index + 1;
+                const positionClass = position === 1 ? 'gradient-text' : 
+                                    position === 2 ? 'text-blue-300' : 
+                                    position === 3 ? 'text-green-300' : 
+                                    position === 4 ? 'text-pink-300' : 
+                                    position === 5 ? 'text-orange-300' : 'text-red-300';
+                
+                const positionText = position === 1 ? 'Líder absoluto' : 
+                                   position === 2 ? 'Vice-líder • Fatal' : 
+                                   position === 3 ? 'Terceiro lugar' : 
+                                   position === 4 ? 'Quarta posição' : 
+                                   position === 5 ? 'Quinta posição' : 'Último colocado • Model';
+                
+                html += `
+                    <div class="player-card ${player.class}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl font-bold ${positionClass}">${position}º</span>
+                                <div>
+                                    <div class="font-bold text-xl">${player.name}</div>
+                                    <div class="text-sm opacity-75">${positionText}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold ${positionClass}">${Math.round(player.total)}</div>
+                                <div class="text-sm">pontos totais</div>
+                            </div>
+                        </div>
+                        <div class="progress-container mt-4">
+                            <div class="progress-bar" style="width: ${Math.min(player.total / (rounds.length * 150) * 100, 100)}%; background: var(--${player.key}-gradient);"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            return html;
+        }
+
+        // Funções para gráficos
         function initDashboardChart() {
-            const ctx=document.getElementById('winsChart').getContext('2d');
-            if(window.dashChartInstance && typeof window.dashChartInstance.destroy === 'function') window.dashChartInstance.destroy();
-            const stats = getStats();
-            window.dashChartInstance = new Chart(ctx,{type:'doughnut',data:{labels:['Rian','Fernando','Gian','Sellyda','Lucas','Miguel'],datasets:[{data:Object.values(stats.wins),backgroundColor:['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12}}}},cutout:'60%'}});
+            const stats = calculateStats();
+            
+            const ctx = document.getElementById('winsChart').getContext('2d');
+            
+            // Destruir gráfico existente se houver
+            if (window.dashboardChart && typeof window.dashboardChart.destroy === 'function') {
+                window.dashboardChart.destroy();
+            }
+            
+            window.dashboardChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Rian', 'Fernando', 'Gian', 'Sellyda', 'Lucas', 'Miguel'],
+                    datasets: [{
+                        data: [
+                            stats.wins.rian,
+                            stats.wins.fernando,
+                            stats.wins.gian,
+                            stats.wins.sellyda,
+                            stats.wins.lucas,
+                            stats.wins.miguel
+                        ],
+                        backgroundColor: [
+                            '#8B5CF6',
+                            '#3B82F6',
+                            '#10B981',
+                            '#EC4899',
+                            '#F97316',
+                            '#EF4444'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e2e8f0',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
         }
+
         function initWinsChart() {
-            const ctx=document.getElementById('winsDistributionChart').getContext('2d');
-            if(window.winsChartInstance && typeof window.winsChartInstance.destroy === 'function') window.winsChartInstance.destroy();
-            const stats = getStats();
-            window.winsChartInstance = new Chart(ctx,{type:'pie',data:{labels:Object.entries(stats.wins).map(([k,v])=>`${k.charAt(0).toUpperCase()+k.slice(1)} (${v})`),datasets:[{data:Object.values(stats.wins),backgroundColor:['#8B5CF6','#3B82F6','#10B981','#EC4899','#F97316','#EF4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12}}}}}});
+            const stats = calculateStats();
+            
+            const ctx = document.getElementById('winsDistributionChart').getContext('2d');
+            
+            // Destruir gráfico existente se houver
+            if (window.winsChart && typeof window.winsChart.destroy === 'function') {
+                window.winsChart.destroy();
+            }
+            
+            window.winsChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: [
+                        `Rian (${stats.wins.rian})`,
+                        `Fernando (${stats.wins.fernando})`,
+                        `Gian (${stats.wins.gian})`,
+                        `Sellyda (${stats.wins.sellyda})`,
+                        `Lucas (${stats.wins.lucas})`,
+                        `Miguel (${stats.wins.miguel})`
+                    ],
+                    datasets: [{
+                        data: [
+                            stats.wins.rian,
+                            stats.wins.fernando,
+                            stats.wins.gian,
+                            stats.wins.sellyda,
+                            stats.wins.lucas,
+                            stats.wins.miguel
+                        ],
+                        backgroundColor: [
+                            '#8B5CF6',
+                            '#3B82F6',
+                            '#10B981',
+                            '#EC4899',
+                            '#F97316',
+                            '#EF4444'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e2e8f0',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
-        function editRound(num){
-            const r=rounds.find(x=>x.number===num);
-            if(!r)return;
-            document.getElementById('roundNumber').value=r.number;
-            ['rian','fernando','gian','sellyda','lucas','miguel'].forEach(k=>document.getElementById(`${k}Score`).value=r.scores[k]);
+
+        // Funções para botões protegidos por modo admin
+        function editRoundProtected(roundNumber) {
+            if (!isAdminMode) {
+                showNotification('⚠️ Ative o modo admin para editar rodadas');
+                return;
+            }
+            editRound(roundNumber);
+        }
+
+        function deleteRoundProtected(roundNumber) {
+            if (!isAdminMode) {
+                showNotification('⚠️ Ative o modo admin para excluir rodadas');
+                return;
+            }
+            confirmDeleteRound(roundNumber);
+        }
+
+        function deletePunishmentProtected(index) {
+            if (!isAdminMode) {
+                showNotification('⚠️ Ative o modo admin para excluir punições');
+                return;
+            }
+            confirmDeletePunishment(index);
+        }
+
+        // Funções para botões de ação
+        function editRound(roundNumber) {
+            const round = rounds.find(r => r.number === roundNumber);
+            if (!round) return;
+            
+            document.getElementById('roundNumber').value = round.number;
+            document.getElementById('rianScore').value = round.scores.rian;
+            document.getElementById('fernandoScore').value = round.scores.fernando;
+            document.getElementById('gianScore').value = round.scores.gian;
+            document.getElementById('sellydaScore').value = round.scores.sellyda;
+            document.getElementById('lucasScore').value = round.scores.lucas;
+            document.getElementById('miguelScore').value = round.scores.miguel;
+            
             document.getElementById('roundModal').classList.add('active');
         }
-        function confirmDeleteRound(num){
-            currentDeleteRound=num;
-            document.getElementById('deleteRoundNumber').textContent=num;
+
+        function confirmDeleteRound(roundNumber) {
+            currentDeleteRound = roundNumber;
+            document.getElementById('deleteRoundNumber').textContent = roundNumber;
             document.getElementById('deleteRoundModal').classList.add('active');
         }
-        function confirmDeletePunishment(idx){
-            currentDeletePunishmentIndex=idx;
-            document.getElementById('deletePunishedPlayer').textContent=punishments[idx].playerName;
+
+        function confirmDeletePunishment(index) {
+            currentDeletePunishmentIndex = index;
+            const punishment = punishments[index];
+            document.getElementById('deletePunishedPlayer').textContent = punishment.playerName;
             document.getElementById('deletePunishmentModal').classList.add('active');
         }
-        function showNotification(msg){
-            const n=document.createElement('div');
-            n.className='notification';
-            n.innerHTML=`<i class="fas fa-check-circle mr-2"></i> ${msg}`;
-            document.body.appendChild(n);
-            setTimeout(()=>n.remove(),3000);
+
+        // Função para mostrar notificação
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #10B759 0%, #047857 100%);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+                z-index: 3000;
+                transform: translateX(400px);
+                transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                animation: slideIn 0.5s forwards, slideOut 0.5s 2.5s forwards;
+            `;
+            notification.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
-        window.editRound=editRound;
-        window.confirmDeleteRound=confirmDeleteRound;
-        window.confirmDeletePunishment=confirmDeletePunishment;
+
+        // Animações CSS para notificações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                to { transform: translateX(0); }
+            }
+            @keyframes slideOut {
+                to { transform: translateX(400px); opacity: 0; }
+            }
+            #passwordError.show {
+                opacity: 1 !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Tornar funções globais para uso nos botões inline
+        window.editRoundProtected = editRoundProtected;
+        window.deleteRoundProtected = deleteRoundProtected;
+        window.deletePunishmentProtected = deletePunishmentProtected;
+        window.editRound = editRound;
+        window.confirmDeleteRound = confirmDeleteRound;
+        window.confirmDeletePunishment = confirmDeletePunishment;
+        
+        // Funções placeholder para abas não implementadas completamente
+        function updateScores() {
+            const scoresTab = document.getElementById('scores');
+            if (rounds.length === 0) return;
+            
+            const stats = calculateStats();
+            scoresTab.querySelector('h2').innerHTML = `
+                <i class="fas fa-chart-line mr-2"></i>Estatísticas de Pontuação - Temporada 2026
+                <span class="text-sm opacity-75 ml-2">(Dados atualizados com punições)</span>
+            `;
+        }
+        
+        function updateWins() {
+            const winsTab = document.getElementById('wins');
+            if (rounds.length === 0) return;
+            
+            initWinsChart();
+        }
+        
+        function updateLanterns() {
+            // Já implementado em updateAllTabs
+        }
+        
+        function updatePunishmentsDisplay() {
+            const punishmentsTab = document.getElementById('punishments');
+            
+            if (punishments.length === 0) {
+                punishmentsTab.innerHTML = `
+                    <h2 class="text-3xl font-bold mb-6 text-yellow-400">
+                        <i class="fas fa-gavel mr-2"></i>Punições - Temporada 2026
+                    </h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-content">
+                                <h3 class="text-2xl font-bold mb-6 text-yellow-400">
+                                    <i class="fas fa-list mr-2"></i>Ranking de Punições
+                                </h3>
+                                ${getPunishmentsRankingHTML()}
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content">
+                                <h3 class="text-2xl font-bold mb-6 text-yellow-400">
+                                    <i class="fas fa-chart-line mr-2"></i>Impacto nas Pontuações
+                                </h3>
+                                <div class="text-center py-8">
+                                    <i class="fas fa-gavel text-6xl opacity-30 mb-4"></i>
+                                    <h4 class="text-xl font-bold mb-2">Sem punições ainda</h4>
+                                    <p class="opacity-75">Nenhuma punição aplicada nesta temporada</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 text-yellow-400">
+                                <i class="fas fa-history mr-2"></i>Histórico Completo de Punições
+                            </h3>
+                            <div class="text-center py-8">
+                                <i class="fas fa-ban text-6xl opacity-30 mb-4"></i>
+                                <h4 class="text-xl font-bold mb-2">Nenhuma punição registrada</h4>
+                                <p class="opacity-75">Aguardando primeiras punições</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            punishmentsTab.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 text-yellow-400">
+                    <i class="fas fa-gavel mr-2"></i>Punições - Temporada 2026
+                </h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 text-yellow-400">
+                                <i class="fas fa-list mr-2"></i>Ranking de Punições
+                            </h3>
+                            ${getPunishmentsRankingHTML()}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 text-yellow-400">
+                                <i class="fas fa-chart-line mr-2"></i>Impacto nas Pontuações
+                            </h3>
+                            ${getPunishmentsImpactHTML()}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="text-2xl font-bold mb-6 text-yellow-400">
+                            <i class="fas fa-history mr-2"></i>Histórico Completo de Punições
+                        </h3>
+                        <div class="space-y-3">
+                            ${getPunishmentsHistoryHTML()}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getPunishmentsHistoryHTML() {
+            if (punishments.length === 0) {
+                return `
+                    <div class="text-center py-8">
+                        <i class="fas fa-ban text-4xl opacity-30 mb-4"></i>
+                        <h4 class="text-lg font-bold mb-2">Nenhuma punição registrada</h4>
+                        <p class="opacity-75">Aguardando primeiras punições</p>
+                    </div>
+                `;
+            }
+            
+            let html = '<div class="space-y-3">';
+            
+            punishments.slice().reverse().forEach((p, idx) => {
+                const playerName = getPlayerName(p.player);
+                const playerCard = getPlayerCardClass(p.player);
+                const reasonText = p.reason ? `<div class="text-sm opacity-75 mt-2">"${p.reason}"</div>` : '';
+                const dateText = p.date ? `<div class="text-xs opacity-60 mt-2">${new Date(p.date).toLocaleDateString('pt-BR')}</div>` : '';
+                
+                html += `
+                    <div class="player-card ${playerCard}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="font-bold text-lg">${playerName} - Rodada ${p.round}</div>
+                                ${reasonText}
+                                ${dateText}
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-red-400">-20 pts</div>
+                                <button onclick="deletePunishmentProtected(${punishments.length - 1 - idx})" class="action-btn delete-btn text-xs mt-2 text-red-400 hover:text-red-300 ${!isAdminMode ? 'disabled opacity-50 cursor-not-allowed' : ''}">
+                                    <i class="fas fa-trash-alt"></i> Remover
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function getPunishmentsRankingHTML() {
+            const punishmentCount = {
+                rian: 0, fernando: 0, gian: 0, sellyda: 0, lucas: 0, miguel: 0
+            };
+            
+            punishments.forEach(p => {
+                punishmentCount[p.player]++;
+            });
+            
+            const players = [
+                { name: 'Rian', key: 'rian', count: punishmentCount.rian, class: 'rian-card', role: punishmentCount.rian === 0 ? 'Mais disciplinado' : 'Punido' },
+                { name: 'Fernando', key: 'fernando', count: punishmentCount.fernando, class: 'fernando-card', role: punishmentCount.fernando === 0 ? 'Fatal' : 'Punido' },
+                { name: 'Gian', key: 'gian', count: punishmentCount.gian, class: 'gian-card', role: punishmentCount.gian === 0 ? 'Sem punições' : 'Punido' },
+                { name: 'Sellyda', key: 'sellyda', count: punishmentCount.sellyda, class: 'sellyda-card', role: 'Model' },
+                { name: 'Lucas', key: 'lucas', count: punishmentCount.lucas, class: 'lucas-card', role: 'Model' },
+                { name: 'Miguel', key: 'miguel', count: punishmentCount.miguel, class: 'miguel-card', role: 'Model' }
+            ].sort((a, b) => b.count - a.count);
+            
+            let html = '<div class="space-y-5">';
+            
+            players.forEach(player => {
+                const points = player.count * -20;
+                html += `
+                    <div class="player-card ${player.class}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1">
+                                <div class="font-bold text-xl mb-1">${player.name}</div>
+                                <div class="text-sm opacity-75">${player.role}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold ${player.class.includes('rian') ? 'gradient-text' : player.class.includes('blue') ? 'text-blue-300' : player.class.includes('green') ? 'text-green-300' : player.class.includes('pink') ? 'text-pink-300' : player.class.includes('orange') ? 'text-orange-300' : 'text-red-300'}">${player.count}</div>
+                                <div class="text-sm">${player.count === 1 ? 'punição' : 'punições'} • ${points} pts</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function getPunishmentsImpactHTML() {
+            if (punishments.length === 0) return '';
+            
+            const impact = {
+                rian: 0, fernando: 0, gian: 0, sellyda: 0, lucas: 0, miguel: 0
+            };
+            
+            punishments.forEach(p => {
+                impact[p.player] += 20;
+            });
+            
+            let html = '<div class="space-y-4">';
+            
+            Object.entries(impact)
+                .filter(([_, value]) => value > 0)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([key, value]) => {
+                    const playerName = getPlayerName(key);
+                    const percentage = (value / (punishments.length * 20)) * 100;
+                    
+                    html += `
+                        <div class="player-card ${getPlayerCardClass(key)}">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-bold text-xl mb-1">${playerName}</div>
+                                    <div class="text-sm opacity-75">Impacto total</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-red-400">-${value} pts</div>
+                                    <div class="text-sm">${value / 20} punição${value / 20 !== 1 ? 'ões' : ''}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            
+            html += '</div>';
+            return html;
+        }
     </script>
 </body>
 </html>
