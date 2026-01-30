@@ -3294,9 +3294,131 @@
             if (rounds.length === 0) return;
             
             const stats = calculateStats();
-            scoresTab.querySelector('h2').innerHTML = `
-                <i class="fas fa-chart-line mr-2"></i>Estatísticas de Pontuação - Temporada 2026
-                <span class="text-sm opacity-75 ml-2">(Dados atualizados com punições)</span>
+            
+            // Preparar dados para ranking de pontos totais
+            const totalPlayers = [
+                { name: 'Rian', total: stats.totals.rian, average: stats.averages.rian, class: 'rian-card', key: 'rian' },
+                { name: 'Fernando', total: stats.totals.fernando, average: stats.averages.fernando, class: 'fernando-card', key: 'fernando' },
+                { name: 'Gian', total: stats.totals.gian, average: stats.averages.gian, class: 'gian-card', key: 'gian' },
+                { name: 'Sellyda', total: stats.totals.sellyda, average: stats.averages.sellyda, class: 'sellyda-card', key: 'sellyda' },
+                { name: 'Lucas', total: stats.totals.lucas, average: stats.averages.lucas, class: 'lucas-card', key: 'lucas' },
+                { name: 'Miguel', total: stats.totals.miguel, average: stats.averages.miguel, class: 'miguel-card', key: 'miguel' }
+            ].sort((a, b) => b.total - a.total);
+            
+            // Preparar dados para maiores pontuações individuais
+            let highestScores = [];
+            rounds.forEach(round => {
+                Object.entries(round.scores).forEach(([key, score]) => {
+                    highestScores.push({
+                        playerName: getPlayerName(key),
+                        playerKey: key,
+                        score: getAdjustedScore(key, round.number),
+                        round: round.number
+                    });
+                });
+            });
+            highestScores.sort((a, b) => b.score - a.score);
+            const topScores = highestScores.slice(0, 6);
+            
+            let totalPointsHTML = '<div class="space-y-4">';
+            totalPlayers.forEach((player, idx) => {
+                totalPointsHTML += `
+                    <div class="player-card ${player.class}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1">
+                                <div class="font-bold text-xl mb-1">${player.name}</div>
+                                <div class="text-sm opacity-75">${idx === 0 ? 'Líder absoluto' : idx === 1 ? 'Vice-líder' : idx === 2 ? 'Terceiro' : 'Em competição'}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold">${Math.round(player.total)}</div>
+                                <div class="text-sm">pontos totais</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            totalPointsHTML += '</div>';
+            
+            let averageHTML = '<div class="space-y-5">';
+            const avgPlayers = [...totalPlayers].sort((a, b) => b.average - a.average);
+            avgPlayers.forEach((player) => {
+                averageHTML += `
+                    <div class="player-card ${player.class}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1">
+                                <div class="font-bold text-xl mb-1">${player.name}</div>
+                                <div class="text-sm opacity-75">Média por rodada</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold">${player.average.toFixed(1)}</div>
+                                <div class="text-sm">pts/rodada</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            averageHTML += '</div>';
+            
+            let highestScoresHTML = '<div class="space-y-3">';
+            if (topScores.length > 0) {
+                topScores.forEach((score, idx) => {
+                    const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '⭐';
+                    highestScoresHTML += `
+                        <div class="player-card ${getPlayerCardClass(score.playerKey)}">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg">${medal} ${score.playerName}</div>
+                                    <div class="text-sm opacity-75">Rodada ${score.round}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-3xl font-bold">${score.score.toFixed(1)}</div>
+                                    <div class="text-sm">pontos</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                highestScoresHTML += `
+                    <div class="text-center py-8">
+                        <i class="fas fa-chart-line text-6xl opacity-30 mb-4"></i>
+                        <h4 class="text-xl font-bold mb-2">Sem dados ainda</h4>
+                        <p class="opacity-75">Aguardando conclusão das primeiras rodadas</p>
+                    </div>
+                `;
+            }
+            highestScoresHTML += '</div>';
+            
+            scoresTab.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 gradient-text">
+                    <i class="fas fa-chart-line mr-2"></i>Estatísticas de Pontuação - Temporada 2026
+                </h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-sort-amount-down mr-2"></i>Pontuação Total
+                            </h3>
+                            ${totalPointsHTML}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-calculator mr-2"></i>Média de Pontos por Rodada
+                            </h3>
+                            ${averageHTML}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="text-2xl font-bold mb-6 gradient-text">
+                            <i class="fas fa-star mr-2"></i>Maiores Pontuações Individuais
+                        </h3>
+                        ${highestScoresHTML}
+                    </div>
+                </div>
             `;
         }
         
@@ -3304,11 +3426,215 @@
             const winsTab = document.getElementById('wins');
             if (rounds.length === 0) return;
             
+            const stats = calculateStats();
+            
+            // Preparar ranking de vitórias
+            const winsRanking = [
+                { name: 'Rian', wins: stats.wins.rian, class: 'rian-card', key: 'rian' },
+                { name: 'Fernando', wins: stats.wins.fernando, class: 'fernando-card', key: 'fernando' },
+                { name: 'Gian', wins: stats.wins.gian, class: 'gian-card', key: 'gian' },
+                { name: 'Sellyda', wins: stats.wins.sellyda, class: 'sellyda-card', key: 'sellyda' },
+                { name: 'Lucas', wins: stats.wins.lucas, class: 'lucas-card', key: 'lucas' },
+                { name: 'Miguel', wins: stats.wins.miguel, class: 'miguel-card', key: 'miguel' }
+            ].sort((a, b) => b.wins - a.wins);
+            
+            let winsRankingHTML = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+            winsRanking.forEach((player) => {
+                winsRankingHTML += `
+                    <div class="player-card ${player.class}">
+                        <div class="text-center">
+                            <div class="text-5xl font-bold mb-2">${player.wins}</div>
+                            <div class="font-bold text-xl mb-1">${player.name}</div>
+                            <div class="text-sm opacity-75">${player.wins === 0 ? 'Aguardando vitórias' : player.wins === 1 ? '1 vitória' : player.wins + ' vitórias'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            winsRankingHTML += '</div>';
+            
             initWinsChart();
+            
+            winsTab.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 gradient-text">
+                    <i class="fas fa-trophy mr-2"></i>Vitórias e Desempenho - Temporada 2026
+                </h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-chart-pie mr-2"></i>Distribuição de Vitórias
+                            </h3>
+                            <div class="chart-container">
+                                <canvas id="winsDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-fire mr-2"></i>Sequências de Vitórias
+                            </h3>
+                            ${getWinStreaksHTML()}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="text-2xl font-bold mb-6 gradient-text">
+                            <i class="fas fa-medal mr-2"></i>Ranking de Vitórias
+                        </h3>
+                        ${winsRankingHTML}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getWinStreaksHTML() {
+            const streaks = calculateWinStreaks();
+            
+            if (streaks.length === 0) {
+                return `
+                    <div class="text-center py-8">
+                        <i class="fas fa-trophy text-6xl opacity-30 mb-4"></i>
+                        <h4 class="text-xl font-bold mb-2">Sem vitórias consecutivas ainda</h4>
+                        <p class="opacity-75">Aguardando conclusão das primeiras rodadas</p>
+                    </div>
+                `;
+            }
+            
+            let html = '<div class="space-y-4">';
+            streaks.forEach((streak, idx) => {
+                const medal = idx === 0 ? '🥇' : '⭐';
+                html += `
+                    <div class="player-card ${getPlayerCardClass(streak.player)}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1">
+                                <div class="font-bold text-xl mb-1">${medal} ${streak.playerName}</div>
+                                <div class="text-sm opacity-75">Rodadas ${streak.startRound} a ${streak.endRound}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold">${streak.streak}</div>
+                                <div class="text-sm">vitórias</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            return html;
         }
         
         function updateLanterns() {
-            // Já implementado em updateAllTabs
+            const lanternsTab = document.getElementById('lanterns');
+            if (rounds.length === 0) return;
+            
+            const stats = calculateStats();
+            
+            // Preparar ranking de lanternas
+            const lanternsRanking = [
+                { name: 'Miguel', lanterns: stats.lanterns.miguel, class: 'miguel-card', key: 'miguel', role: 'Model' },
+                { name: 'Lucas', lanterns: stats.lanterns.lucas, class: 'lucas-card', key: 'lucas', role: 'Model' },
+                { name: 'Sellyda', lanterns: stats.lanterns.sellyda, class: 'sellyda-card', key: 'sellyda', role: 'Model' },
+                { name: 'Gian', lanterns: stats.lanterns.gian, class: 'gian-card', key: 'gian', role: 'Sempre no top 3' },
+                { name: 'Fernando', lanterns: stats.lanterns.fernando, class: 'fernando-card', key: 'fernando', role: 'Fatal' },
+                { name: 'Rian', lanterns: stats.lanterns.rian, class: 'rian-card', key: 'rian', role: 'Sempre no top 3' }
+            ].sort((a, b) => b.lanterns - a.lanterns);
+            
+            let lanternsRankingHTML = '<div class="space-y-5">';
+            lanternsRanking.forEach((player) => {
+                lanternsRankingHTML += `
+                    <div class="player-card ${player.class}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1">
+                                <div class="font-bold text-xl mb-1">${player.name}</div>
+                                <div class="text-sm opacity-75">${player.role}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold text-red-300">${player.lanterns}</div>
+                                <div class="text-sm">vezes lanterna</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            lanternsRankingHTML += '</div>';
+            
+            // Preparar histórico de lanternas por rodada
+            let historyHTML = '<div class="space-y-3">';
+            const sortedRounds = [...rounds].sort((a, b) => b.number - a.number);
+            sortedRounds.forEach((round) => {
+                const lantern = getAdjustedRanking(round)[5];
+                historyHTML += `
+                    <div class="player-card ${lantern.class}">
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1">
+                                <div class="font-bold text-lg">Rodada ${round.number}</div>
+                                <div class="text-sm opacity-75">${lantern.name} - Último lugar</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">${lantern.score.toFixed(1)}</div>
+                                <div class="text-sm">pontos</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            historyHTML += '</div>';
+            
+            // Preparar estatísticas
+            let statsHTML = '<div class="grid grid-cols-1 md:grid-cols-3 gap-4">';
+            const lanternStats = lanternsRanking.slice(0, 3);
+            lanternStats.forEach((stat, idx) => {
+                const icons = ['🔴', '🟠', '🟡'];
+                statsHTML += `
+                    <div class="stats-card ${stat.class} border-l-4">
+                        <i class="fas fa-fire text-3xl mb-2"></i>
+                        <div class="stats-number">${stat.lanterns}</div>
+                        <div class="stats-label">${stat.name}</div>
+                    </div>
+                `;
+            });
+            statsHTML += '</div>';
+            
+            lanternsTab.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 text-red-400">
+                    <i class="fas fa-fire mr-2"></i>Lanterna da Rodada - Temporada 2026
+                </h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 text-red-400">
+                                <i class="fas fa-skull-crossbones mr-2"></i>Ranking de Lanternas
+                            </h3>
+                            ${lanternsRankingHTML}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-2xl font-bold mb-6 text-red-400">
+                                <i class="fas fa-history mr-2"></i>Histórico por Rodada
+                            </h3>
+                            ${historyHTML}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="text-2xl font-bold mb-6 text-red-400">
+                            <i class="fas fa-chart-bar mr-2"></i>Estatísticas de Lanternas
+                        </h3>
+                        ${statsHTML}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function updateDashboardStats() {
+            // Esta função atualiza os gráficos do Dashboard
+            if (rounds.length === 0) return;
+            
+            // Atualizar gráfico de vitórias
+            initDashboardChart();
         }
         
         function updatePunishmentsDisplay() {
