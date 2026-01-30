@@ -3452,8 +3452,6 @@
             });
             winsRankingHTML += '</div>';
             
-            initWinsChart();
-            
             winsTab.innerHTML = `
                 <h2 class="text-3xl font-bold mb-6 gradient-text">
                     <i class="fas fa-trophy mr-2"></i>Vitórias e Desempenho - Temporada 2026
@@ -3487,6 +3485,11 @@
                     </div>
                 </div>
             `;
+            
+            // Chamar initWinsChart APÓS o HTML ser inserido no DOM
+            setTimeout(() => {
+                initWinsChart();
+            }, 0);
         }
         
         function getWinStreaksHTML() {
