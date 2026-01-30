@@ -413,20 +413,121 @@ color: var(--muted);
 font-size: 13px;
 margin-left: 24px;
 }
-/* Layout sections - MODIFICADO PARA GRÁFICO COMPLETO + RANKINGS 2 EM 2 */
+/* ===== TABS SYSTEM ===== */
+.tabs-container {
+margin-bottom: clamp(20px, 2.8vw, 28px);
+position: relative;
+z-index: 20;
+}
+.tabs-nav {
+display: flex;
+gap: 8px;
+padding: 8px 12px;
+background: rgba(255,255,255,.08);
+border: 1px solid var(--stroke);
+border-radius: 16px;
+backdrop-filter: blur(12px);
+box-shadow: var(--shadow2);
+overflow-x: auto;
+scrollbar-width: none;
+}
+.tabs-nav::-webkit-scrollbar {
+display: none;
+}
+.tab-btn {
+background: none;
+border: none;
+padding: 12px 20px;
+border-radius: 12px;
+font-family: inherit;
+font-size: 14px;
+font-weight: 600;
+color: var(--muted);
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+gap: 8px;
+white-space: nowrap;
+position: relative;
+}
+.tab-btn:hover {
+background: rgba(255,255,255,.1);
+color: var(--text);
+}
+.tab-btn.active {
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+color: #fff;
+box-shadow: 0 4px 15px rgba(255, 106, 0, 0.4);
+}
+.tab-btn.active::after {
+content: "";
+position: absolute;
+bottom: -6px;
+left: 50%;
+transform: translateX(-50%);
+width: 8px;
+height: 8px;
+background: inherit;
+border-radius: 50%;
+box-shadow: 0 0 12px var(--accent-glow);
+}
+.tab-btn svg {
+width: 18px;
+height: 18px;
+}
+.light-theme .tabs-nav {
+background: rgba(255,255,255,.85);
+border: 1px solid var(--stroke);
+backdrop-filter: blur(5px);
+}
+.light-theme .tab-btn:hover {
+background: rgba(0,0,0,.08);
+color: var(--text);
+}
+.light-theme .tab-btn.active {
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+box-shadow: 0 4px 12px rgba(230, 92, 0, 0.3);
+}
+/* Tab Content */
+.tab-content {
+display: none;
+animation: fadeInTab 0.4s ease;
+}
+.tab-content.active {
+display: block;
+}
+@keyframes fadeInTab {
+from {
+opacity: 0;
+transform: translateY(10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+/* Layout sections - MODIFICADO PARA ABAS */
 main {
 display: grid;
-gap: clamp(14px, 2vw, 18px);
+gap: clamp(16px, 2.2vw, 22px);
 }
-/* Gráfico de pizza - ocupa toda a largura */
-.chartSection {
-grid-column: 1 / -1;
+/* Dashboard Tab - Gráfico + Resumo */
+.dashboard-grid {
+display: grid;
+grid-template-columns: 1.5fr 1fr;
+gap: clamp(16px, 2.2vw, 22px);
 }
-/* Grid para rankings - 2 colunas */
+@media (max-width: 920px) {
+.dashboard-grid {
+grid-template-columns: 1fr;
+}
+}
+/* Rodadas Tab - 2 em 2 */
 .ranksGrid {
 display: grid;
 grid-template-columns: repeat(2, 1fr);
-gap: clamp(14px, 2vw, 18px);
+gap: clamp(16px, 2.2vw, 22px);
 }
 @media (max-width: 920px) {
 .ranksGrid {
@@ -437,7 +538,7 @@ grid-template-columns: 1fr;
 background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
 border: 1px solid var(--stroke);
 border-radius: 20px;
-padding: clamp(16px, 2vw, 20px);
+padding: clamp(18px, 2.2vw, 24px);
 box-shadow: var(--shadow2);
 backdrop-filter: blur(12px);
 position: relative;
@@ -586,7 +687,6 @@ td:nth-child(1), th:nth-child(1) {
 padding-right: 4px;
 text-align: left;
 }
-
 td:nth-child(2), th:nth-child(2) {
 padding-left: 4px;
 text-align: left;
@@ -1068,7 +1168,7 @@ h1 {
 font-size: clamp(36px, 8vw, 56px);
 }
 .section {
-padding: 14px;
+padding: 16px;
 }
 th, td {
 padding: 10px 12px;
@@ -1094,9 +1194,12 @@ gap: 8px;
 top: 12px;
 left: 12px;
 }
-/* Em telas menores, mostrar rankings em coluna única */
-.ranksGrid {
-grid-template-columns: 1fr;
+.tabs-nav {
+flex-wrap: wrap;
+}
+.tab-btn {
+padding: 10px 16px;
+font-size: 13px;
 }
 }
 /* Streak badge */
@@ -1167,16 +1270,6 @@ Claro
 <aside class="meta">
 <div class="metaPanel reveal" style="transition-delay:.08s">
 <div class="metaTitle">
-<h2>Atual campeão</h2>
-<span class="pill">Destaque</span>
-</div>
-<div class="champRow">
-<div id="campeao"></div>
-<div class="champHint">Última vitória registrada</div>
-</div>
-</div>
-<div class="metaPanel reveal" style="transition-delay:.16s">
-<div class="metaTitle">
 <h2>Resumo</h2>
 <span class="pill live">Live</span>
 </div>
@@ -1186,9 +1279,58 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 </div>
 </aside>
 </header>
+<!-- TABS NAVIGATION -->
+<div class="tabs-container">
+<div class="tabs-nav">
+<button class="tab-btn active" data-tab="dashboard">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path>
+<path stroke-linecap="round" stroke-linejoin="round" d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"></path>
+<path stroke-linecap="round" stroke-linejoin="round" d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z"></path>
+<path stroke-linecap="round" stroke-linejoin="round" d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+</svg>
+Dashboard
+</button>
+<button class="tab-btn" data-tab="rodadas">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+</svg>
+Rodadas
+</button>
+<button class="tab-btn" data-tab="pontuacao">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+</svg>
+Pontuação
+</button>
+<button class="tab-btn" data-tab="estatisticas">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+<path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+</svg>
+Estatísticas
+</button>
+<button class="tab-btn" data-tab="punicoes">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+</svg>
+Punições
+</button>
+<button class="tab-btn" data-tab="legenda">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+</svg>
+Legenda
+</button>
+</div>
+</div>
+<!-- TAB CONTENT -->
 <main>
-<!-- GRÁFICO DE PIZZA - OCUPA TODA A LARGURA -->
-<section class="section chartSection reveal" style="transition-delay:.08s">
+<!-- DASHBOARD TAB -->
+<div id="dashboard" class="tab-content active">
+<div class="dashboard-grid">
+<!-- Gráfico de Pizza -->
+<section class="section reveal" style="transition-delay:.08s">
 <div class="sectionHead">
 <h2>Vitórias por rodada</h2>
 <div class="hint">Passe o mouse no gráfico para ver as rodadas vencidas</div>
@@ -1203,44 +1345,43 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 </div>
 </div>
 </section>
-
-<!-- RANKINGS EM PARES (2 EM 2) -->
-<div class="ranksGrid">
-<!-- Última Rodada -->
+<!-- Atual Campeão -->
 <section class="section reveal" style="transition-delay:.10s">
 <div class="sectionHead">
-<h2>Última rodada <span class="trophy-icon">👑</span></h2>
-<div class="hint">Classificação da rodada mais recente</div>
+<h2>Atual campeão <span class="trophy-icon">🏆</span></h2>
+<div class="hint">Última vitória registrada</div>
 </div>
-<div class="tableWrap">
-<table id="rankUltima"></table>
-</div>
+<div id="campeao-section" style="text-align: center; padding: 20px;"></div>
 </section>
-
-<!-- Maiores Pontuações -->
+<!-- Último Lanterna -->
 <section class="section reveal" style="transition-delay:.12s">
 <div class="sectionHead">
-<h2>Maiores pontuações <span class="trophy-icon">🏆</span></h2>
-<div class="hint">Top 10</div>
+<h2>Último lanterna <span class="trophy-icon" style="color: var(--error); transform: rotate(180deg);">🏆</span></h2>
+<div class="hint">Última rodada processada</div>
 </div>
-<div class="tableWrap">
-<table id="rankMax"></table>
-</div>
+<div id="lanterna-section" style="text-align: center; padding: 20px;"></div>
 </section>
-
-<!-- Lanternas -->
+<!-- Sequência Ativa de Vitórias -->
 <section class="section reveal" style="transition-delay:.14s">
 <div class="sectionHead">
-<h2>Lanternas <span class="trophy-icon" style="color: var(--error); transform: rotate(180deg);">🏆</span></h2>
-<div class="hint">Vezes em último + rodadas</div>
+<h2>Sequência ativa <span class="fire-icon">🔥</span></h2>
+<div class="hint">Vitórias consecutivas</div>
 </div>
-<div class="tableWrap">
-<table id="rankLan"></table>
-</div>
+<div id="streak-section" style="text-align: center; padding: 20px;"></div>
 </section>
+</div>
+</div>
 
+<!-- RODADAS TAB -->
+<div id="rodadas" class="tab-content">
+<div class="ranksGrid" id="rodadas-container"></div>
+</div>
+
+<!-- PONTUAÇÃO TAB -->
+<div id="pontuacao" class="tab-content">
+<div class="ranksGrid">
 <!-- Pontos Totais -->
-<section class="section reveal" style="transition-delay:.16s">
+<section class="section reveal" style="transition-delay:.10s">
 <div class="sectionHead">
 <h2>Pontos totais</h2>
 <div class="hint">Acumulado com punições</div>
@@ -1249,9 +1390,8 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 <table id="rankTot"></table>
 </div>
 </section>
-
 <!-- Média de Pontos -->
-<section class="section reveal" style="transition-delay:.18s">
+<section class="section reveal" style="transition-delay:.12s">
 <div class="sectionHead">
 <h2>Média de pontos</h2>
 <div class="hint">Total / rodadas</div>
@@ -1260,9 +1400,24 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 <table id="rankMed"></table>
 </div>
 </section>
+<!-- Maiores Pontuações -->
+<section class="section reveal" style="transition-delay:.14s">
+<div class="sectionHead">
+<h2>Maiores pontuações <span class="trophy-icon">🏆</span></h2>
+<div class="hint">Top 10</div>
+</div>
+<div class="tableWrap">
+<table id="rankMax"></table>
+</div>
+</section>
+</div>
+</div>
 
+<!-- ESTATÍSTICAS TAB -->
+<div id="estatisticas" class="tab-content">
+<div class="ranksGrid">
 <!-- Vitórias em Sequência -->
-<section class="section reveal" style="transition-delay:.20s">
+<section class="section reveal" style="transition-delay:.10s">
 <div class="sectionHead">
 <h2>Mais vitórias em sequência <span class="fire-icon">🔥</span></h2>
 <div class="hint">Top 5 sequências consecutivas (mínimo 2)</div>
@@ -1271,9 +1426,8 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 <table id="rankStreak"></table>
 </div>
 </section>
-
 <!-- Vitórias por Menor Diferença -->
-<section class="section reveal" style="transition-delay:.22s">
+<section class="section reveal" style="transition-delay:.12s">
 <div class="sectionHead">
 <h2>Vitórias por menor diferença</h2>
 <div class="hint">Top 10 mais apertadas</div>
@@ -1282,9 +1436,8 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 <table id="rankA"></table>
 </div>
 </section>
-
 <!-- Vitórias por Maior Diferença -->
-<section class="section reveal" style="transition-delay:.24s">
+<section class="section reveal" style="transition-delay:.14s">
 <div class="sectionHead">
 <h2>Vitórias por maior diferença</h2>
 <div class="hint">Top 10 mais "humilhantes"</div>
@@ -1293,9 +1446,14 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 <table id="rankH"></table>
 </div>
 </section>
+</div>
+</div>
 
+<!-- PUNIÇÕES TAB -->
+<div id="punicoes" class="tab-content">
+<div class="ranksGrid">
 <!-- Punições -->
-<section class="section reveal" style="transition-delay:.26s">
+<section class="section reveal" style="transition-delay:.10s">
 <div class="sectionHead">
 <h2>Punições</h2>
 <div class="hint">Quantidade e rodadas aplicadas</div>
@@ -1304,18 +1462,21 @@ Rodadas processadas: <strong id="qtdRodadas">0</strong> • Jogadores: <strong i
 <table id="rankP"></table>
 </div>
 </section>
+</div>
+</div>
 
-<!-- Legenda -->
-<section class="section reveal" style="transition-delay:.28s">
+<!-- LEGENDA TAB -->
+<div id="legenda" class="tab-content">
+<section class="section reveal" style="transition-delay:.10s">
 <div class="sectionHead">
 <h2>Legenda</h2>
 <div class="hint">Cores por membro</div>
 </div>
-<div id="legenda" style="display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:1; padding: 8px 0;"></div>
+<div id="legenda-content" style="display:flex;flex-direction:column;gap:16px;position:relative;z-index:1;padding:16px;"></div>
 </section>
 </div>
 </main>
-<footer class="reveal" style="transition-delay:.30s">
+<footer class="reveal" style="transition-delay:.25s">
 <div class="update-info">
 <span>Liga Cartola — Dashboard • Design atualizado</span>
 <span>• Última atualização: <span id="lastUpdate"></span></span>
@@ -1372,7 +1533,7 @@ Sellyda:[]
 };
 // ===== VARIÁVEIS =====
 let total={}, vitorias={}, lanternas={}, lanternasRodadas={};
-let melhores=[], apertadas=[], humilhantes=[], vencedoresRodada=[];
+let melhores=[], apertadas=[], humilhantes=[], vencedoresRodada=[], rodadasClassificacao=[];
 membros.forEach(m=>{
 total[m]=0; vitorias[m]=0; lanternas[m]=0; lanternasRodadas[m]=[];
 });
@@ -1395,8 +1556,33 @@ lanternasRodadas[u[0]].push(rodada);
 let dif=v[1]-s[1];
 apertadas.push({v:v[0], p:s[0], d:dif, r:rodada});
 humilhantes.push({v:v[0], p:u[0], d:v[1]-u[1], r:rodada});
+// Store classification for this round
+rodadasClassificacao.push({
+rodada: rodada,
+classificacao: ord.map(([jogador, pontos]) => ({ jogador, pontos }))
 });
-// ===== CALCULAR SEQUÊNCIAS DE VITÓRIAS =====
+});
+// ===== CALCULAR SEQUÊNCIA ATIVA DE VITÓRIAS =====
+let sequenciaAtiva = null;
+if (vencedoresRodada.length > 0) {
+const ultimaVitoria = vencedoresRodada[vencedoresRodada.length - 1];
+let count = 1;
+// Count backwards from the last round
+for (let i = vencedoresRodada.length - 2; i >= 0; i--) {
+if (vencedoresRodada[i].j === ultimaVitoria.j) {
+count++;
+} else {
+break;
+}
+}
+sequenciaAtiva = {
+jogador: ultimaVitoria.j,
+rodadas: count,
+inicio: ultimaVitoria.r - count + 1,
+fim: ultimaVitoria.r
+};
+}
+// ===== CALCULAR SEQUÊNCIAS DE VITÓRIAS (HISTÓRICO) =====
 let streaks = [];
 let currentStreak = null;
 for (let i = 0; i < vencedoresRodada.length; i++) {
@@ -1420,20 +1606,6 @@ const longStreaks = streaks
 .filter(streak => streak.length >= 2)
 .sort((a, b) => b.length - a.length)
 .slice(0, 5);
-// ===== CALCULAR CLASSIFICAÇÃO DA ÚLTIMA RODADA =====
-const ultimaRodadaIndex = rodadas.length - 1;
-const ultimaRodadaNum = rodadas.length;
-const ultimaRodada = rodadas[ultimaRodadaIndex];
-let ultimaRodadaAjustada = {};
-for (let m in ultimaRodada) {
-let pts = ultimaRodada[m];
-if (punicoes[m].includes(ultimaRodadaNum)) pts -= 20;
-ultimaRodadaAjustada[m] = pts;
-}
-// Create array for sorting
-const ultimaClassificacao = Object.entries(ultimaRodadaAjustada)
-.map(([jogador, pontos]) => ({ jogador, pontos }))
-.sort((a, b) => b.pontos - a.pontos);
 // ===== FUNÇÕES =====
 const nome = (n, extra="") => {
 // Calculate stats for tooltip
@@ -1453,6 +1625,29 @@ h += "<tr>" + l.map(c => `<td>${c}</td>`).join("") + "</tr>";
 h += "</tbody>";
 document.getElementById(id).innerHTML = h;
 };
+// ===== TABS SYSTEM =====
+document.addEventListener('DOMContentLoaded', () => {
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+tabButtons.forEach(button => {
+button.addEventListener('click', () => {
+const tabId = button.getAttribute('data-tab');
+// Remove active class from all buttons and contents
+tabButtons.forEach(btn => btn.classList.remove('active'));
+tabContents.forEach(content => content.classList.remove('active'));
+// Add active class to clicked button and corresponding content
+button.classList.add('active');
+document.getElementById(tabId).classList.add('active');
+// Trigger reveal animations for the newly shown tab
+const revealElements = document.getElementById(tabId).querySelectorAll('.reveal');
+revealElements.forEach((el, index) => {
+setTimeout(() => {
+el.classList.add('in');
+}, index * 100);
+});
+});
+});
+});
 // ===== Theme Toggle Functionality =====
 document.addEventListener('DOMContentLoaded', () => {
 const themeBtn = document.getElementById('themeBtn');
@@ -1500,7 +1695,7 @@ themeDropdown.classList.remove('show');
 });
 });
 });
-// ===== Design-only extras: legenda + resumo + reveals =====
+// ===== Design-only extras: resumo + reveals =====
 document.getElementById("qtdRodadas").textContent = rodadas.length;
 document.getElementById("qtdMembros").textContent = membros.length;
 // Set last update time
@@ -1620,30 +1815,62 @@ easing: 'easeOutQuart'
 // Hide loader after chart is rendered
 document.querySelector('.chart-loader').style.display = 'none';
 }, 500);
-// ===== CAMPEÃO =====
+// ===== ATUAL CAMPEÃO =====
 let ult=vencedoresRodada.at(-1);
 if (ult) {
-document.getElementById("campeao").innerHTML =
-`<div class="champBig">${nome(ult.j,"campeao")} <span class="champHint">— Rodada ${ult.r}</span></div>`;
+document.getElementById("campeao-section").innerHTML =
+`<div class="champBig" style="justify-content: center;">${nome(ult.j,"campeao")} <span class="champHint" style="margin-left: 12px;">— Rodada ${ult.r}</span></div>`;
 } else {
-document.getElementById("campeao").innerHTML = "Nenhuma rodada processada ainda";
+document.getElementById("campeao-section").innerHTML = "<div style='color: var(--muted);'>Nenhuma rodada processada ainda</div>";
 }
-// ===== LEGENDA COM TOOLTIPS =====
-const legenda = document.getElementById("legenda");
-const currentChamp = ult ? ult.j : null;
-legenda.innerHTML = membros.map(m => {
-const extraClass = m === currentChamp ? "campeao" : "";
-return nome(m, extraClass);
-}).join("");
-// ===== NOVA TABELA: ÚLTIMA RODADA =====
-const ultimaHeaders = [
+// ===== ÚLTIMO LANTERNA =====
+let ultimaRodadaIndex = rodadas.length - 1;
+if (ultimaRodadaIndex >= 0) {
+const ultimaClassificacao = rodadasClassificacao[ultimaRodadaIndex].classificacao;
+const lanterna = ultimaClassificacao.at(-1);
+document.getElementById("lanterna-section").innerHTML =
+`<div class="champBig" style="justify-content: center;">${nome(lanterna.jogador)} <span class="champHint" style="margin-left: 12px;">— Rodada ${ultimaRodadaIndex + 1}</span></div>`;
+} else {
+document.getElementById("lanterna-section").innerHTML = "<div style='color: var(--muted);'>Nenhuma rodada processada ainda</div>";
+}
+// ===== SEQUÊNCIA ATIVA DE VITÓRIAS =====
+if (sequenciaAtiva && sequenciaAtiva.rodadas > 0) {
+document.getElementById("streak-section").innerHTML =
+`<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+<div class="champBig">${nome(sequenciaAtiva.jogador)}</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span class="streak-badge">${sequenciaAtiva.rodadas} <span style="font-size:14px">🔥</span></span>
+<span class="champHint">Rodadas ${sequenciaAtiva.inicio} a ${sequenciaAtiva.fim}</span>
+</div>
+</div>`;
+} else {
+document.getElementById("streak-section").innerHTML = "<div style='color: var(--muted);'>Nenhuma sequência ativa</div>";
+}
+// ===== RODADAS TAB - TODOS OS RANKINGS =====
+const rodadasContainer = document.getElementById("rodadas-container");
+rodadasClassificacao.forEach(({ rodada, classificacao }) => {
+const section = document.createElement('section');
+section.className = 'section reveal';
+section.style.transitionDelay = '.10s';
+section.innerHTML = `
+<div class="sectionHead">
+<h2>Rodada ${rodada}</h2>
+<div class="hint">Classificação completa</div>
+</div>
+<div class="tableWrap">
+<table id="rankRodada${rodada}"></table>
+</div>
+`;
+rodadasContainer.appendChild(section);
+// Create table for this round
+const headers = [
 "<th class='th-ultima'>Posição</th>",
 "<th class='th-ultima'>Jogador</th>",
 "<th class='th-pontos'>Pontos</th>"
 ];
-const ultimaLinhas = ultimaClassificacao.map((item, index) => {
+const rows = classificacao.map((item, index) => {
 let indicator = '';
-const totalJogadores = ultimaClassificacao.length;
+const totalJogadores = classificacao.length;
 if (index === 0) {
 indicator = `<span class="crown-indicator">👑</span>`;
 } else if (index === 1) {
@@ -1657,16 +1884,12 @@ index + 1,
 `<strong>${item.pontos}</strong>`
 ];
 });
-tabela("rankUltima", ultimaHeaders, ultimaLinhas);
+tabela(`rankRodada${rodada}`, headers, rows);
+});
 // ===== TABELAS EXISTENTES =====
 tabela("rankMax",
 ["<th class='th-vencedor'>Jogador</th>","<th class='th-pontos'>Pontos</th>","<th class='th-rod'>Rodada</th>"],
 melhores.sort((a,b)=>b.p-a.p).slice(0,10).map(x=>[nome(x.j),`<strong>${x.p}</strong>`,"Rodada "+x.r])
-);
-tabela("rankLan",
-["<th class='th-lan'>Jogador</th>","<th class='th-lan'>Vezes</th>"],
-membros.map(m=>[nome(m),`${lanternas[m]} ${lanternasRodadas[m].length?`(${lanternasRodadas[m].join(", ")})`:"(—)"}`])
-.sort((a,b)=>parseInt(b[1])-parseInt(a[1]))
 );
 tabela("rankTot",
 ["<th class='th-pontos'>Jogador</th>","<th class='th-pontos'>Total</th>"],
@@ -1717,6 +1940,35 @@ punContent += `<span class="pun-detail">(Rodadas: ${rodadasStr})</span>`;
 return [nome(m), punContent];
 })
 );
+// ===== LEGENDA COM TOOLTIPS =====
+const legendaContent = document.getElementById("legenda-content");
+const currentChamp = ult ? ult.j : null;
+legendaContent.innerHTML = `
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+${membros.map(m => {
+const extraClass = m === currentChamp ? "campeao" : "";
+const wins = vitorias[m] || 0;
+const timesLantern = lanternas[m] || 0;
+const totalPoints = total[m] || 0;
+const avg = rodadas.length > 0 ? (totalPoints / rodadas.length).toFixed(2) : '0.00';
+const pun = punicoes[m].length || 0;
+return `
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid var(--stroke);">
+<span class="nome ${extraClass}" style="background:${cores[m]}">${m}</span>
+<div style="flex: 1;">
+<div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">Estatísticas</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font-size: 11px;">
+<div style="color: var(--success);">🏆 ${wins} vitórias</div>
+<div style="color: var(--error);">🔦 ${timesLantern} lanternas</div>
+<div style="color: var(--warning);">⭐ ${avg} média</div>
+<div style="color: var(--info);">⚠️ ${pun} punições</div>
+</div>
+</div>
+</div>
+`;
+}).join('')}
+</div>
+`;
 // ===== Scroll reveal =====
 const io = new IntersectionObserver((entries)=>{
 entries.forEach(e=>{
@@ -1725,28 +1977,16 @@ e.target.classList.add("in");
 // Add delay classes for staggered animation
 if(e.target.classList.contains("hero")) e.target.classList.add("delay-1");
 if(e.target.closest(".metaPanel")) e.target.classList.add("delay-2");
-if(e.target.closest(".chartSection")) e.target.classList.add("delay-3");
-if(e.target.closest(".ranksGrid")) {
-const index = Array.from(document.querySelectorAll(".ranksGrid .section")).indexOf(e.target.closest(".section"));
-if(index === 0) e.target.classList.add("delay-4");
-else if(index === 1) e.target.classList.add("delay-5");
+if(e.target.closest(".section")) {
+const index = Array.from(document.querySelectorAll(".section")).indexOf(e.target.closest(".section"));
+if(index === 0) e.target.classList.add("delay-3");
+else if(index === 1) e.target.classList.add("delay-4");
 }
 io.unobserve(e.target);
 }
 });
 },{ threshold: 0.1 });
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
-// Add animation to chart after it's in view
-const chartSection = document.querySelector('.chartSection');
-const chartObserver = new IntersectionObserver((entries) => {
-entries.forEach(entry => {
-if (entry.isIntersecting) {
-document.querySelector('.chart-loader').style.display = 'none';
-chartObserver.unobserve(entry.target);
-}
-});
-}, { threshold: 0.5 });
-chartObserver.observe(chartSection);
 </script>
 </body>
 </html>
