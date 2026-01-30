@@ -35,8 +35,9 @@
 --crown-color: #ffd700;
 --silver-color: #c0c0c0;
 --skull-color: #d32f2f;
+--fatal-color: #ff4444;
+--model-color: #666666;
 }
-
 /* Cores específicas dos jogadores */
 :root {
 --cor-rian: #8B5CF6;
@@ -46,7 +47,6 @@
 --cor-lucas: #F97316;
 --cor-miguel: #EF4444;
 }
-
 /* Light Theme Variables */
 .light-theme {
 --bg0: #f8f9fa;
@@ -70,8 +70,9 @@
 --crown-color: #d4af37;
 --silver-color: #a9a9a9;
 --skull-color: #b71c1c;
+--fatal-color: #c62828;
+--model-color: #424242;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
@@ -94,7 +95,6 @@ radial-gradient(900px 600px at 85% 18%, rgba(94, 53, 177, 0.08), transparent 55%
 radial-gradient(1000px 700px at 50% 110%, rgba(46, 125, 50, 0.06), transparent 60%),
 linear-gradient(180deg, var(--bg0), var(--bg1));
 }
-
 /* Partículas flutuantes amarelas */
 .particle {
 position: fixed;
@@ -112,7 +112,6 @@ pointer-events: none;
 75% { transform: translateY(-20px) translateX(-20px) rotate(270deg); opacity: 0.25; }
 100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.2; }
 }
-
 /* Sparkles animados */
 .sparkle {
 position: absolute;
@@ -124,7 +123,6 @@ font-size: 12px;
 0%, 100% { opacity: 0; transform: scale(0); }
 50% { opacity: 1; transform: scale(1); }
 }
-
 /* Troféu girando continuamente */
 @keyframes rotate360 {
 0% { transform: rotate(0deg); }
@@ -133,7 +131,6 @@ font-size: 12px;
 .trophy-rotating {
 animation: rotate360 8s linear infinite;
 }
-
 /* Badges animados */
 @keyframes badgePulse {
 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
@@ -142,13 +139,12 @@ animation: rotate360 8s linear infinite;
 .crown-badge {
 animation: badgePulse 2s infinite;
 }
-.silver-badge {
+.fatal-badge {
 animation: badgePulse 2s infinite 0.3s;
 }
-.skull-badge {
+.model-badge {
 animation: badgePulse 2s infinite 0.6s;
 }
-
 /* Cards com glow e hover effects */
 .card-glow {
 position: relative;
@@ -174,18 +170,15 @@ opacity: 1;
 transform: translateY(-8px) scale(1.02);
 box-shadow: var(--shadow), 0 0 30px rgba(255, 106, 0, 0.4);
 }
-
 /* Números animados */
 .counter {
 transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
 /* Backdrop blur nos cards */
 .section {
 backdrop-filter: blur(12px) !important;
 background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045)) !important;
 }
-
 /* Gradientes específicos por jogador */
 .grad-rian {
 background: linear-gradient(135deg, #8B5CF6, #EC4899) !important;
@@ -205,7 +198,6 @@ background: linear-gradient(135deg, #F97316, #F59E0B) !important;
 .grad-miguel {
 background: linear-gradient(135deg, #EF4444, #DC2626) !important;
 }
-
 /* Subtle texture + pitch lines - only in dark theme */
 body:not(.light-theme)::before {
 content: "";
@@ -486,7 +478,7 @@ animation: pulse-red 2s infinite;
 70% { box-shadow: 0 0 0 8px rgba(255, 82, 82, 0); }
 100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
 }
-/* Champion block */
+/* Champion block - NOVO DESIGN */
 #campeao {
 text-align: left !important;
 font-size: 16px !important;
@@ -621,15 +613,48 @@ main {
 display: grid;
 gap: clamp(16px, 2.2vw, 22px);
 }
-/* Dashboard Tab - Gráfico + Resumo */
+/* Dashboard Tab - Gráfico + Resumo - NOVO LAYOUT */
 .dashboard-grid {
 display: grid;
-grid-template-columns: 1.5fr 1fr;
+grid-template-columns: 1fr;
+grid-template-rows: auto 1fr;
 gap: clamp(16px, 2.2vw, 22px);
+}
+.dashboard-top {
+grid-row: 1;
+}
+.dashboard-bottom {
+display: grid;
+grid-template-columns: 1fr 1fr;
+grid-column: 1 / -1;
+gap: clamp(16px, 2.2vw, 22px);
+}
+.dashboard-left {
+grid-column: 1;
+}
+.dashboard-right {
+display: grid;
+grid-template-rows: 1fr 1fr;
+gap: clamp(16px, 2.2vw, 22px);
+grid-column: 2;
 }
 @media (max-width: 920px) {
 .dashboard-grid {
+grid-template-rows: auto auto;
+}
+.dashboard-bottom {
 grid-template-columns: 1fr;
+grid-template-rows: auto auto;
+}
+.dashboard-left,
+.dashboard-right {
+grid-column: 1;
+grid-row: auto;
+}
+.dashboard-right {
+display: grid;
+grid-template-columns: 1fr 1fr;
+grid-template-rows: auto;
 }
 }
 /* Rodadas Tab - 2 em 2 */
@@ -968,54 +993,62 @@ border-color: rgba(212,175,55,.65);
 background: linear-gradient(45deg, var(--accent), var(--accent2), var(--success));
 box-shadow: 0 0 8px var(--accent-glow);
 }
-/* Special indicators for last round ranking */
+/* Special indicators for last round ranking - MODIFICADO */
 .crown-indicator {
 display: inline-flex;
 align-items: center;
 justify-content: center;
-width: 24px;
-height: 24px;
+width: 28px;
+height: 28px;
 border-radius: 50%;
 background: linear-gradient(135deg, var(--crown-color), #d4af37);
 color: #333;
 font-weight: bold;
 margin-right: 6px;
-box-shadow: 0 0 8px rgba(255,215,0,0.5);
+box-shadow: 0 0 12px rgba(255,215,0,0.6);
 flex-shrink: 0;
+animation: rotate360 10s linear infinite;
 }
-.f-indicator {
+.fatal-indicator {
 display: inline-flex;
 align-items: center;
 justify-content: center;
-width: 24px;
-height: 24px;
-border-radius: 50%;
-background: linear-gradient(135deg, var(--silver-color), #9e9e9e);
+width: 60px;
+height: 28px;
+border-radius: 999px;
+background: linear-gradient(135deg, var(--fatal-color), #c62828);
 color: #fff;
 font-weight: bold;
+font-size: 12px;
 margin-right: 6px;
-box-shadow: 0 0 6px rgba(192,192,192,0.4);
+box-shadow: 0 0 8px rgba(255,68,68,0.5);
 flex-shrink: 0;
+animation: badgePulse 2s infinite;
 }
-.m-indicator {
+.model-indicator {
 display: inline-flex;
 align-items: center;
 justify-content: center;
-width: 24px;
-height: 24px;
-border-radius: 50%;
-background: linear-gradient(135deg, var(--skull-color), #b71c1c);
+width: 60px;
+height: 28px;
+border-radius: 999px;
+background: linear-gradient(135deg, var(--model-color), #424242);
 color: #fff;
 font-weight: bold;
+font-size: 12px;
 margin-right: 6px;
-box-shadow: 0 0 8px rgba(211,47,47,0.4);
+box-shadow: 0 0 8px rgba(102,102,102,0.4);
 flex-shrink: 0;
+animation: badgePulse 2s infinite 0.6s;
 }
 .light-theme .crown-indicator {
-box-shadow: 0 0 8px rgba(212,175,55,0.4);
+box-shadow: 0 0 12px rgba(212,175,55,0.5);
 }
-.light-theme .m-indicator {
-box-shadow: 0 0 8px rgba(183,28,28,0.3);
+.light-theme .fatal-indicator {
+box-shadow: 0 0 8px rgba(198,40,40,0.4);
+}
+.light-theme .model-indicator {
+box-shadow: 0 0 8px rgba(66,66,66,0.3);
 }
 /* Chart block */
 .chartWrap {
@@ -1024,12 +1057,12 @@ grid-template-columns: 1fr;
 gap: 10px;
 align-items: center;
 position: relative;
-min-height: 320px;
+min-height: 400px;
 }
 .chart-container {
 position: relative;
 width: 100%;
-height: 320px;
+height: 400px;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -1037,7 +1070,7 @@ justify-content: center;
 canvas {
 width: 100% !important;
 max-width: none;
-height: 320px !important;
+height: 400px !important;
 margin: 2px auto 0;
 display: block;
 max-height: 100%;
@@ -1338,12 +1371,122 @@ font-style: italic;
 .light-theme .pun-detail {
 color: #666;
 }
+/* NOVO: Design do Campeão com mais animações */
+.champ-card {
+position: relative;
+padding: 30px;
+text-align: center;
+background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,106,0,0.1), rgba(124,92,255,0.08));
+border-radius: 20px;
+border: 2px solid rgba(255,215,0,0.4);
+animation: champCardPulse 3s infinite;
+}
+@keyframes champCardPulse {
+0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 10px 30px rgba(0,0,0,0.3); }
+50% { box-shadow: 0 0 30px rgba(255,215,0,0.5), 0 15px 40px rgba(0,0,0,0.4); }
+}
+.champ-card::before {
+content: "";
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+animation: rotate360 20s linear infinite;
+z-index: -1;
+}
+.champ-title {
+font-size: 24px;
+font-weight: 700;
+margin-bottom: 15px;
+color: var(--text);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+}
+.champ-title::after {
+content: "👑";
+font-size: 28px;
+animation: bounce 1s infinite alternate;
+}
+.champ-player {
+display: inline-block;
+margin: 15px 0;
+animation: slideInUp 0.6s ease-out;
+}
+.champ-info {
+color: var(--muted);
+font-size: 14px;
+margin-top: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+.champ-info::before,
+.champ-info::after {
+content: "•";
+}
+@keyframes slideInUp {
+from {
+opacity: 0;
+transform: translateY(20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+/* NOVO: Design do Lanterna e Streak */
+.lanterna-card,
+.streak-card {
+position: relative;
+padding: 20px;
+text-align: center;
+border-radius: 16px;
+transition: all 0.4s ease;
+}
+.lanterna-card:hover,
+.streak-card:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow), 0 0 20px rgba(0,0,0,0.3);
+}
+.lanterna-card {
+background: linear-gradient(135deg, rgba(102,102,102,0.1), rgba(66,66,66,0.15));
+border: 2px solid rgba(102,102,102,0.3);
+}
+.streak-card {
+background: linear-gradient(135deg, rgba(255,167,38,0.1), rgba(255,106,0,0.1));
+border: 2px solid rgba(255,167,38,0.3);
+}
+.lanterna-title,
+.streak-title {
+font-size: 18px;
+font-weight: 600;
+margin-bottom: 12px;
+color: var(--text);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+.lanterna-player,
+.streak-player {
+margin: 12px 0;
+}
+.lanterna-info,
+.streak-info {
+color: var(--muted);
+font-size: 13px;
+margin-top: 8px;
+}
 </style>
 </head>
 <body>
 <!-- Partículas flutuantes -->
 <div id="particles-container"></div>
-
 <!-- Theme Toggle Button -->
 <div class="theme-toggle">
 <button id="themeBtn" class="theme-btn">
@@ -1368,7 +1511,6 @@ Claro
 </button>
 </div>
 </div>
-
 <div class="wrap">
 <header class="reveal">
 <section class="hero card-glow" aria-label="Cabeçalho da liga">
@@ -1392,7 +1534,6 @@ Rodadas processadas: <strong id="qtdRodadas" class="counter">0</strong> • Joga
 </div>
 </aside>
 </header>
-
 <!-- TABS NAVIGATION -->
 <div class="tabs-container">
 <div class="tabs-nav">
@@ -1438,13 +1579,13 @@ Legenda
 </button>
 </div>
 </div>
-
 <!-- TAB CONTENT -->
 <main>
 <!-- DASHBOARD TAB -->
 <div id="dashboard" class="tab-content active">
 <div class="dashboard-grid">
-<!-- Gráfico de Pizza -->
+<!-- Gráfico de Pizza - OCUPA TODO O TOPO -->
+<div class="dashboard-top">
 <section class="section reveal card-glow" style="transition-delay:.08s">
 <div class="sectionHead">
 <h2>Vitórias por rodada</h2>
@@ -1460,23 +1601,30 @@ Legenda
 </div>
 </div>
 </section>
+</div>
 
-<!-- Atual Campeão -->
+<!-- Layout abaixo do gráfico -->
+<div class="dashboard-bottom">
+<!-- À esquerda: Atual Campeão -->
+<div class="dashboard-left">
 <section class="section reveal card-glow" style="transition-delay:.10s">
 <div class="sectionHead">
 <h2>Atual campeão <span class="trophy-icon">🏆</span></h2>
 <div class="hint">Última vitória registrada</div>
 </div>
-<div id="campeao-section" style="text-align: center; padding: 20px;"></div>
+<div id="campeao-section" class="champ-card"></div>
 </section>
+</div>
 
+<!-- À direita: Lanterna e Sequência -->
+<div class="dashboard-right">
 <!-- Último Lanterna -->
 <section class="section reveal card-glow" style="transition-delay:.12s">
 <div class="sectionHead">
-<h2>Último lanterna <span class="trophy-icon" style="color: var(--error); transform: rotate(180deg);">🏆</span></h2>
+<h2>Último lanterna</h2>
 <div class="hint">Última rodada processada</div>
 </div>
-<div id="lanterna-section" style="text-align: center; padding: 20px;"></div>
+<div id="lanterna-section" class="lanterna-card"></div>
 </section>
 
 <!-- Sequência Ativa de Vitórias -->
@@ -1485,8 +1633,10 @@ Legenda
 <h2>Sequência ativa <span class="fire-icon">🔥</span></h2>
 <div class="hint">Vitórias consecutivas</div>
 </div>
-<div id="streak-section" style="text-align: center; padding: 20px;"></div>
+<div id="streak-section" class="streak-card"></div>
 </section>
+</div>
+</div>
 </div>
 </div>
 
@@ -1508,7 +1658,6 @@ Legenda
 <table id="rankTot"></table>
 </div>
 </section>
-
 <!-- Média de Pontos -->
 <section class="section reveal card-glow" style="transition-delay:.12s">
 <div class="sectionHead">
@@ -1519,7 +1668,6 @@ Legenda
 <table id="rankMed"></table>
 </div>
 </section>
-
 <!-- Maiores Pontuações -->
 <section class="section reveal card-glow" style="transition-delay:.14s">
 <div class="sectionHead">
@@ -1546,7 +1694,6 @@ Legenda
 <table id="rankStreak"></table>
 </div>
 </section>
-
 <!-- Vitórias por Menor Diferença -->
 <section class="section reveal card-glow" style="transition-delay:.12s">
 <div class="sectionHead">
@@ -1557,7 +1704,6 @@ Legenda
 <table id="rankA"></table>
 </div>
 </section>
-
 <!-- Vitórias por Maior Diferença -->
 <section class="section reveal card-glow" style="transition-delay:.14s">
 <div class="sectionHead">
@@ -1598,7 +1744,6 @@ Legenda
 </section>
 </div>
 </main>
-
 <footer class="reveal" style="transition-delay:.25s">
 <div class="update-info">
 <span>Liga Cartola — Dashboard • Design atualizado</span>
@@ -1631,7 +1776,6 @@ particle.style.animationDelay = `${Math.random() * 5}s`;
 container.appendChild(particle);
 }
 }
-
 // Criar sparkles animados
 function createSparkles() {
 const elements = document.querySelectorAll('.nome, .section h2');
@@ -1648,7 +1792,6 @@ el.appendChild(sparkle);
 }
 });
 }
-
 // Animação de contagem progressiva
 function animateCounter(element) {
 const target = parseInt(element.textContent);
@@ -1665,7 +1808,6 @@ element.textContent = Math.floor(current);
 }
 }, 16);
 }
-
 // ===== JOGADORES E CORES =====
 const membros = ["Rian","Gian","Lucas","Fernando","Miguel","Sellyda"];
 const cores = {
@@ -1676,12 +1818,10 @@ Fernando: "#3B82F6",
 Miguel: "#EF4444",
 Sellyda: "#EC4899"
 };
-
 // ===== RODADAS =====
 const rodadas = [
 { Rian:51.66, Gian:69.45, Lucas:36.84, Fernando:51.3, Miguel:50.54, Sellyda:60.92 },
 ];
-
 // ===== PUNIÇÕES =====
 const punicoes = {
 Rian:[],
@@ -1691,14 +1831,12 @@ Fernando:[],
 Miguel:[],
 Sellyda:[]
 };
-
 // ===== VARIÁVEIS =====
 let total={}, vitorias={}, lanternas={}, lanternasRodadas={};
 let melhores=[], apertadas=[], humilhantes=[], vencedoresRodada=[], rodadasClassificacao=[];
 membros.forEach(m=>{
 total[m]=0; vitorias[m]=0; lanternas[m]=0; lanternasRodadas[m]=[];
 });
-
 // ===== PROCESSAMENTO =====
 rodadas.forEach((r,i)=>{
 let rodada=i+1, ajustado={};
@@ -1724,7 +1862,6 @@ rodada: rodada,
 classificacao: ord.map(([jogador, pontos]) => ({ jogador, pontos }))
 });
 });
-
 // ===== CALCULAR SEQUÊNCIA ATIVA DE VITÓRIAS =====
 let sequenciaAtiva = null;
 if (vencedoresRodada.length > 0) {
@@ -1745,7 +1882,6 @@ inicio: ultimaVitoria.r - count + 1,
 fim: ultimaVitoria.r
 };
 }
-
 // ===== CALCULAR SEQUÊNCIAS DE VITÓRIAS (HISTÓRICO) =====
 let streaks = [];
 let currentStreak = null;
@@ -1770,7 +1906,6 @@ const longStreaks = streaks
 .filter(streak => streak.length >= 2)
 .sort((a, b) => b.length - a.length)
 .slice(0, 5);
-
 // ===== FUNÇÕES =====
 const nome = (n, extra="") => {
 // Calculate stats for tooltip
@@ -1791,7 +1926,6 @@ case 'Miguel': colorClass = 'grad-miguel'; break;
 }
 return `<span class="nome ${extra} ${colorClass}" style="background:${cores[n]}" data-tooltip="${tooltip}">${n}</span>`;
 };
-
 const tabela = (id, ths, linhas) => {
 let h = "<thead><tr>" + ths.join("") + "</tr></thead><tbody>";
 linhas.forEach(l => {
@@ -1800,7 +1934,6 @@ h += "<tr>" + l.map(c => `<td>${c}</td>`).join("") + "</tr>";
 h += "</tbody>";
 document.getElementById(id).innerHTML = h;
 };
-
 // ===== TABS SYSTEM =====
 document.addEventListener('DOMContentLoaded', () => {
 const tabButtons = document.querySelectorAll('.tab-btn');
@@ -1824,7 +1957,6 @@ el.classList.add('in');
 });
 });
 });
-
 // ===== Theme Toggle Functionality =====
 document.addEventListener('DOMContentLoaded', () => {
 const themeBtn = document.getElementById('themeBtn');
@@ -1872,11 +2004,9 @@ themeDropdown.classList.remove('show');
 });
 });
 });
-
 // ===== Design-only extras: resumo + reveals =====
 document.getElementById("qtdRodadas").textContent = rodadas.length;
 document.getElementById("qtdMembros").textContent = membros.length;
-
 // Set last update time
 document.getElementById('lastUpdate').textContent = new Date().toLocaleString('pt-BR', {
 day: '2-digit',
@@ -1885,7 +2015,6 @@ year: 'numeric',
 hour: '2-digit',
 minute: '2-digit'
 });
-
 // Refresh button functionality
 document.getElementById('refreshBtn').addEventListener('click', () => {
 // Simulate data refresh
@@ -1934,7 +2063,6 @@ btn.style.color = '';
 }, 2000);
 }, 800);
 });
-
 // ===== GRÁFICO =====
 Chart.defaults.color = "rgba(234,240,255,.85)";
 Chart.defaults.font.family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
@@ -1944,7 +2072,6 @@ Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.padding = 12;
 Chart.defaults.plugins.tooltip.titleColor = "rgba(234,240,255,.95)";
 Chart.defaults.plugins.tooltip.bodyColor = "rgba(234,240,255,.85)";
-
 // Create chart after a small delay to allow loader to show
 setTimeout(() => {
 const chart = new Chart(document.getElementById("pizza"),{
@@ -1997,41 +2124,41 @@ easing: 'easeOutQuart'
 // Hide loader after chart is rendered
 document.querySelector('.chart-loader').style.display = 'none';
 }, 500);
-
-// ===== ATUAL CAMPEÃO =====
+// ===== ATUAL CAMPEÃO - NOVO DESIGN =====
 let ult=vencedoresRodada.at(-1);
 if (ult) {
-document.getElementById("campeao-section").innerHTML =
-`<div class="champBig" style="justify-content: center;">${nome(ult.j,"campeao")} <span class="champHint" style="margin-left: 12px;">— Rodada ${ult.r}</span></div>`;
+document.getElementById("campeao-section").innerHTML = `
+<div class="champ-title">Campeão da Rodada</div>
+<div class="champ-player">${nome(ult.j,"campeao")}</div>
+<div class="champ-info">Rodada ${ult.r}</div>
+`;
 } else {
-document.getElementById("campeao-section").innerHTML = "<div style='color: var(--muted);'>Nenhuma rodada processada ainda</div>";
+document.getElementById("campeao-section").innerHTML = "<div style='color: var(--muted); padding: 20px;'>Nenhuma rodada processada ainda</div>";
 }
-
-// ===== ÚLTIMO LANTERNA =====
+// ===== ÚLTIMO LANTERNA - NOVO DESIGN =====
 let ultimaRodadaIndex = rodadas.length - 1;
 if (ultimaRodadaIndex >= 0) {
 const ultimaClassificacao = rodadasClassificacao[ultimaRodadaIndex].classificacao;
 const lanterna = ultimaClassificacao.at(-1);
-document.getElementById("lanterna-section").innerHTML =
-`<div class="champBig" style="justify-content: center;">${nome(lanterna.jogador)} <span class="champHint" style="margin-left: 12px;">— Rodada ${ultimaRodadaIndex + 1}</span></div>`;
+document.getElementById("lanterna-section").innerHTML = `
+<div class="lanterna-title">Model da Rodada</div>
+<div class="lanterna-player">${nome(lanterna.jogador)}</div>
+<div class="lanterna-info">Rodada ${ultimaRodadaIndex + 1}</div>
+`;
 } else {
-document.getElementById("lanterna-section").innerHTML = "<div style='color: var(--muted);'>Nenhuma rodada processada ainda</div>";
+document.getElementById("lanterna-section").innerHTML = "<div style='color: var(--muted); padding: 20px;'>Nenhuma rodada processada ainda</div>";
 }
-
-// ===== SEQUÊNCIA ATIVA DE VITÓRIAS =====
+// ===== SEQUÊNCIA ATIVA DE VITÓRIAS - NOVO DESIGN =====
 if (sequenciaAtiva && sequenciaAtiva.rodadas > 0) {
-document.getElementById("streak-section").innerHTML =
-`<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-<div class="champBig">${nome(sequenciaAtiva.jogador)}</div>
-<div style="display: flex; align-items: center; gap: 8px;">
-<span class="streak-badge">${sequenciaAtiva.rodadas} <span style="font-size:14px">🔥</span></span>
-<span class="champHint">Rodadas ${sequenciaAtiva.inicio} a ${sequenciaAtiva.fim}</span>
-</div>
-</div>`;
+document.getElementById("streak-section").innerHTML = `
+<div class="streak-title">🔥 Sequência Ativa</div>
+<div class="streak-player">${nome(sequenciaAtiva.jogador)}</div>
+<div class="streak-info">${sequenciaAtiva.rodadas} vitórias consecutivas</div>
+<div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Rodadas ${sequenciaAtiva.inicio} a ${sequenciaAtiva.fim}</div>
+`;
 } else {
-document.getElementById("streak-section").innerHTML = "<div style='color: var(--muted);'>Nenhuma sequência ativa</div>";
+document.getElementById("streak-section").innerHTML = "<div style='color: var(--muted); padding: 20px;'>Nenhuma sequência ativa</div>";
 }
-
 // ===== RODADAS TAB - TODOS OS RANKINGS =====
 const rodadasContainer = document.getElementById("rodadas-container");
 rodadasClassificacao.forEach(({ rodada, classificacao }) => {
@@ -2060,9 +2187,9 @@ const totalJogadores = classificacao.length;
 if (index === 0) {
 indicator = `<span class="crown-indicator crown-badge">👑</span>`;
 } else if (index === 1) {
-indicator = `<span class="f-indicator silver-badge">🥈</span>`;
+indicator = `<span class="fatal-indicator fatal-badge">Fatal</span>`;
 } else if (index === totalJogadores - 1) {
-indicator = `<span class="m-indicator skull-badge">💀</span>`;
+indicator = `<span class="model-indicator model-badge">Model</span>`;
 }
 return [
 index + 1,
@@ -2072,7 +2199,6 @@ index + 1,
 });
 tabela(`rankRodada${rodada}`, headers, rows);
 });
-
 // ===== TABELAS EXISTENTES =====
 tabela("rankMax",
 ["<th class='th-vencedor'>Jogador</th>","<th class='th-pontos'>Pontos</th>","<th class='th-rod'>Rodada</th>"],
@@ -2087,7 +2213,6 @@ tabela("rankMed",
 Object.entries(total).map(([m,p])=>[nome(m),`<strong>${(p/rodadas.length).toFixed(2)}</strong>`])
 .sort((a,b)=>b[1]-a[1])
 );
-
 // ===== TABELA DE SEQUÊNCIAS DE VITÓRIAS =====
 if (longStreaks.length === 0) {
 tabela("rankStreak",
@@ -2114,7 +2239,6 @@ tabela("rankH",
 humilhantes.sort((a,b)=>b.d-a.d).slice(0,10)
 .map(v=>[nome(v.v),nome(v.p),`<strong>${v.d.toFixed(2)}</strong>`,"Rodada "+v.r])
 );
-
 // ===== TABELA DE PUNIÇÕES COM RODADAS =====
 tabela("rankP",
 ["<th class='th-pun'>Jogador</th>","<th class='th-pun'>Punições</th>"],
@@ -2129,7 +2253,6 @@ punContent += `<span class="pun-detail">(Rodadas: ${rodadasStr})</span>`;
 return [nome(m), punContent];
 })
 );
-
 // ===== LEGENDA COM TOOLTIPS =====
 const legendaContent = document.getElementById("legenda-content");
 const currentChamp = ult ? ult.j : null;
@@ -2168,7 +2291,6 @@ return `
 }).join('')}
 </div>
 `;
-
 // ===== Scroll reveal =====
 const io = new IntersectionObserver((entries)=>{
 entries.forEach(e=>{
@@ -2187,7 +2309,6 @@ io.unobserve(e.target);
 });
 },{ threshold: 0.1 });
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
-
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
 createParticles();
