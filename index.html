@@ -1654,6 +1654,287 @@ gap: 8px;
 .lanterna-info::after {
 content: "•";
 }
+.hero {
+background: radial-gradient(circle at top left, rgba(255,106,0,.18), transparent 28%),
+radial-gradient(circle at bottom right, rgba(124,92,255,.22), transparent 30%),
+linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+border: 1px solid rgba(255,255,255,.14);
+box-shadow: 0 40px 120px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.05);
+padding: clamp(26px, 3vw, 40px);
+min-height: 360px;
+position: relative;
+overflow: hidden;
+}
+.hero::after {
+content: "";
+position: absolute;
+inset: -20%;
+background: radial-gradient(circle at 25% 25%, rgba(255,255,255,.16), transparent 22%),
+radial-gradient(circle at 80% 20%, rgba(124,92,255,.12), transparent 18%);
+opacity: .35;
+pointer-events: none;
+}
+.hero-inner {
+display: grid;
+grid-template-columns: minmax(0,1fr) 320px;
+gap: clamp(22px, 2vw, 32px);
+align-items: center;
+}
+.hero-left {
+max-width: 680px;
+}
+.hero-left .kicker {
+font-size: 13px;
+letter-spacing: .22em;
+text-transform: uppercase;
+color: rgba(234,240,255,.78);
+}
+.hero-left h1 {
+font-size: clamp(54px, 7vw, 92px);
+line-height: .92;
+letter-spacing: .4px;
+}
+.hero-left .sub {
+font-size: 16px;
+margin-top: 22px;
+max-width: 52ch;
+color: var(--muted);
+}
+.hero-stats {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 14px;
+margin-top: 28px;
+}
+.hero-card {
+background: rgba(255,255,255,.08);
+border: 1px solid rgba(255,255,255,.14);
+border-radius: 24px;
+padding: 20px 18px;
+box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+}
+.hero-card h3 {
+margin: 0;
+font-size: 11px;
+letter-spacing: .22em;
+text-transform: uppercase;
+color: rgba(234,240,255,.72);
+}
+.hero-card strong {
+display: block;
+margin-top: 12px;
+font-size: 28px;
+color: var(--text);
+}
+.hero-card span {
+font-size: 12px;
+color: var(--accent);
+letter-spacing: .08em;
+}
+.hero-visual {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 24px;
+}
+.hero-ring {
+width: 220px;
+height: 220px;
+border-radius: 50%;
+background: radial-gradient(circle at center, rgba(255,255,255,.14), transparent 55%);
+border: 1px solid rgba(255,255,255,.18);
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+box-shadow: 0 0 60px rgba(255,106,0,.14), 0 20px 50px rgba(0,0,0,.18);
+}
+.hero-ring::before {
+content: "";
+position: absolute;
+inset: 18px;
+border-radius: 50%;
+border: 2px dashed rgba(255,255,255,.16);
+}
+.hero-ring span {
+font-size: 4rem;
+font-weight: 700;
+color: var(--text);
+}
+.hero-note {
+max-width: 240px;
+text-align: center;
+font-size: 13px;
+line-height: 1.5;
+color: var(--muted);
+}
+.meta {
+align-self: stretch;
+}
+.metaPanel {
+min-width: 280px;
+padding: 28px 24px;
+display: grid;
+gap: 20px;
+background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+border-radius: 28px;
+border: 1px solid rgba(255,255,255,.14);
+box-shadow: 0 20px 70px rgba(0,0,0,.18);
+}
+.metaStats {
+display: grid;
+gap: 14px;
+}
+.stat-chip {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 8px;
+background: rgba(255,255,255,.06);
+border: 1px solid rgba(255,255,255,.1);
+border-radius: 18px;
+padding: 16px 18px;
+}
+.stat-chip strong {
+font-size: 22px;
+color: var(--text);
+}
+.stat-chip span {
+color: var(--muted);
+font-size: 12px;
+text-transform: uppercase;
+letter-spacing: .16em;
+}
+.tabs-container {
+position: sticky;
+top: 16px;
+z-index: 30;
+margin-bottom: 18px;
+}
+.tabs-nav {
+padding: 10px;
+background: rgba(255,255,255,.06);
+border: 1px solid rgba(255,255,255,.14);
+border-radius: 999px;
+box-shadow: 0 24px 80px rgba(0,0,0,.16);
+}
+.tab-btn {
+padding: 14px 22px;
+border-radius: 999px;
+background: rgba(255,255,255,.05);
+color: var(--text);
+transition: all .35s ease;
+}
+.tab-btn:hover {
+background: rgba(255,255,255,.14);
+color: #fff;
+}
+.tab-btn.active {
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+color: #fff;
+box-shadow: 0 12px 35px rgba(255,106,0,.25);
+transform: translateY(-1px);
+}
+.section {
+border-radius: 28px;
+padding: 28px;
+background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+border: 1px solid rgba(255,255,255,.12);
+box-shadow: 0 30px 90px rgba(0,0,0,.16);
+}
+.section::before {
+inset: -8px;
+opacity: .7;
+}
+.sectionHead {
+flex-wrap: wrap;
+padding-bottom: 14px;
+margin-bottom: 18px;
+}
+.sectionHead h2 {
+font-size: clamp(24px, 2.5vw, 34px);
+}
+.hint {
+background: rgba(255,255,255,.08);
+padding: 6px 12px;
+border-radius: 999px;
+color: var(--muted);
+}
+.tableWrap {
+background: rgba(255,255,255,.05);
+border: 1px solid rgba(255,255,255,.12);
+border-radius: 22px;
+padding: 14px;
+margin: 0 -16px;
+}
+table {
+min-width: 100%;
+}
+th, td {
+padding: 14px 16px;
+}
+tr {
+background: rgba(255,255,255,.05);
+border-radius: 16px;
+margin-bottom: 10px;
+display: table-row;
+}
+tbody tr:hover {
+transform: translateX(4px);
+}
+.nome {
+background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+color: #06070a;
+border: none;
+box-shadow: 0 14px 40px rgba(0,0,0,.18);
+}
+.vitorias-lista {
+background: rgba(255,255,255,.06);
+border: 1px solid rgba(255,255,255,.12);
+border-radius: 24px;
+padding: 18px;
+}
+.vitorias-item {
+padding: 14px 12px;
+border: none;
+background: rgba(255,255,255,.04);
+border-radius: 20px;
+box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+.vitorias-item:hover {
+transform: translateX(0);
+box-shadow: 0 18px 60px rgba(0,0,0,.14);
+}
+footer {
+margin-top: 28px;
+padding-top: 24px;
+border-top: 1px solid rgba(255,255,255,.12);
+}
+footer .update-info {
+flex-wrap: wrap;
+justify-content: space-between;
+gap: 12px;
+}
+.refresh-btn {
+border-radius: 999px;
+padding: 12px 18px;
+background: rgba(255,255,255,.08);
+border: 1px solid rgba(255,255,255,.16);
+}
+.refresh-btn:hover {
+transform: translateY(-1px);
+}
+.theme-toggle {
+left: 18px;
+top: 18px;
+}
+.theme-btn {
+background: rgba(255,255,255,.12);
+border: 1px solid rgba(255,255,255,.16);
+padding: 12px 16px;
+border-radius: 999px;
+}
 </style>
 </head>
 <body>
@@ -1687,10 +1968,33 @@ Claro
 <header class="reveal">
 <section class="hero card-glow" aria-label="Cabeçalho da liga">
 <div class="hero-inner">
-<div>
+<div class="hero-left">
 <div class="kicker"><span class="k-dot" aria-hidden="true"></span> Dashboard da liga • visão geral da temporada</div>
 <h1>Liga Cartola <span class="trophy-rotating">🏆</span></h1>
-<p class="sub">Liga em Família, dessa vez em 2026</p>
+<p class="sub">Liga em Família, agora com visual renovado, dados vibrantes e destaques imediatos.</p>
+<div class="hero-stats">
+<div class="hero-card">
+<h3>Rodadas processadas</h3>
+<strong id="heroRodadas">0</strong>
+<span>Atualizado automaticamente</span>
+</div>
+<div class="hero-card">
+<h3>Jogadores monitorados</h3>
+<strong id="heroMembros">0</strong>
+<span>Rankings e desempenho</span>
+</div>
+<div class="hero-card">
+<h3>Momentos quentes</h3>
+<strong id="heroHighlights">6</strong>
+<span>Estatísticas únicas</span>
+</div>
+</div>
+</div>
+<div class="hero-visual">
+<div class="hero-ring">
+<span>2026</span>
+</div>
+<div class="hero-note">Visual limpo e responsivo, pensado para destacar cada detalhe da liga.</div>
 </div>
 </div>
 </section>
@@ -1699,6 +2003,20 @@ Claro
 <div class="metaTitle">
 <h2>Resumo</h2>
 <span class="pill live">Live</span>
+</div>
+<div class="metaStats">
+<div class="stat-chip">
+<span>Rodadas</span>
+<strong id="metaRodadas">0</strong>
+</div>
+<div class="stat-chip">
+<span>Jogadores</span>
+<strong id="metaMembros">0</strong>
+</div>
+<div class="stat-chip">
+<span>Rankings ativos</span>
+<strong>5</strong>
+</div>
 </div>
 <div class="champHint" id="resumo">
 Rodadas processadas: <strong id="qtdRodadas" class="counter">0</strong> • Jogadores: <strong id="qtdMembros" class="counter">0</strong>
@@ -2171,6 +2489,10 @@ themeDropdown.classList.remove('show');
 // ===== Design-only extras: resumo + reveals =====
 document.getElementById("qtdRodadas").textContent = rodadas.length;
 document.getElementById("qtdMembros").textContent = membros.length;
+document.getElementById("heroRodadas").textContent = rodadas.length;
+document.getElementById("heroMembros").textContent = membros.length;
+document.getElementById("metaRodadas").textContent = rodadas.length;
+document.getElementById("metaMembros").textContent = membros.length;
 // Set last update time
 document.getElementById('lastUpdate').textContent = new Date().toLocaleString('pt-BR', {
 day: '2-digit',
