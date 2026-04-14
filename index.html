@@ -652,6 +652,41 @@ display: grid;
 grid-template-columns: repeat(2, 1fr);
 gap: clamp(12px, 1.8vw, 16px);
 }
+.rodadas-grid {
+grid-template-columns: repeat(2, minmax(320px, 1fr));
+}
+.rodadas-grid .section {
+min-height: 220px;
+padding: 18px;
+}
+.rodadas-grid .sectionHead {
+gap: 10px;
+}
+.rodadas-grid .sectionHead h2 {
+font-size: clamp(18px, 2vw, 22px);
+}
+.rodadas-grid .hint {
+font-size: 12px;
+}
+.rodadas-grid table th,
+.rodadas-grid table td {
+padding: 8px 10px;
+font-size: 12px;
+}
+.rodadas-grid .nome {
+padding: 6px 10px;
+font-size: 12px;
+min-width: 72px;
+}
+.rodadas-grid .nome::before {
+width: 8px;
+height: 8px;
+}
+@media (max-width: 920px) {
+.rodadas-grid {
+grid-template-columns: 1fr;
+}
+}
 @media (max-width: 920px) {
 .ranksGrid {
 grid-template-columns: 1fr;
@@ -1776,7 +1811,7 @@ Legenda
 
 <!-- RODADAS TAB - CARDS MENORES -->
 <div id="rodadas" class="tab-content">
-<div class="ranksGrid" id="rodadas-container"></div>
+<div class="ranksGrid rodadas-grid" id="rodadas-container"></div>
 </div>
 
 <!-- PONTUAÇÃO TAB - MAIORES PONTUAÇÕES FULL WIDTH -->
@@ -2470,9 +2505,7 @@ return `
 <div style="color: var(--warning);">⭐ ${avg} média</div>
 <div style="color: var(--info);">⚠️ ${pun} punições</div>
 </div>
-</div>Na aba rodadas, nos ranks, diminua um pouco mais a parte "jogador", para o rank ficar mais compacto. 
-
-Se você puder diminuir o card inteiro, também ajudaria; não diminua muito, diminua um pouco.
+</div>
 </div>
 `;
 }).join('')}
