@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -148,10 +147,15 @@ body::after {
   z-index: 100;
   padding: 0 10px env(safe-area-inset-bottom);
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.28);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 
+.tabbar::-webkit-scrollbar { display: none; }
+
 .tab-item {
-  flex: 1;
+  flex: 0 0 88px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -267,6 +271,76 @@ body::after {
 
 .hero:first-child {
   padding-top: 0;
+}
+
+.page:not(#page-dashboard) .hero {
+  padding: 24px 22px 20px;
+  border-radius: 30px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,.09), transparent 28%),
+    linear-gradient(135deg, rgba(27, 14, 44, .96), rgba(37, 13, 67, .94));
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 18px;
+}
+
+.page:not(#page-dashboard) .hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 0 72%, rgba(255,255,255,.08) 72% 74%, transparent 74%);
+  opacity: .7;
+}
+
+#page-rodadas .hero {
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.18), transparent 30%),
+    linear-gradient(135deg, #1a0b2b, #412b91);
+}
+
+#page-pontuacao .hero {
+  background:
+    radial-gradient(circle at top right, rgba(255,179,0,.18), transparent 30%),
+    linear-gradient(135deg, #171031, #5a2b86);
+}
+
+#page-estatisticas .hero {
+  background:
+    radial-gradient(circle at top right, rgba(0,255,135,.16), transparent 30%),
+    linear-gradient(135deg, #10202f, #204a67);
+}
+
+#page-evolucao .hero {
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.2), transparent 30%),
+    linear-gradient(135deg, #10203c, #175a8d);
+}
+
+#page-confrontos .hero {
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.2), transparent 30%),
+    linear-gradient(135deg, #2a0f29, #6b1749);
+}
+
+#page-recordes .hero {
+  background:
+    radial-gradient(circle at top right, rgba(255,179,0,.18), transparent 30%),
+    linear-gradient(135deg, #2b170c, #7a3f17);
+}
+
+#page-perfil .hero {
+  background:
+    radial-gradient(circle at top right, rgba(118,55,255,.2), transparent 30%),
+    linear-gradient(135deg, #1c102f, #4b2478);
+}
+
+#page-punicoes .hero {
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.16), transparent 30%),
+    linear-gradient(135deg, #29101b, #702039);
 }
 
 #page-dashboard .hero {
@@ -430,15 +504,17 @@ body::after {
 .card-body { padding: 18px; }
 
 .feature-card {
-  border-radius: 28px;
-  padding: 24px 20px;
+  border-radius: 30px;
+  padding: 22px 20px 20px;
   position: relative;
   overflow: hidden;
-  min-height: 176px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  gap: 18px;
+  justify-content: space-between;
   box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255,255,255,.16);
 }
 
 .feature-card::before {
@@ -451,39 +527,140 @@ body::after {
   pointer-events: none;
 }
 
+.feature-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -70px -90px auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
 .feature-card.champ {
-  background: linear-gradient(135deg, #4f1f97 0%, #8c2aff 52%, #05f0ff 100%);
+  background: linear-gradient(145deg, #3d147a 0%, #7d23ff 55%, #05f0ff 100%);
   color: #fff;
 }
 
 .feature-card.lantern {
-  background: linear-gradient(135deg, #22003c 0%, #5a0e7d 48%, #e90052 100%);
+  background: linear-gradient(145deg, #180424 0%, #5c0d61 45%, #e90052 100%);
   color: #fff;
+}
+
+.feature-card .fc-head,
+.feature-card .fc-body,
+.feature-card .fc-meta {
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card .fc-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.feature-card .fc-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+}
+
+.feature-card .fc-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  opacity: .78;
+  margin-bottom: 8px;
+}
+
+.feature-card .fc-label {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(22px, 5vw, 30px);
+  line-height: .96;
+  letter-spacing: -.04em;
+  max-width: 8ch;
 }
 
 .feature-card .fc-bg {
   position: absolute;
-  top: -18px;
-  right: -4px;
-  font-size: 92px;
-  opacity: .14;
+  top: -20px;
+  right: -2px;
+  font-size: 96px;
+  opacity: .11;
   pointer-events: none;
   line-height: 1;
 }
 
-.feature-card .fc-label {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  opacity: .8;
+.feature-card .fc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.feature-card .fc-round {
-  font-size: 11px;
-  color: rgba(255,255,255,.76);
-  margin-top: 10px;
+.feature-card .fc-chip-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.feature-card .fc-scoreline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.feature-card .fc-points {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 7vw, 42px);
+  line-height: .95;
+  letter-spacing: -.05em;
+}
+
+.feature-card .fc-caption {
+  font-size: 12px;
+  color: rgba(255,255,255,.8);
+}
+
+.feature-card .fc-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.feature-card .fc-pill {
+  padding: 12px 13px;
+  border-radius: 18px;
+  background: rgba(14, 8, 24, .22);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(10px);
+}
+
+.feature-card .fc-pill-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: rgba(255,255,255,.62);
+  margin-bottom: 7px;
+}
+
+.feature-card .fc-pill-value {
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .chip {
@@ -518,15 +695,92 @@ body::after {
 .chip[data-player="Miguel"] { background: linear-gradient(135deg, #d90059, #ff4e8b); }
 .chip[data-player="Sellyda"] { background: linear-gradient(135deg, #9b1cff, #ff3fb2); }
 
+.wins-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+}
+
+@media (max-width: 840px) {
+  .wins-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  min-height: 280px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(118,55,255,.12), transparent 46%),
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.chart-shell::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.035);
+  pointer-events: none;
+}
+
 .chart-wrap {
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  max-width: 250px;
+  max-width: 248px;
   margin: 0 auto;
 }
 
 .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+.wins-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wins-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.wins-summary-card {
+  border-radius: 20px;
+  padding: 14px 15px;
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.wins-summary-card .ws-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.wins-summary-card .ws-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 30px;
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.wins-summary-card .ws-note {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #c8bce5;
+}
 
 .win-list {
   display: flex;
@@ -535,35 +789,464 @@ body::after {
 }
 
 .win-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 14px;
+  padding: 14px 14px 14px 16px;
   background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid var(--border);
 }
 
+.win-main {
+  min-width: 0;
+}
+
+.win-topline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.win-share {
+  font-size: 11px;
+  font-weight: 700;
+  color: #d5caef;
+}
+
+.win-bar {
+  width: 100%;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.win-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255,255,255,.35), currentColor);
+  box-shadow: 0 0 18px color-mix(in srgb, currentColor 38%, transparent);
+}
+
+.win-side {
+  text-align: right;
+}
+
 .win-row .wins-count {
-  font-size: 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
   font-weight: 800;
-  color: var(--accent-4);
-  line-height: 1;
+  color: var(--text);
+  line-height: .9;
 }
 
 .win-row .wins-rounds {
   font-size: 10px;
   color: var(--muted);
-  margin-top: 4px;
-  text-align: right;
+  margin-top: 6px;
+  max-width: 150px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+.profile-card {
+  padding: 18px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(118,55,255,.16), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+  border: 1px solid rgba(255,255,255,.09);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+#profile-grid .profile-card:nth-child(6n + 1) {
+  background:
+    radial-gradient(circle at top right, rgba(118,55,255,.22), transparent 30%),
+    linear-gradient(180deg, rgba(118,55,255,.14), rgba(255,255,255,.025));
+}
+
+#profile-grid .profile-card:nth-child(6n + 2) {
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.2), transparent 30%),
+    linear-gradient(180deg, rgba(5,240,255,.12), rgba(255,255,255,.025));
+}
+
+#profile-grid .profile-card:nth-child(6n + 3) {
+  background:
+    radial-gradient(circle at top right, rgba(0,255,135,.2), transparent 30%),
+    linear-gradient(180deg, rgba(0,255,135,.12), rgba(255,255,255,.025));
+}
+
+#profile-grid .profile-card:nth-child(6n + 4) {
+  background:
+    radial-gradient(circle at top right, rgba(255,179,0,.22), transparent 30%),
+    linear-gradient(180deg, rgba(255,179,0,.12), rgba(255,255,255,.025));
+}
+
+#profile-grid .profile-card:nth-child(6n + 5) {
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.22), transparent 30%),
+    linear-gradient(180deg, rgba(233,0,82,.12), rgba(255,255,255,.025));
+}
+
+#profile-grid .profile-card:nth-child(6n + 6) {
+  background:
+    radial-gradient(circle at top right, rgba(11,139,255,.22), transparent 30%),
+    linear-gradient(180deg, rgba(11,139,255,.12), rgba(255,255,255,.025));
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.profile-name {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-rank {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  letter-spacing: -.04em;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mini-stat {
+  padding: 12px 13px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.05);
+}
+
+.mini-stat-label {
+  display: block;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.mini-stat-value {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.record-card {
+  padding: 16px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(255,179,0,.16), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.09);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+#record-grid .record-card[data-owner="Rian"] {
+  background:
+    radial-gradient(circle at top right, rgba(118,55,255,.24), transparent 28%),
+    linear-gradient(180deg, rgba(118,55,255,.14), rgba(255,255,255,.02));
+}
+
+#record-grid .record-card[data-owner="Gian"] {
+  background:
+    radial-gradient(circle at top right, rgba(0,201,111,.24), transparent 28%),
+    linear-gradient(180deg, rgba(0,201,111,.14), rgba(255,255,255,.02));
+}
+
+#record-grid .record-card[data-owner="Lucas"] {
+  background:
+    radial-gradient(circle at top right, rgba(255,132,18,.24), transparent 28%),
+    linear-gradient(180deg, rgba(255,132,18,.14), rgba(255,255,255,.02));
+}
+
+#record-grid .record-card[data-owner="Fernando"] {
+  background:
+    radial-gradient(circle at top right, rgba(11,139,255,.24), transparent 28%),
+    linear-gradient(180deg, rgba(11,139,255,.14), rgba(255,255,255,.02));
+}
+
+#record-grid .record-card[data-owner="Miguel"] {
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.24), transparent 28%),
+    linear-gradient(180deg, rgba(233,0,82,.14), rgba(255,255,255,.02));
+}
+
+#record-grid .record-card[data-owner="Sellyda"] {
+  background:
+    radial-gradient(circle at top right, rgba(192,50,255,.24), transparent 28%),
+    linear-gradient(180deg, rgba(192,50,255,.14), rgba(255,255,255,.02));
+}
+
+.record-card .label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.record-card .value {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  letter-spacing: -.05em;
+  line-height: .9;
+}
+
+.record-card .note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #d0c6e8;
+}
+
+.evo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.chart-card {
+  padding: 16px;
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.14), transparent 26%),
+    linear-gradient(180deg, rgba(20, 10, 34, .94), rgba(29, 14, 46, .92));
+}
+
+#page-evolucao .chart-card:nth-child(1) {
+  background:
+    radial-gradient(circle at top right, rgba(0,255,135,.18), transparent 28%),
+    linear-gradient(180deg, rgba(9, 32, 26, .94), rgba(18, 54, 39, .92));
+}
+
+#page-evolucao .chart-card:nth-child(2) {
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.18), transparent 28%),
+    linear-gradient(180deg, rgba(12, 26, 42, .94), rgba(18, 48, 73, .92));
+}
+
+#page-evolucao .chart-card:nth-child(3) {
+  background:
+    radial-gradient(circle at top right, rgba(118,55,255,.18), transparent 28%),
+    linear-gradient(180deg, rgba(24, 16, 42, .94), rgba(46, 26, 76, .92));
+}
+
+.chart-card .card-title + .card-tag {
+  margin-left: auto;
+}
+
+.chart-stage {
+  position: relative;
+  height: 300px;
+}
+
+.chart-stage canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.control-card {
+  padding: 18px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.13), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+  border: 1px solid rgba(255,255,255,.09);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+#page-evolucao .control-card {
+  background:
+    radial-gradient(circle at top right, rgba(0,255,135,.16), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+}
+
+#page-confrontos .control-card {
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.16), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+}
+
+.profile-card::before,
+.record-card::before,
+.control-card::before,
+.compare-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(130deg, rgba(255,255,255,.12), transparent 38%);
+}
+
+.profile-card > *,
+.record-card > *,
+.control-card > *,
+.compare-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.control-group label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.control-select {
+  width: 100%;
+  appearance: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px;
+  padding: 12px 14px;
+  font: inherit;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, rgba(118,55,255,.18), rgba(255,255,255,.04));
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.filter-chip input {
+  accent-color: var(--accent-2);
+}
+
+.compare-hero {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+@media (max-width: 720px) {
+  .compare-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-card {
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.09);
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.14), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+#compare-card-a {
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.18), transparent 28%),
+    linear-gradient(180deg, rgba(12, 26, 42, .94), rgba(18, 48, 73, .92));
+}
+
+#compare-card-b {
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.18), transparent 28%),
+    linear-gradient(180deg, rgba(42, 14, 32, .94), rgba(72, 20, 44, .92));
+}
+
+.compare-vs {
+  display: grid;
+  place-items: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 34px;
+  color: #cdbef0;
+  letter-spacing: -.05em;
+}
+
+.compare-title {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.compare-score {
+  font-family: 'Syne', sans-serif;
+  font-size: 42px;
+  line-height: .9;
+  letter-spacing: -.05em;
+  margin: 12px 0 8px;
+}
+
+.compare-note {
+  font-size: 13px;
+  color: #d2c7eb;
 }
 
 .tbl-wrap {
   overflow-x: auto;
   border-radius: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top right, rgba(118,55,255,.12), transparent 26%),
+    linear-gradient(180deg, rgba(20, 10, 34, .94), rgba(29, 14, 46, .92));
+  border: 1px solid rgba(255,255,255,.08);
   box-shadow: var(--shadow-md);
   -webkit-overflow-scrolling: touch;
 }
@@ -583,8 +1266,8 @@ thead th {
   letter-spacing: .12em;
   text-transform: uppercase;
   color: #ad9ed1;
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
-  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(118,55,255,.24), rgba(5,240,255,.08));
+  border-bottom: 1px solid rgba(255,255,255,.08);
   white-space: nowrap;
 }
 
@@ -596,7 +1279,8 @@ tbody td {
 
 tbody tr:last-child td { border-bottom: none; }
 tbody tr { transition: background .15s; }
-tbody tr:hover { background: rgba(118,55,255,.08); }
+tbody tr:nth-child(odd) { background: rgba(255,255,255,.015); }
+tbody tr:hover { background: linear-gradient(90deg, rgba(118,55,255,.12), rgba(5,240,255,.05)); }
 
 td:not(:nth-child(1)):not(:nth-child(2)) { text-align: right; }
 
@@ -652,8 +1336,8 @@ td.pts {
   letter-spacing: .14em;
   text-transform: uppercase;
   color: #b8abd6;
-  margin-bottom: 12px;
-  margin-top: 30px;
+  margin-bottom: 14px;
+  margin-top: 34px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -669,15 +1353,24 @@ td.pts {
 
 .section-label:first-child { margin-top: 0; }
 
+#rounds-container,
+#profile-grid,
+#record-grid,
+.evo-grid {
+  margin-top: 4px;
+}
+
 .pun-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 16px 18px;
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  background:
+    radial-gradient(circle at top right, rgba(233,0,82,.12), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   border-radius: 22px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,.09);
   margin-bottom: 10px;
   box-shadow: var(--shadow-md);
 }
@@ -704,11 +1397,13 @@ td.pts {
 }
 
 .round-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(5,240,255,.1), transparent 24%),
+    linear-gradient(180deg, rgba(20, 10, 34, .94), rgba(29, 14, 46, .92));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow-md);
 }
 
@@ -717,19 +1412,45 @@ td.pts {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 16px 18px;
+  padding: 18px 18px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
   transition: background .2s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .round-toggle:hover { background: rgba(118,55,255,.09); }
+
+.round-head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.round-topline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.round-rd {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  color: #d5caf0;
+  font-weight: 800;
+  letter-spacing: .08em;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
 
 .round-toggle .rnd-winner {
   display: flex;
@@ -737,6 +1458,7 @@ td.pts {
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
+  padding: 2px 0;
 }
 
 .round-toggle .rnd-arrow {
@@ -748,35 +1470,65 @@ td.pts {
 }
 
 .round-item.open .round-toggle .rnd-arrow { transform: rotate(180deg); }
-.round-body { display: none; padding: 0 18px 16px; }
+.round-body { display: none; padding: 0 18px 18px; }
 .round-item.open .round-body { display: block; }
 
 .round-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
+  padding: 12px 14px;
   border-bottom: 1px solid rgba(255,255,255,.06);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border-radius: 18px;
+  margin-bottom: 8px;
 }
 
-.round-row:last-child { border-bottom: none; }
+.round-row:last-child { border-bottom: none; margin-bottom: 0; }
 
 .round-pos {
   font-size: 11px;
   font-weight: 700;
   color: #b3a3d6;
-  width: 24px;
+  width: 28px;
 }
 
 .round-pts {
   font-weight: 800;
-  font-size: 15px;
+  font-size: 16px;
+}
+
+.round-main {
+  min-width: 0;
+}
+
+.round-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.round-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+}
+
+.round-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255,255,255,.3), currentColor);
 }
 
 .round-badge {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 3px 7px;
+  padding: 5px 10px;
   border-radius: 999px;
   margin-left: 8px;
   letter-spacing: .03em;
@@ -858,6 +1610,30 @@ td.pts {
     </svg>
     Stats
   </button>
+  <button class="tab-item" data-page="evolucao">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 18V6m0 12h16"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 15l4-4 3 2 4-6"/>
+    </svg>
+    Evolução
+  </button>
+  <button class="tab-item" data-page="confrontos">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8 5l-5 7 5 7M16 5l5 7-5 7M10 12h4"/>
+    </svg>
+    Confrontos
+  </button>
+  <button class="tab-item" data-page="recordes">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"/>
+    </svg>
+    Recordes
+  </button>
+  <button class="tab-item" data-page="perfil">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 10-16 0"/><circle cx="12" cy="7" r="4"/>
+    </svg>
+    Perfil
+  </button>
   <button class="tab-item" data-page="punicoes">
     <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -891,25 +1667,89 @@ td.pts {
     <div class="grid-2" style="margin:16px 0 12px">
       <div class="feature-card champ">
         <div class="fc-bg">🏆</div>
-        <div class="fc-label">Campeão da rodada</div>
-        <div id="champ-chip"></div>
-        <div class="fc-round" id="champ-round"></div>
+        <div class="fc-head">
+          <div>
+            <div class="fc-kicker">Último destaque</div>
+            <div class="fc-label">Campeão da rodada</div>
+          </div>
+          <div class="fc-icon">🏆</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-chip-wrap" id="champ-chip"></div>
+          <div class="fc-scoreline">
+            <div class="fc-points" id="champ-score">—</div>
+            <div class="fc-caption">pontuação vencedora</div>
+          </div>
+        </div>
+        <div class="fc-meta">
+          <div class="fc-pill">
+            <span class="fc-pill-label">Rodada</span>
+            <span class="fc-pill-value" id="champ-round">—</span>
+          </div>
+          <div class="fc-pill">
+            <span class="fc-pill-label">Venceu por</span>
+            <span class="fc-pill-value" id="champ-margin">—</span>
+          </div>
+        </div>
       </div>
       <div class="feature-card lantern">
         <div class="fc-bg">💀</div>
-        <div class="fc-label">Lanterna da rodada</div>
-        <div id="lantern-chip"></div>
-        <div class="fc-round" id="lantern-round"></div>
+        <div class="fc-head">
+          <div>
+            <div class="fc-kicker">Último alerta</div>
+            <div class="fc-label">Lanterna da rodada</div>
+          </div>
+          <div class="fc-icon">💀</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-chip-wrap" id="lantern-chip"></div>
+          <div class="fc-scoreline">
+            <div class="fc-points" id="lantern-score">—</div>
+            <div class="fc-caption">pontuação final</div>
+          </div>
+        </div>
+        <div class="fc-meta">
+          <div class="fc-pill">
+            <span class="fc-pill-label">Rodada</span>
+            <span class="fc-pill-value" id="lantern-round">—</span>
+          </div>
+          <div class="fc-pill">
+            <span class="fc-pill-label">Distância</span>
+            <span class="fc-pill-value" id="lantern-gap">—</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="section-label">Vitórias</div>
     <div class="card" style="margin-bottom:12px">
-      <div class="card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-        <div class="chart-wrap" style="flex:0 0 160px">
-          <canvas id="pizza"></canvas>
+      <div class="card-header">
+        <div class="card-title">Distribuição de vitórias</div>
+        <div class="card-tag" id="wins-tag">Temporada</div>
+      </div>
+      <div class="card-body">
+        <div class="wins-panel">
+          <div class="chart-shell">
+            <div class="chart-wrap">
+              <canvas id="pizza"></canvas>
+            </div>
+          </div>
+          <div class="wins-side">
+            <div class="wins-summary">
+              <div class="wins-summary-card">
+                <span class="ws-label">Líder em vitórias</span>
+                <div class="ws-value" id="wins-leader">—</div>
+                <div class="ws-note" id="wins-leader-note">—</div>
+              </div>
+              <div class="wins-summary-card">
+                <span class="ws-label">Vitórias disputadas</span>
+                <div class="ws-value" id="wins-total">—</div>
+                <div class="ws-note">uma por rodada</div>
+              </div>
+            </div>
+            <div class="win-list" id="win-list"></div>
+          </div>
         </div>
-        <div class="win-list" id="win-list" style="flex:1;min-width:160px"></div>
       </div>
     </div>
   </div>
@@ -964,6 +1804,93 @@ td.pts {
     <div class="tbl-wrap wide">
       <table id="tbl-humilhante"></table>
     </div>
+  </div>
+
+  <div class="page" id="page-evolucao">
+    <div class="hero" style="padding-bottom:12px">
+      <div class="hero-eyebrow" style="color:#b8abd6">Tendência</div>
+      <h1 style="font-size:clamp(28px,7vw,48px)">Evolução</h1>
+    </div>
+    <div class="control-card" style="margin-bottom:14px">
+      <div class="compare-title">Filtrar jogadores</div>
+      <div class="filter-row" id="evolution-filters"></div>
+    </div>
+    <div class="evo-grid">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">Evolução por rodada</div>
+          <div class="card-tag">Pontos da rodada</div>
+        </div>
+        <div class="card-body">
+          <div class="chart-stage"><canvas id="chart-rodada"></canvas></div>
+        </div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">Pontos acumulados</div>
+          <div class="card-tag">Temporada</div>
+        </div>
+        <div class="card-body">
+          <div class="chart-stage"><canvas id="chart-evolucao"></canvas></div>
+        </div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">Posição por rodada</div>
+          <div class="card-tag">1º ao 6º</div>
+        </div>
+        <div class="card-body">
+          <div class="chart-stage"><canvas id="chart-posicao"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-confrontos">
+    <div class="hero" style="padding-bottom:12px">
+      <div class="hero-eyebrow" style="color:#b8abd6">Duelo direto</div>
+      <h1 style="font-size:clamp(28px,7vw,48px)">Confrontos</h1>
+    </div>
+    <div class="control-card" style="margin-bottom:14px">
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="compare-a">Jogador 1</label>
+          <select class="control-select" id="compare-a"></select>
+        </div>
+        <div class="control-group">
+          <label for="compare-b">Jogador 2</label>
+          <select class="control-select" id="compare-b"></select>
+        </div>
+      </div>
+    </div>
+    <div class="compare-hero" style="margin-bottom:14px">
+      <div class="compare-card" id="compare-card-a"></div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-card" id="compare-card-b"></div>
+    </div>
+    <div class="tbl-wrap wide">
+      <table id="tbl-confronto-detalhe"></table>
+    </div>
+  </div>
+
+  <div class="page" id="page-recordes">
+    <div class="hero" style="padding-bottom:12px">
+      <div class="hero-eyebrow" style="color:#b8abd6">Arquivo histórico</div>
+      <h1 style="font-size:clamp(28px,7vw,48px)">Recordes</h1>
+    </div>
+    <div class="record-grid" style="margin-bottom:14px" id="record-grid"></div>
+    <div class="section-label">Menores pontuações</div>
+    <div class="tbl-wrap wide">
+      <table id="tbl-record-min"></table>
+    </div>
+  </div>
+
+  <div class="page" id="page-perfil">
+    <div class="hero" style="padding-bottom:12px">
+      <div class="hero-eyebrow" style="color:#b8abd6">Jogador por jogador</div>
+      <h1 style="font-size:clamp(28px,7vw,48px)">Perfil</h1>
+    </div>
+    <div class="profile-grid" id="profile-grid"></div>
   </div>
 
   <div class="page" id="page-punicoes">
@@ -1028,10 +1955,10 @@ RODADAS_RAW.forEach((r, i) => {
   const [v0, v1] = ord;
   const vl = ord.at(-1);
   vitorias[v0[0]]++;
-  vencedores.push({ j: v0[0], r: rodada });
+  vencedores.push({ j: v0[0], r: rodada, pts: v0[1], margem: v0[1] - v1[1] });
   lanternas[vl[0]]++;
   apertadas.push({ v: v0[0], p: v1[0], d: v0[1] - v1[1], r: rodada });
-  humilhantes.push({ v: v0[0], p: v1[0], d: v0[1] - v1[1], r: rodada });
+  humilhantes.push({ v: v0[0], p: vl[0], d: v0[1] - vl[1], r: rodada });
   classificacoes.push({ rodada, list: ord.map(([j, pts]) => ({ j, pts })) });
 });
 
@@ -1053,6 +1980,142 @@ const NR = RODADAS_RAW.length;
 const ult = vencedores.at(-1);
 const ultClass = classificacoes.at(-1);
 const ultLanterna = ultClass.list.at(-1);
+const leaderWins = Object.entries(vitorias).sort((a, b) => b[1] - a[1])[0];
+const roundsLabels = Array.from({ length: NR }, (_, i) => `Rd ${i + 1}`);
+const cumulativos = {};
+const posicoes = {};
+const pontosPorRodada = {};
+
+MEMBROS.forEach(m => {
+  cumulativos[m] = [];
+  posicoes[m] = [];
+  pontosPorRodada[m] = [];
+  let soma = 0;
+  RODADAS_RAW.forEach((r, idx) => {
+    let pts = r[m];
+    if (PUNICOES[m].includes(idx + 1)) pts -= 20;
+    soma += pts;
+    pontosPorRodada[m].push(Number(pts.toFixed(2)));
+    cumulativos[m].push(Number(soma.toFixed(2)));
+  });
+});
+
+classificacoes.forEach(({ list }) => {
+  list.forEach((item, idx) => {
+    posicoes[item.j].push(idx + 1);
+  });
+});
+
+const confrontos = [];
+for (let i = 0; i < MEMBROS.length; i++) {
+  for (let j = i + 1; j < MEMBROS.length; j++) {
+    const a = MEMBROS[i];
+    const b = MEMBROS[j];
+    let aWins = 0;
+    let bWins = 0;
+    let saldo = 0;
+    let maiorVantagem = { vencedor: null, derrotado: null, diff: -Infinity, rodada: null };
+    RODADAS_RAW.forEach((rod, idx) => {
+      let pa = rod[a];
+      let pb = rod[b];
+      if (PUNICOES[a].includes(idx + 1)) pa -= 20;
+      if (PUNICOES[b].includes(idx + 1)) pb -= 20;
+      if (pa > pb) aWins++;
+      if (pb > pa) bWins++;
+      saldo += pa - pb;
+      const diff = Math.abs(pa - pb);
+      if (diff > maiorVantagem.diff) {
+        maiorVantagem = {
+          vencedor: pa > pb ? a : b,
+          derrotado: pa > pb ? b : a,
+          diff,
+          rodada: idx + 1
+        };
+      }
+    });
+    confrontos.push({
+      a, b, aWins, bWins,
+      saldo: Number(saldo.toFixed(2)),
+      media: Number((saldo / NR).toFixed(2)),
+      maiorVantagem
+    });
+  }
+}
+
+const worstScores = [...melhores].sort((a, b) => a.p - b.p).slice(0, 10);
+const noWinRuns = MEMBROS.map(m => {
+  let atual = 0;
+  let max = 0;
+  vencedores.forEach(v => {
+    if (v.j === m) {
+      atual = 0;
+    } else {
+      atual++;
+      max = Math.max(max, atual);
+    }
+  });
+  return { j: m, run: max };
+}).sort((a, b) => b.run - a.run);
+const top3Counts = MEMBROS.map(m => ({
+  j: m,
+  count: posicoes[m].filter(p => p <= 3).length
+})).sort((a, b) => b.count - a.count);
+const recoveryLeaders = MEMBROS.map(m => {
+  const rounds = playerRounds(m);
+  let bestUp = { diff: -Infinity, from: null, to: null };
+  let bestDown = { diff: Infinity, from: null, to: null };
+  for (let i = 1; i < rounds.length; i++) {
+    const jump = rounds[i].pts - rounds[i - 1].pts;
+    if (jump > bestUp.diff) bestUp = { diff: jump, from: rounds[i - 1].rodada, to: rounds[i].rodada };
+    if (jump < bestDown.diff) bestDown = { diff: jump, from: rounds[i - 1].rodada, to: rounds[i].rodada };
+  }
+  return { j: m, bestUp, bestDown };
+});
+const bestRecovery = [...recoveryLeaders].sort((a, b) => b.bestUp.diff - a.bestUp.diff)[0];
+const worstDrop = [...recoveryLeaders].sort((a, b) => a.bestDown.diff - b.bestDown.diff)[0];
+const top3Streaks = MEMBROS.map(m => {
+  let cur = 0;
+  let max = 0;
+  posicoes[m].forEach(p => {
+    if (p <= 3) {
+      cur++;
+      max = Math.max(max, cur);
+    } else {
+      cur = 0;
+    }
+  });
+  return { j: m, streak: max };
+}).sort((a, b) => b.streak - a.streak);
+const aboveLeagueAverage = MEMBROS.map(m => {
+  let count = 0;
+  RODADAS_RAW.forEach((_, idx) => {
+    const allPoints = MEMBROS.map(player => {
+      let pts = RODADAS_RAW[idx][player];
+      if (PUNICOES[player].includes(idx + 1)) pts -= 20;
+      return pts;
+    });
+    const avg = allPoints.reduce((a, b) => a + b, 0) / allPoints.length;
+    if (allPoints[MEMBROS.indexOf(m)] > avg) count++;
+  });
+  return { j: m, count };
+}).sort((a, b) => b.count - a.count);
+const overallLeaderRounds = {};
+MEMBROS.forEach(m => { overallLeaderRounds[m] = 0; });
+for (let i = 0; i < NR; i++) {
+  const maxCum = Math.max(...MEMBROS.map(m => cumulativos[m][i]));
+  MEMBROS.forEach(m => {
+    if (cumulativos[m][i] === maxCum) overallLeaderRounds[m]++;
+  });
+}
+const leaderByRounds = Object.entries(overallLeaderRounds)
+  .map(([j, count]) => ({ j, count }))
+  .sort((a, b) => b.count - a.count);
+const finalStretch = MEMBROS.map(m => {
+  const rounds = playerRounds(m);
+  const take = rounds.slice(-Math.min(5, rounds.length));
+  const total5 = take.reduce((acc, item) => acc + item.pts, 0);
+  return { j: m, total: total5, from: take[0].rodada, to: take.at(-1).rodada };
+}).sort((a, b) => b.total - a.total);
 
 function chip(name, size = '') {
   return `<span class="chip ${size}" data-player="${name}"><span class="chip-dot"></span>${name}</span>`;
@@ -1080,27 +2143,65 @@ function buildTable(id, headers, rows) {
   el.innerHTML = h + b;
 }
 
+function playerRounds(player) {
+  return RODADAS_RAW.map((r, idx) => {
+    let pts = r[player];
+    if (PUNICOES[player].includes(idx + 1)) pts -= 20;
+    return { rodada: idx + 1, pts };
+  });
+}
+
+function recordCard(owner, label, value, note) {
+  return `
+    <div class="record-card" data-owner="${owner}">
+      <span class="label">${label}</span>
+      <div class="value">${value}</div>
+      <div class="note">${note}</div>
+    </div>`;
+}
+
 document.getElementById('h-rodadas').textContent = NR;
 document.getElementById('h-membros').textContent = MEMBROS.length;
 document.getElementById('h-champ').innerHTML = ult ? chip(ult.j, 'sm') : '—';
 document.getElementById('nav-rodadas').textContent = `${NR} rodadas`;
+document.getElementById('wins-tag').textContent = `${NR} rodadas`;
+document.getElementById('wins-total').textContent = NR;
+
+if (leaderWins) {
+  document.getElementById('wins-leader').innerHTML = chip(leaderWins[0], 'sm');
+  document.getElementById('wins-leader-note').textContent = `${leaderWins[1]} vitórias na liderança`;
+}
 
 if (ult) {
   document.getElementById('champ-chip').innerHTML = chip(ult.j);
   document.getElementById('champ-round').textContent = `Rodada ${ult.r}`;
+  document.getElementById('champ-score').textContent = `${ult.pts.toFixed(2)}`;
+  document.getElementById('champ-margin').textContent = `${ult.margem.toFixed(2)} pts`;
 }
 
 if (ultLanterna) {
+  const penultimo = ultClass.list.at(-2);
+  const diff = penultimo ? penultimo.pts - ultLanterna.pts : 0;
   document.getElementById('lantern-chip').innerHTML = chip(ultLanterna.j);
   document.getElementById('lantern-round').textContent = `Rodada ${ultClass.rodada}`;
+  document.getElementById('lantern-score').textContent = `${ultLanterna.pts.toFixed(2)}`;
+  document.getElementById('lantern-gap').textContent = `${diff.toFixed(2)} pts`;
 }
 
 const winSorted = Object.entries(vitorias).sort((a, b) => b[1] - a[1]).filter(([, c]) => c > 0);
+const maxWins = Math.max(...MEMBROS.map(m => vitorias[m]), 1);
 document.getElementById('win-list').innerHTML = winSorted.map(([j, c]) => {
   const rounds = vencedores.filter(v => v.j === j).map(v => v.r).join(', ');
-  return `<div class="win-row">
-    <div>${chip(j, 'sm')}</div>
-    <div style="text-align:right">
+  const share = (c / NR) * 100;
+  return `<div class="win-row" style="color:${SOLID_CORES[j]}">
+    <div class="win-main">
+      <div class="win-topline">
+        ${chip(j, 'sm')}
+        <span class="win-share">${share.toFixed(0)}% das rodadas</span>
+      </div>
+      <div class="win-bar"><span style="width:${(c / maxWins) * 100}%"></span></div>
+    </div>
+    <div class="win-side">
       <div class="wins-count">${c}</div>
       <div class="wins-rounds">Rds: ${rounds}</div>
     </div>
@@ -1110,21 +2211,21 @@ document.getElementById('win-list').innerHTML = winSorted.map(([j, c]) => {
 Chart.defaults.color = '#6f648a';
 Chart.defaults.font.family = "'DM Sans', sans-serif";
 new Chart(document.getElementById('pizza'), {
-  type: 'doughnut',
+  type: 'pie',
   data: {
     labels: MEMBROS,
     datasets: [{
       data: MEMBROS.map(m => vitorias[m]),
       backgroundColor: MEMBROS.map(m => SOLID_CORES[m]),
-      borderColor: '#ffffff',
-      borderWidth: 4,
-      hoverOffset: 8
+      borderColor: 'rgba(7, 9, 18, .92)',
+      borderWidth: 2,
+      hoverOffset: 4,
+      hoverBorderWidth: 2
     }]
   },
   options: {
     responsive: true,
     maintainAspectRatio: true,
-    cutout: '66%',
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -1133,7 +2234,9 @@ new Chart(document.getElementById('pizza'), {
         bodyColor: '#fff',
         padding: 12,
         cornerRadius: 14,
+        displayColors: true,
         callbacks: {
+          label: (ctx) => `${ctx.label}: ${ctx.raw} vitórias`,
           afterLabel: (ctx) => {
             const j = ctx.label;
             const rs = vencedores.filter(v => v.j === j).map(v => v.r);
@@ -1143,28 +2246,34 @@ new Chart(document.getElementById('pizza'), {
       }
     },
     animation: { duration: 1000, easing: 'easeOutQuart' }
-  }
+  },
 });
 
 const rc = document.getElementById('rounds-container');
 classificacoes.forEach(({ rodada, list }) => {
   const winner = list[0];
+  const topPts = winner.pts || 1;
   const div = document.createElement('div');
   div.className = 'round-item';
   div.innerHTML = `
     <button class="round-toggle" onclick="toggleRound(this)">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-family:'Syne',sans-serif;font-size:11px;color:var(--muted);font-weight:800">RD ${rodada}</span>
-        <div class="rnd-winner">${chip(winner.j, 'sm')}<span style="font-size:11px;color:var(--muted)">${winner.pts.toFixed(2)} pts</span></div>
+      <div class="round-head">
+        <div class="round-topline">
+          <span class="round-rd">RD ${rodada}</span>
+          <div class="rnd-winner">${chip(winner.j, 'sm')}<span style="font-size:11px;color:var(--muted)">${winner.pts.toFixed(2)} pts</span></div>
+        </div>
       </div>
       <svg class="rnd-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
     </button>
     <div class="round-body">
       ${list.map((item, idx) => `
         <div class="round-row">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="round-pos">${idx + 1}°</span>
-            ${chip(item.j, 'sm')}${roundBadge(idx, list.length)}
+          <div class="round-main">
+            <div class="round-meta">
+              <span class="round-pos">${idx + 1}°</span>
+              ${chip(item.j, (idx === 0 || idx === 1 || idx === list.length - 1) ? '' : 'sm')}${roundBadge(idx, list.length)}
+            </div>
+            <div class="round-bar" style="color:${SOLID_CORES[item.j]}"><span style="width:${Math.max((item.pts / topPts) * 100, 4)}%"></span></div>
           </div>
           <div class="round-pts" style="color:${idx === 0 ? '#a86d00' : idx === list.length - 1 ? 'var(--accent-3)' : 'var(--text)'}">${item.pts.toFixed(2)}</div>
         </div>`).join('')}
@@ -1215,6 +2324,70 @@ buildTable('tbl-humilhante',
   hSort.map((v, i) => [i + 1, chip(v.v, 'sm'), chip(v.p, 'sm'), `<strong>${v.d.toFixed(2)}</strong>`, `Rd ${v.r}`])
 );
 
+document.getElementById('record-grid').innerHTML = [
+  recordCard(top10[0].j, 'Maior rodada', top10[0].p.toFixed(2), `${top10[0].j} na Rd ${top10[0].r}`),
+  recordCard(worstScores[0].j, 'Pior rodada', worstScores[0].p.toFixed(2), `${worstScores[0].j} na Rd ${worstScores[0].r}`),
+  recordCard(leaderWins[0], 'Mais vitórias', String(leaderWins[1]), `${leaderWins[0]} lidera a temporada`),
+  recordCard(Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][0], 'Mais lanternas', String(Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][1]), `${Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][0]} ficou mais vezes em último`),
+  recordCard(noWinRuns[0].j, 'Maior jejum', String(noWinRuns[0].run), `${noWinRuns[0].j} passou mais rodadas sem vencer`),
+  recordCard(longStreaks[0] ? longStreaks[0].j : leaderWins[0], 'Sequência máxima', String(longStreaks[0] ? longStreaks[0].n : 1), longStreaks[0] ? `${longStreaks[0].j} entre Rd ${longStreaks[0].s} e ${longStreaks[0].e}` : 'Sem sequência longa ainda'),
+  recordCard(top3Counts[0].j, 'Mais vezes no top 3', String(top3Counts[0].count), `${top3Counts[0].j} mais apareceu entre os 3 primeiros`),
+  recordCard(bestRecovery.j, 'Maior recuperação', `+${bestRecovery.bestUp.diff.toFixed(2)}`, `${bestRecovery.j} entre Rds ${bestRecovery.bestUp.from} e ${bestRecovery.bestUp.to}`),
+  recordCard(worstDrop.j, 'Maior queda', `${worstDrop.bestDown.diff.toFixed(2)}`, `${worstDrop.j} entre Rds ${worstDrop.bestDown.from} e ${worstDrop.bestDown.to}`),
+  recordCard(top3Streaks[0].j, 'Sequência no top 3', String(top3Streaks[0].streak), `${top3Streaks[0].j} teve a maior sequência entre os 3 primeiros`),
+  recordCard(aboveLeagueAverage[0].j, 'Acima da média da liga', String(aboveLeagueAverage[0].count), `${aboveLeagueAverage[0].j} superou a média mais vezes`),
+  recordCard(leaderByRounds[0].j, 'Liderando o geral', String(leaderByRounds[0].count), `${leaderByRounds[0].j} liderou o acumulado por mais rodadas`),
+  recordCard(finalStretch[0].j, 'Melhor reta final', finalStretch[0].total.toFixed(2), `${finalStretch[0].j} somou mais pontos da Rd ${finalStretch[0].from} à ${finalStretch[0].to}`)
+].join('');
+
+buildTable('tbl-record-min',
+  ['#', 'Jogador', 'Pontos', 'Rodada'],
+  worstScores.map((x, i) => [i + 1, chip(x.j, 'sm'), `<strong>${x.p.toFixed(2)}</strong>`, `Rd ${x.r}`])
+);
+
+const rankMap = new Map(totSorted.map(([m], idx) => [m, idx + 1]));
+document.getElementById('profile-grid').innerHTML = totSorted.map(([m, p]) => {
+  const rounds = playerRounds(m);
+  const best = [...rounds].sort((a, b) => b.pts - a.pts)[0];
+  const worst = [...rounds].sort((a, b) => a.pts - b.pts)[0];
+  return `
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="profile-name">
+          ${chip(m)}
+          <div class="profile-rank">#${rankMap.get(m)} no geral</div>
+        </div>
+        <div class="card-tag">${vitorias[m]} vit.</div>
+      </div>
+      <div class="profile-stats">
+        <div class="mini-stat">
+          <span class="mini-stat-label">Total</span>
+          <div class="mini-stat-value">${p.toFixed(2)}</div>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Média</span>
+          <div class="mini-stat-value">${(p / NR).toFixed(2)}</div>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Melhor rodada</span>
+          <div class="mini-stat-value">${best.pts.toFixed(2)}</div>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Pior rodada</span>
+          <div class="mini-stat-value">${worst.pts.toFixed(2)}</div>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Lanternas</span>
+          <div class="mini-stat-value">${lanternas[m]}</div>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Punições</span>
+          <div class="mini-stat-value">${PUNICOES[m].length}</div>
+        </div>
+      </div>
+    </div>`;
+}).join('');
+
 const punSorted = Object.entries(PUNICOES).sort((a, b) => b[1].length - a[1].length);
 const pl = document.getElementById('pun-list');
 pl.innerHTML = punSorted.map(([m, rds]) => `
@@ -1230,6 +2403,183 @@ pl.innerHTML = punSorted.map(([m, rds]) => `
 
 document.getElementById('footer-info').innerHTML = `Liga Cartola • Atualizado em ${new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}`;
 
+const evolutionFilters = document.getElementById('evolution-filters');
+evolutionFilters.innerHTML = MEMBROS.map((m, idx) => `
+  <label class="filter-chip">
+    <input type="checkbox" value="${m}" ${idx < 3 ? 'checked' : ''}>
+    <span>${m}</span>
+  </label>
+`).join('');
+
+const chartRodada = new Chart(document.getElementById('chart-rodada'), {
+  type: 'line',
+  data: {
+    labels: roundsLabels,
+    datasets: []
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { boxWidth: 10, usePointStyle: true } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,.05)' } },
+      y: { grid: { color: 'rgba(255,255,255,.06)' } }
+    }
+  }
+});
+
+const chartEvolucao = new Chart(document.getElementById('chart-evolucao'), {
+  type: 'line',
+  data: {
+    labels: roundsLabels,
+    datasets: []
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { boxWidth: 10, usePointStyle: true } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,.05)' } },
+      y: { grid: { color: 'rgba(255,255,255,.06)' } }
+    }
+  }
+});
+
+const chartPosicao = new Chart(document.getElementById('chart-posicao'), {
+  type: 'line',
+  data: {
+    labels: roundsLabels,
+    datasets: []
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { boxWidth: 10, usePointStyle: true } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,.05)' } },
+      y: {
+        reverse: true,
+        min: 1,
+        max: MEMBROS.length,
+        ticks: { stepSize: 1 },
+        grid: { color: 'rgba(255,255,255,.06)' }
+      }
+    }
+  }
+});
+
+function datasetsForPlayers(players, source, tension) {
+  return players.map(m => ({
+    label: m,
+    data: source[m],
+    borderColor: SOLID_CORES[m],
+    backgroundColor: SOLID_CORES[m],
+    tension,
+    pointRadius: 2.5,
+    pointHoverRadius: 4,
+    borderWidth: 3
+  }));
+}
+
+function getSelectedPlayers() {
+  const checked = Array.from(evolutionFilters.querySelectorAll('input:checked')).map(input => input.value);
+  return checked.length ? checked : [MEMBROS[0]];
+}
+
+function updateEvolutionCharts() {
+  const selected = getSelectedPlayers();
+  chartRodada.data.datasets = datasetsForPlayers(selected, pontosPorRodada, .28);
+  chartEvolucao.data.datasets = datasetsForPlayers(selected, cumulativos, .32);
+  chartPosicao.data.datasets = datasetsForPlayers(selected, posicoes, .2);
+  chartRodada.update();
+  chartEvolucao.update();
+  chartPosicao.update();
+}
+
+evolutionFilters.querySelectorAll('input').forEach(input => {
+  input.addEventListener('change', () => {
+    if (!evolutionFilters.querySelector('input:checked')) {
+      input.checked = true;
+    }
+    updateEvolutionCharts();
+  });
+});
+
+updateEvolutionCharts();
+
+const compareA = document.getElementById('compare-a');
+const compareB = document.getElementById('compare-b');
+compareA.innerHTML = MEMBROS.map(m => `<option value="${m}">${m}</option>`).join('');
+compareB.innerHTML = MEMBROS.map(m => `<option value="${m}" ${m === MEMBROS[1] ? 'selected' : ''}>${m}</option>`).join('');
+
+function compareRecord(a, b) {
+  return confrontos.find(c => (c.a === a && c.b === b) || (c.a === b && c.b === a));
+}
+
+function renderConfronto() {
+  let a = compareA.value;
+  let b = compareB.value;
+  if (a === b) {
+    const fallback = MEMBROS.find(m => m !== a) || a;
+    b = fallback;
+    compareB.value = b;
+  }
+
+  const roundsA = playerRounds(a);
+  const roundsB = playerRounds(b);
+  const record = compareRecord(a, b);
+  let aWins = 0;
+  let bWins = 0;
+  const detailRows = roundsA.map((ra, idx) => {
+    const rb = roundsB[idx];
+    if (ra.pts > rb.pts) aWins++;
+    if (rb.pts > ra.pts) bWins++;
+    const winner = ra.pts === rb.pts ? 'Empate' : (ra.pts > rb.pts ? a : b);
+    return [
+      idx + 1,
+      `Rd ${idx + 1}`,
+      `<strong>${ra.pts.toFixed(2)}</strong>`,
+      `<strong>${rb.pts.toFixed(2)}</strong>`,
+      winner === 'Empate' ? '<span style="color:var(--muted)">Empate</span>' : chip(winner, 'sm')
+    ];
+  });
+
+  const aSaldo = roundsA.reduce((acc, ra, idx) => acc + (ra.pts - roundsB[idx].pts), 0);
+  const bSaldo = -aSaldo;
+  const bestA = [...roundsA].sort((x, y) => y.pts - x.pts)[0];
+  const bestB = [...roundsB].sort((x, y) => y.pts - x.pts)[0];
+
+  document.getElementById('compare-card-a').innerHTML = `
+    <div class="compare-title">Jogador 1</div>
+    ${chip(a)}
+    <div class="compare-score">${aWins}</div>
+    <div class="compare-note">vitórias no duelo</div>
+    <div class="compare-note" style="margin-top:10px">Saldo acumulado: ${aSaldo > 0 ? '+' : ''}${aSaldo.toFixed(2)}</div>
+    <div class="compare-note">Melhor rodada: ${bestA.pts.toFixed(2)} na Rd ${bestA.rodada}</div>
+  `;
+
+  document.getElementById('compare-card-b').innerHTML = `
+    <div class="compare-title">Jogador 2</div>
+    ${chip(b)}
+    <div class="compare-score">${bWins}</div>
+    <div class="compare-note">vitórias no duelo</div>
+    <div class="compare-note" style="margin-top:10px">Saldo acumulado: ${bSaldo > 0 ? '+' : ''}${bSaldo.toFixed(2)}</div>
+    <div class="compare-note">Melhor rodada: ${bestB.pts.toFixed(2)} na Rd ${bestB.rodada}</div>
+  `;
+
+  buildTable('tbl-confronto-detalhe',
+    ['#', 'Rodada', a, b, 'Vencedor'],
+    detailRows
+  );
+}
+
+compareA.addEventListener('change', renderConfronto);
+compareB.addEventListener('change', renderConfronto);
+renderConfronto();
+
 document.querySelectorAll('.tab-item').forEach(btn => {
   btn.addEventListener('click', () => {
     const page = btn.dataset.page;
@@ -1243,6 +2593,3 @@ document.querySelectorAll('.tab-item').forEach(btn => {
 </script>
 </body>
 </html>
-``` 
-
-Se quiser, eu também posso te enviar uma versão “limpa”, com os dados separados do CSS/HTML para ficar mais fácil de editar depois.
