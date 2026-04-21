@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -760,6 +761,13 @@ td.pts {
 
 .round-row:last-child { border-bottom: none; }
 
+.round-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 .round-pos {
   font-size: 11px;
   font-weight: 700;
@@ -773,19 +781,68 @@ td.pts {
 }
 
 .round-badge {
-  font-size: 9px;
-  font-weight: 800;
-  padding: 3px 7px;
-  border-radius: 999px;
-  margin-left: 8px;
-  letter-spacing: .03em;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px 4px 6px;
+  border-radius: 999px;
+  margin-left: 2px;
+  letter-spacing: .03em;
+  line-height: 1;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+  white-space: nowrap;
 }
 
-.round-badge.trophy { background: rgba(255,179,0,.14); color: #a86d00; }
-.round-badge.fatal { background: rgba(233,0,82,.1); color: var(--accent-3); }
-.round-badge.model { background: rgba(118,55,255,.1); color: #6f53aa; }
+.round-badge .rb-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.round-badge .rb-text {
+  transform: translateY(.3px);
+}
+
+.round-badge.trophy {
+  background: linear-gradient(135deg, rgba(255,179,0,.22), rgba(255,132,18,.14));
+  color: #ffd978;
+  border-color: rgba(255,179,0,.22);
+}
+
+.round-badge.trophy .rb-icon {
+  background: rgba(255,214,102,.18);
+  box-shadow: inset 0 0 0 1px rgba(255,214,102,.18);
+}
+
+.round-badge.fatal {
+  background: linear-gradient(135deg, rgba(233,0,82,.18), rgba(255,78,139,.12));
+  color: #ff9fbe;
+  border-color: rgba(233,0,82,.2);
+}
+
+.round-badge.fatal .rb-icon {
+  background: rgba(255,78,139,.14);
+  box-shadow: inset 0 0 0 1px rgba(255,78,139,.16);
+}
+
+.round-badge.model {
+  background: linear-gradient(135deg, rgba(118,55,255,.18), rgba(5,240,255,.08));
+  color: #c8b2ff;
+  border-color: rgba(118,55,255,.18);
+}
+
+.round-badge.model .rb-icon {
+  background: rgba(118,55,255,.16);
+  box-shadow: inset 0 0 0 1px rgba(200,178,255,.12);
+}
 
 .stripe {
   height: 1px;
@@ -1065,9 +1122,9 @@ function badgeFor(idx, len) {
 }
 
 function roundBadge(idx, len) {
-  if (idx === 0) return `<span class="round-badge trophy">🏆</span>`;
-  if (idx === 1 && len > 2) return `<span class="round-badge fatal">Fatal</span>`;
-  if (idx === len - 1) return `<span class="round-badge model">Model</span>`;
+  if (idx === 0) return `<span class="round-badge trophy"><span class="rb-icon">🏆</span><span class="rb-text">🏆</span></span>`;
+  if (idx === 1 && len > 2) return `<span class="round-badge fatal"><span class="rb-icon">⚡</span><span class="rb-text">Fatal</span></span>`;
+  if (idx === len - 1) return `<span class="round-badge model"><span class="rb-icon">◈</span><span class="rb-text">Model</span></span>`;
   return '';
 }
 
@@ -1161,7 +1218,7 @@ classificacoes.forEach(({ rodada, list }) => {
     <div class="round-body">
       ${list.map((item, idx) => `
         <div class="round-row">
-          <div style="display:flex;align-items:center;gap:8px">
+          <div class="round-main">
             <span class="round-pos">${idx + 1}°</span>
             ${chip(item.j, 'sm')}${roundBadge(idx, list.length)}
           </div>
@@ -1242,3 +1299,4 @@ document.querySelectorAll('.tab-item').forEach(btn => {
 </script>
 </body>
 </html>
+```
