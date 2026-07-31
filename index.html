@@ -416,6 +416,51 @@ body::after {
   flex-wrap: wrap;
 }
 
+.sync-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 11px 13px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 16px;
+  background: rgba(6, 9, 22, .2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sync-status .sync-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px rgba(0,255,135,.14);
+  flex: 0 0 auto;
+}
+
+.sync-status.is-local .sync-dot { background: var(--gold); box-shadow: 0 0 0 5px rgba(255,179,0,.14); }
+
+.sync-refresh {
+  margin-left: auto;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #fff;
+  background: rgba(255,255,255,.08);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.sync-refresh:hover { background: rgba(255,255,255,.16); transform: translateY(-1px); }
+.sync-refresh:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
 .stat-pill {
   background: rgba(255,255,255,.16);
   border: 1px solid rgba(255,255,255,.18);
@@ -1575,12 +1620,147 @@ td.pts {
 
 .tbl-wrap table { min-width: 340px; }
 .tbl-wrap.wide table { min-width: 480px; }
+
+/* Camada visual 2026: leitura esportiva, contraste e hierarquia mais refinados. */
+:root {
+  --bg: #06111d;
+  --bg-soft: #0b1a2b;
+  --surface: rgba(13, 31, 49, .86);
+  --surface-strong: #10283f;
+  --surface-alt: #163652;
+  --surface-alt-2: #1b4664;
+  --border: rgba(189, 223, 241, .13);
+  --border-strong: rgba(52, 211, 153, .55);
+  --text: #f5fbff;
+  --muted: #a9c0d0;
+  --accent: #38d996;
+  --accent-2: #67d5ff;
+  --accent-3: #ff6b7b;
+  --accent-4: #7b9dff;
+  --gold: #ffc45c;
+  --hero-start: #082237;
+  --hero-mid: #0b4d66;
+  --hero-end: #159a70;
+  --shadow-lg: 0 26px 64px rgba(0, 9, 20, .42);
+  --shadow-md: 0 14px 34px rgba(0, 9, 20, .28);
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% -4%, rgba(103, 213, 255, .2), transparent 29%),
+    radial-gradient(circle at 90% 8%, rgba(56, 217, 150, .16), transparent 24%),
+    linear-gradient(180deg, #06111d 0%, #091827 48%, #06111d 100%);
+}
+
+body::before { background: rgba(103, 213, 255, .11); }
+body::after { background: rgba(56, 217, 150, .1); }
+
+.nav {
+  height: 74px;
+  background: rgba(6, 17, 29, .78);
+  backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(189, 223, 241, .1);
+  box-shadow: none;
+}
+
+.nav-logo { font-size: 20px; letter-spacing: -.04em; }
+.nav-logo .dot { width: 12px; height: 12px; box-shadow: 0 0 0 6px rgba(56,217,150,.14); }
+.nav-badge { color: #d8f9eb; background: rgba(56,217,150,.11); border-color: rgba(56,217,150,.22); }
+
+#page-dashboard .hero {
+  padding: 34px 28px 28px;
+  border: 1px solid rgba(165, 236, 214, .22);
+  background:
+    linear-gradient(115deg, rgba(255,255,255,.09), transparent 34%),
+    radial-gradient(circle at 95% 10%, rgba(103,213,255,.32), transparent 30%),
+    linear-gradient(130deg, var(--hero-start) 0%, var(--hero-mid) 53%, var(--hero-end) 145%);
+}
+
+.hero h1 { letter-spacing: -.065em; }
+.hero-sub { max-width: 54ch; font-size: 15px; }
+.stat-pill { border-radius: 16px; background: rgba(2, 18, 30, .24); }
+
+.section-label {
+  margin-top: 28px;
+  color: #bfeedd;
+  letter-spacing: .14em;
+}
+
+.card, .profile-card, .control-card, .tbl-wrap {
+  border-color: rgba(189, 223, 241, .13);
+  background: linear-gradient(145deg, rgba(18, 43, 66, .88), rgba(9, 24, 40, .88));
+}
+
+.card { border-radius: 22px; }
+.card-header { padding: 20px 20px 0; }
+.card-body { padding: 20px; }
+.card-title { color: #cfe8f6; }
+.card-tag { color: #bdeedc; background: rgba(56,217,150,.09); border-color: rgba(56,217,150,.16); }
+
+.feature-card { min-height: 236px; border-radius: 24px; }
+.feature-card.champ { background: linear-gradient(145deg, #126851 0%, #1b9b76 55%, #67d5ff 150%); }
+.feature-card.lantern { background: linear-gradient(145deg, #1a314b 0%, #365a86 58%, #7b9dff 140%); }
+.feature-card .fc-pill { background: rgba(2, 18, 30, .24); }
+
+.sync-status { background: rgba(2, 18, 30, .25); border-color: rgba(202, 241, 255, .2); }
+.sync-refresh { background: rgba(255,255,255,.1); }
+
+.tabbar {
+  background: rgba(6, 17, 29, .86);
+  border-color: rgba(189, 223, 241, .1);
+}
+
+.tab-item { color: #8faabb; }
+.tab-item.active { color: #fff; background: linear-gradient(180deg, rgba(56,217,150,.15), rgba(103,213,255,.06)); }
+.tab-item.active .tab-icon { color: var(--accent); }
+.tab-item.active::before { display: none; }
+
+.win-row, .wins-summary-card, .round-item, .pun-row, .compare-card, .record-card {
+  background: rgba(4, 18, 31, .32);
+  border-color: rgba(189, 223, 241, .1);
+}
+
+.card, .profile-card, .control-card, .tbl-wrap, .round-item, .feature-card {
+  box-shadow: 0 10px 26px rgba(0, 9, 20, .18);
+}
+
+.feature-card::before, .feature-card::after, .page:not(#page-dashboard) .hero::before { display: none; }
+.round-item, .round-item.open { background: rgba(9, 25, 41, .76); }
+.round-toggle:hover, .round-item.open .round-toggle { background: transparent; }
+.round-body { border-top: 1px solid rgba(189, 223, 241, .1); }
+
+thead th { color: #a9c9dc; background: rgba(1, 13, 24, .28); }
+tbody tr:hover { background: rgba(103, 213, 255, .06); }
+
+@media (max-width: 640px) {
+  .tbl-wrap, .tbl-wrap.wide { overflow-x: hidden; }
+  .tbl-wrap table, .tbl-wrap.wide table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+    font-size: 10px;
+  }
+  .tbl-wrap th, .tbl-wrap td {
+    padding: 10px 5px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .tbl-wrap th { font-size: 8px; letter-spacing: .04em; }
+  .tbl-wrap .chip { font-size: 10px; padding: 5px 7px 5px 6px; gap: 5px; }
+  .tbl-wrap .chip-dot { width: 6px; height: 6px; }
+  .tbl-wrap .badge-crown, .tbl-wrap .badge-fatal, .tbl-wrap .badge-model { display: none; }
+}
+
+@media (min-width: 920px) {
+  .tabbar { top: 92px; background: rgba(9, 25, 41, .72); }
+  .main { padding-top: 30px; }
+}
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <div class="nav-logo"><span class="dot"></span> Liga Cartola</div>
+  <div class="nav-logo"><span class="dot"></span> Liga da Família</div>
   <div class="nav-badge" id="nav-rodadas">0 rodadas</div>
 </nav>
 
@@ -1634,20 +1814,19 @@ td.pts {
     </svg>
     Perfil
   </button>
-  <button class="tab-item" data-page="punicoes">
-    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-    </svg>
-    Punições
-  </button>
 </div>
 
 <div class="main">
   <div class="page active" id="page-dashboard">
     <div class="hero">
-      <div class="hero-eyebrow">Temporada ativa</div>
-      <h1>Liga<br><span>Cartola</span></h1>
+      <div class="hero-eyebrow">Família do Cartola PT2</div>
+      <h1>O jogo<br><span>da nossa liga</span></h1>
       <p class="hero-sub">Acompanhe rankings, vitórias e estatísticas da liga em família com uma leitura rápida, vibrante e mais próxima da experiência de app esportivo premium.</p>
+      <div class="sync-status is-local" id="sync-status" aria-live="polite">
+        <span class="sync-dot"></span>
+        <span id="sync-status-text">Carregando dados da liga...</span>
+        <button class="sync-refresh" type="button" id="sync-refresh">Atualizar</button>
+      </div>
       <div class="hero-stats">
         <div class="stat-pill">
           <div class="label">Rodadas</div>
@@ -1893,19 +2072,26 @@ td.pts {
     <div class="profile-grid" id="profile-grid"></div>
   </div>
 
-  <div class="page" id="page-punicoes">
-    <div class="hero" style="padding-bottom:12px">
-      <div class="hero-eyebrow" style="color:#b8abd6">Disciplina</div>
-      <h1 style="font-size:clamp(28px,7vw,48px)">Punições</h1>
-    </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Cada punição desconta 20 pontos na rodada correspondente.</p>
-    <div id="pun-list"></div>
-  </div>
-
   <div class="footer" id="footer-info"></div>
 </div>
 
 <script>
+const CARTOLA_SYNC = {
+  leagueSlug: 'familia-do-cartola-pt2',
+  source: './data/league.json',
+  players: {
+    Rian: 'Fã Clube do Léo Ortiz',
+    Gian: 'City BBMA',
+    Lucas: 'E-Sports BA',
+    Fernando: 'Fernandão',
+    Miguel: 'Iovim FC',
+    Sellyda: 'Céu Tricolor FC'
+  }
+};
+
+let cachedLeague = null;
+try { cachedLeague = JSON.parse(localStorage.getItem('liga-cartola-data')); } catch (_) { /* first visit */ }
+
 const MEMBROS = ["Rian","Gian","Lucas","Fernando","Miguel","Sellyda"];
 
 const SOLID_CORES = {
@@ -1917,7 +2103,7 @@ const SOLID_CORES = {
   Sellyda:"#c032ff"
 };
 
-const RODADAS_RAW = [
+const RODADAS_FALLBACK = [
   {Rian:51.66,Gian:69.45,Lucas:36.84,Fernando:51.3,Miguel:50.54,Sellyda:60.92},
   {Rian:68.58,Gian:62.61,Lucas:40.27,Fernando:88.14,Miguel:45.22,Sellyda:57.40},
   {Rian:82.66,Gian:90.71,Lucas:54.13,Fernando:57.64,Miguel:69.43,Sellyda:75.61},
@@ -1940,6 +2126,10 @@ const RODADAS_RAW = [
   {Rian:116.93,Gian:65.80,Lucas:43.38,Fernando:47.10,Miguel:55.38,Sellyda:87.18},
   {Rian:88.76,Gian:37.71,Lucas:45.01,Fernando:11.90,Miguel:29.81,Sellyda:64.84},
 ];
+
+const RODADAS_RAW = Array.isArray(cachedLeague?.rodadas) && cachedLeague.rodadas.length
+  ? cachedLeague.rodadas
+  : RODADAS_FALLBACK;
 
 const PUNICOES = {
   Rian:[], Gian:[], Lucas:[2,3,4,5,6, 13, 14, 15, 16, 17, 19], Fernando:[4,8,9,11,14, 19], Miguel:[3,5,6,7, 15, 19], Sellyda:[]
@@ -2397,19 +2587,6 @@ document.getElementById('profile-grid').innerHTML = totSorted.map(([m, p]) => {
     </div>`;
 }).join('');
 
-const punSorted = Object.entries(PUNICOES).sort((a, b) => b[1].length - a[1].length);
-const pl = document.getElementById('pun-list');
-pl.innerHTML = punSorted.map(([m, rds]) => `
-  <div class="pun-row">
-    <div style="display:flex;align-items:center;gap:12px">
-      ${chip(m, 'sm')}
-    </div>
-    <div style="text-align:right">
-      <div class="pun-count">${rds.length}</div>
-      ${rds.length ? `<div class="pun-rounds">Rds: ${rds.join(', ')}</div>` : '<div class="pun-rounds">Sem punições</div>'}
-    </div>
-  </div>`).join('');
-
 document.getElementById('footer-info').innerHTML = `Liga Cartola • Atualizado em ${new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}`;
 
 const evolutionFilters = document.getElementById('evolution-filters');
@@ -2599,6 +2776,46 @@ document.querySelectorAll('.tab-item').forEach(btn => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 });
+
+function setSyncStatus(message, synced) {
+  const status = document.getElementById('sync-status');
+  const text = document.getElementById('sync-status-text');
+  if (!status || !text) return;
+  status.classList.toggle('is-local', !synced);
+  text.textContent = message;
+}
+
+async function loadLeagueData() {
+  try {
+    const response = await fetch(`${CARTOLA_SYNC.source}?v=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error('Fonte indisponível');
+    const data = await response.json();
+    if (!Array.isArray(data.rodadas) || !data.rodadas.length) throw new Error('Dados inválidos');
+
+    const nextData = JSON.stringify(data);
+    const currentData = localStorage.getItem('liga-cartola-data');
+    if (nextData !== currentData) {
+      localStorage.setItem('liga-cartola-data', nextData);
+      window.location.reload();
+      return;
+    }
+
+    const updatedAt = data.updatedAt ? new Date(data.updatedAt) : null;
+    const timestamp = updatedAt && !Number.isNaN(updatedAt.getTime())
+      ? `Atualizado em ${updatedAt.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}`
+      : 'Histórico carregado — aguardando a primeira sincronização';
+    setSyncStatus(timestamp, Boolean(updatedAt));
+  } catch (_) {
+    setSyncStatus('Exibindo a última versão salva no dispositivo', false);
+  }
+}
+
+document.getElementById('sync-refresh')?.addEventListener('click', () => {
+  setSyncStatus('Verificando a versão mais recente...', false);
+  loadLeagueData();
+});
+
+loadLeagueData();
 </script>
 </body>
 </html>

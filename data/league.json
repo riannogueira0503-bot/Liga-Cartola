@@ -1,0 +1,27 @@
+{
+  "leagueSlug": "familia-do-cartola-pt2",
+  "updatedAt": null,
+  "rodadas": [
+    {"Rian":51.66,"Gian":69.45,"Lucas":36.84,"Fernando":51.3,"Miguel":50.54,"Sellyda":60.92},
+    {"Rian":68.58,"Gian":62.61,"Lucas":40.27,"Fernando":88.14,"Miguel":45.22,"Sellyda":57.4},
+    {"Rian":82.66,"Gian":90.71,"Lucas":54.13,"Fernando":57.64,"Miguel":69.43,"Sellyda":75.61},
+    {"Rian":55.65,"Gian":75.93,"Lucas":6.4,"Fernando":33.8,"Miguel":33.88,"Sellyda":39.45},
+    {"Rian":81.86,"Gian":75.41,"Lucas":31.05,"Fernando":74.25,"Miguel":48.22,"Sellyda":84.8},
+    {"Rian":80.91,"Gian":84.58,"Lucas":43.75,"Fernando":73.5,"Miguel":38.29,"Sellyda":103.8},
+    {"Rian":54.06,"Gian":67.17,"Lucas":0,"Fernando":61.71,"Miguel":28.45,"Sellyda":57.97},
+    {"Rian":61.6,"Gian":65.85,"Lucas":0,"Fernando":27,"Miguel":47.45,"Sellyda":58.76},
+    {"Rian":63.38,"Gian":64.75,"Lucas":0,"Fernando":36.19,"Miguel":73.85,"Sellyda":64.28},
+    {"Rian":51.29,"Gian":62.55,"Lucas":0,"Fernando":44.27,"Miguel":40.5,"Sellyda":43.05},
+    {"Rian":89.56,"Gian":87.46,"Lucas":0,"Fernando":63.76,"Miguel":58.45,"Sellyda":74.28},
+    {"Rian":73.3,"Gian":121.1,"Lucas":49.75,"Fernando":93.5,"Miguel":44.9,"Sellyda":71.21},
+    {"Rian":107.44,"Gian":86.44,"Lucas":47.3,"Fernando":77.99,"Miguel":45.95,"Sellyda":106.64},
+    {"Rian":58.55,"Gian":47.14,"Lucas":41.85,"Fernando":0,"Miguel":67.4,"Sellyda":85.15},
+    {"Rian":27.72,"Gian":57.05,"Lucas":32.88,"Fernando":0,"Miguel":38.43,"Sellyda":51.44},
+    {"Rian":92.05,"Gian":97.95,"Lucas":43.5,"Fernando":0,"Miguel":42.45,"Sellyda":59.9},
+    {"Rian":60.71,"Gian":71.61,"Lucas":22.25,"Fernando":0,"Miguel":16.5,"Sellyda":74.21},
+    {"Rian":133.5,"Gian":96.08,"Lucas":18.55,"Fernando":64.45,"Miguel":18.3,"Sellyda":118.25},
+    {"Rian":140.18,"Gian":96.68,"Lucas":21,"Fernando":43.7,"Miguel":10.25,"Sellyda":109.27},
+    {"Rian":116.93,"Gian":65.8,"Lucas":43.38,"Fernando":47.1,"Miguel":55.38,"Sellyda":87.18},
+    {"Rian":88.76,"Gian":37.71,"Lucas":45.01,"Fernando":11.9,"Miguel":29.81,"Sellyda":64.84}
+  ]
+}
