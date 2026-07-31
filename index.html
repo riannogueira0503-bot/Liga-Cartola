@@ -1873,12 +1873,17 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
 .admin-primary, .admin-secondary { border-radius: 14px; padding: 13px 16px; font: 800 13px 'DM Sans', sans-serif; cursor: pointer; }
 .admin-primary { width: 100%; margin-top: 18px; border: 0; background: linear-gradient(135deg, #38d996, #20a978); color: #04151b; }
 .admin-secondary { border: 1px solid rgba(189,223,241,.2); background: transparent; color: #dbeef6; }
+.admin-danger { width: 100%; margin-top: 10px; padding: 12px 16px; border: 1px solid rgba(255,107,123,.38); border-radius: 14px; background: rgba(255,107,123,.08); color: #ffb0ba; font: 800 13px 'DM Sans', sans-serif; cursor: pointer; }
 .admin-message { min-height: 20px; margin-top: 12px; color: #bfeedd; font-size: 12px; font-weight: 700; }
 .admin-message.is-error { color: #ff9aa6; }
 .admin-topline { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
 .admin-score-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
 .admin-score-field { padding: 12px; border-radius: 16px; background: rgba(4,18,31,.34); border: 1px solid rgba(189,223,241,.1); }
 .admin-score-field label { margin: 0 0 8px; }
+.admin-last-round { margin: 4px 0 16px; padding: 11px 13px; border-radius: 14px; background: rgba(56,217,150,.08); color: #bfeedd; border: 1px solid rgba(56,217,150,.16); font-size: 12px; font-weight: 800; }
+.admin-import { margin-top: 16px; padding: 14px; border-radius: 16px; background: rgba(103,213,255,.06); border: 1px dashed rgba(103,213,255,.26); }
+.admin-import input { margin-bottom: 10px; font-size: 12px; }
+.admin-import .admin-secondary { width: 100%; }
 @media (max-width: 420px) { .admin-score-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -2227,10 +2232,14 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
         <div><h2>Publicar uma rodada</h2><p>Os visitantes verão a atualização assim que você salvar.</p></div>
         <button class="admin-secondary" type="button" id="admin-logout">Sair</button>
       </div>
+      <div class="admin-last-round" id="admin-last-round">Última rodada publicada: —</div>
       <label for="admin-round">Número da rodada</label>
       <input id="admin-round" type="number" min="1" step="1">
       <div class="admin-score-grid" id="admin-score-grid"></div>
-      <button class="admin-primary" type="button" id="admin-publish">Publicar rodada</button>
+      <div class="admin-actions">
+        <button class="admin-primary" type="button" id="admin-publish">Publicar rodada</button>
+        <button class="admin-danger" type="button" id="admin-delete-round">Remover rodada</button>
+      </div>
       <div class="admin-message" id="admin-publish-message"></div>
     </div>
   </div>
@@ -2250,6 +2259,15 @@ const CARTOLA_SYNC = {
     Miguel: 'Iovim FC',
     Sellyda: 'Céu Tricolor FC'
   }
+};
+
+const CARTOLA_ALIASES = {
+  Rian: ['fã clube do l.ortiz', 'fa clube do l.ortiz', 'fã clube do léo ortiz', 'fa clube do leo ortiz', 'leo ortiz'],
+  Gian: ['city bbma', 'city b b m a'],
+  Lucas: ['e-spots ba', 'e spots ba', 'espots ba', 'e-sports ba', 'e sports ba', 'esports ba'],
+  Fernando: ['fernandao sem o 2 a', 'fernandão sem o 2 a', 'fernandão', 'fernandao'],
+  Miguel: ['iovinn fc', 'iovinn', 'lovinn fc', 'lovinn', 'iovim fc', 'iovim', 'iovin fc', 'iovin'],
+  Sellyda: ['selltricolor fc', 'selltricolor', 'céu tricolor fc', 'ceu tricolor fc', 'céu tricolor', 'ceu tricolor']
 };
 
 const SUPABASE_URL = 'https://xuhgcwhosfozismxjyjt.supabase.co';
@@ -3130,6 +3148,8 @@ function renderAdminScoreFields() {
   const grid = document.getElementById('admin-score-grid');
   const roundInput = document.getElementById('admin-round');
   if (!grid || !roundInput) return;
+  if (!roundInput.value) roundInput.value = RODADAS_RAW.length + 1;
+  document.getElementById('admin-last-round').textContent = `Última rodada publicada: ${RODADAS_RAW.length}`;
   const round = Math.max(1, Number(roundInput.value) || RODADAS_RAW.length + 1);
   const existing = RODADAS_RAW[round - 1] || {};
   grid.innerHTML = MEMBROS.map(member => `
@@ -3201,6 +3221,23 @@ document.getElementById('admin-publish')?.addEventListener('click', async () => 
   if (error) return setAdminMessage('admin-publish-message', 'Não foi possível publicar. Tente novamente.', true);
   localStorage.setItem('liga-cartola-data', JSON.stringify({ rodadas: rounds, updatedAt: new Date().toISOString() }));
   setAdminMessage('admin-publish-message', 'Rodada publicada para todos. Atualizando...');
+  window.setTimeout(() => window.location.reload(), 900);
+});
+
+document.getElementById('admin-delete-round')?.addEventListener('click', async () => {
+  if (!db) return;
+  const round = Number(document.getElementById('admin-round').value);
+  if (!Number.isInteger(round) || round < 1 || round > RODADAS_RAW.length) {
+    return setAdminMessage('admin-publish-message', 'Escolha uma rodada existente para remover.', true);
+  }
+  if (!window.confirm(`Remover a rodada ${round}? As rodadas seguintes serão reordenadas.`)) return;
+  const rounds = RODADAS_RAW.map(item => ({ ...item }));
+  rounds.splice(round - 1, 1);
+  setAdminMessage('admin-publish-message', 'Removendo rodada...');
+  const { error } = await db.from('liga_cartola').upsert({ id: 1, rodadas: rounds, updated_at: new Date().toISOString() });
+  if (error) return setAdminMessage('admin-publish-message', 'Não foi possível remover a rodada.', true);
+  localStorage.setItem('liga-cartola-data', JSON.stringify({ rodadas: rounds, updatedAt: new Date().toISOString() }));
+  setAdminMessage('admin-publish-message', 'Rodada removida. Atualizando...');
   window.setTimeout(() => window.location.reload(), 900);
 });
 
