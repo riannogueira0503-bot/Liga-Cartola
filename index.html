@@ -1729,6 +1729,61 @@ body::after { background: rgba(56, 217, 150, .1); }
 .round-toggle:hover, .round-item.open .round-toggle { background: transparent; }
 .round-body { border-top: 1px solid rgba(189, 223, 241, .1); }
 
+.round-tools { display: flex; align-items: stretch; }
+.round-tools .round-toggle { flex: 1; }
+.round-download {
+  margin: 12px 12px 12px 0;
+  padding: 0 13px;
+  border: 1px solid rgba(103, 213, 255, .26);
+  border-radius: 14px;
+  background: rgba(103, 213, 255, .08);
+  color: #d8f6ff;
+  font: 800 11px 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+.round-download:hover { background: rgba(103, 213, 255, .16); }
+
+.ranking-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 8px auto;
+  padding: 8px 12px;
+  border: 1px solid rgba(103, 213, 255, .26);
+  border-radius: 12px;
+  background: rgba(103, 213, 255, .08);
+  color: #d8f6ff;
+  font: 800 11px 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+.ranking-download:hover { background: rgba(103, 213, 255, .16); }
+
+.record-selector {
+  position: relative;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(9, 25, 41, .76);
+  border: 1px solid rgba(189, 223, 241, .13);
+}
+.record-selector label { display: block; margin-bottom: 9px; color: #bfeedd; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.record-selector::after { content: '⌄'; position: absolute; right: 30px; bottom: 24px; color: #67d5ff; font-size: 24px; font-weight: 800; pointer-events: none; }
+.record-selector .control-select { appearance: none; padding-right: 50px; background: #0b2034; color: #f5fbff; border-color: rgba(103,213,255,.3); }
+.record-selector .control-select option { background: #0b2034; color: #f5fbff; }
+.record-focus { grid-template-columns: minmax(0, 1fr); }
+.record-focus .record-card { min-height: 190px; display: grid; align-content: center; justify-items: start; padding: 28px; }
+.record-focus .record-card .value { font-size: clamp(44px, 12vw, 76px); }
+#record-grid.record-focus .record-card {
+  background: linear-gradient(125deg, #0a1c2e, #102c43) !important;
+  border: 1px solid rgba(189,223,241,.16);
+  border-left: 6px solid var(--record-color);
+  box-shadow: 0 16px 32px rgba(0, 9, 20, .24);
+}
+#record-grid.record-focus .record-card::before { display: none; }
+#record-grid.record-focus .record-card::after { content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; right: -70px; bottom: -90px; background: var(--record-color); opacity: .14; filter: blur(12px); }
+#record-grid.record-focus .record-card .label { color: #a9c9dc; }
+#record-grid.record-focus .record-card .note { color: #d4e4ee; font-size: 14px; }
+.record-owner { margin-top: 16px; color: var(--record-color); font-weight: 800; font-size: 13px; }
+
 thead th { color: #a9c9dc; background: rgba(1, 13, 24, .28); }
 tbody tr:hover { background: rgba(103, 213, 255, .06); }
 
@@ -1749,12 +1804,59 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
   .tbl-wrap .chip { font-size: 10px; padding: 5px 7px 5px 6px; gap: 5px; }
   .tbl-wrap .chip-dot { width: 6px; height: 6px; }
   .tbl-wrap .badge-crown, .tbl-wrap .badge-fatal, .tbl-wrap .badge-model { display: none; }
+  .round-download { min-width: 74px; padding: 0 8px; }
 }
 
 @media (min-width: 920px) {
   .tabbar { top: 92px; background: rgba(9, 25, 41, .72); }
   .main { padding-top: 30px; }
 }
+
+/* Abertura mais compacta e editorial. */
+#page-dashboard .hero {
+  padding: 22px 24px 20px;
+  border-radius: 24px;
+  background: linear-gradient(112deg, #09243a 0%, #0d4f62 100%);
+}
+#page-dashboard .hero::before { display: none; }
+#page-dashboard .hero h1 {
+  max-width: 13ch;
+  margin-bottom: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(30px, 7vw, 48px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.055em;
+}
+#page-dashboard .hero h1 span { color: #bfeedd; }
+#page-dashboard .hero-sub { margin-bottom: 14px; font-size: 13px; }
+#page-dashboard .hero-eyebrow { margin-bottom: 10px; font-size: 9px; }
+#page-dashboard .sync-status { margin-bottom: 12px; }
+#page-dashboard .stat-pill { min-width: 86px; padding: 10px 12px; border-radius: 13px; }
+#page-dashboard .stat-pill .value { font-size: 22px; }
+#page-dashboard > .grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px !important;
+}
+#page-dashboard .feature-card {
+  min-height: 194px;
+  padding: 16px 14px;
+  border-radius: 20px;
+  gap: 10px;
+}
+#page-dashboard .feature-card.champ { background: linear-gradient(150deg, #135f4c, #197a61); }
+#page-dashboard .feature-card.lantern { background: linear-gradient(150deg, #15324f, #315780); }
+#page-dashboard .feature-card::before, #page-dashboard .feature-card::after, #page-dashboard .feature-card .fc-bg { display: none; }
+#page-dashboard .feature-card .fc-icon { display: none; }
+#page-dashboard .feature-card .fc-kicker { margin-bottom: 5px; font-size: 8px; }
+#page-dashboard .feature-card .fc-label { font-family: 'DM Sans', sans-serif; font-size: clamp(17px, 4vw, 23px); max-width: 7ch; }
+#page-dashboard .feature-card .fc-points { font-size: clamp(24px, 6vw, 34px); }
+#page-dashboard .feature-card .fc-caption { font-size: 10px; }
+#page-dashboard .feature-card .fc-meta { grid-template-columns: 1fr; gap: 6px; }
+#page-dashboard .feature-card .fc-pill { padding: 8px 9px; border-radius: 12px; }
+#page-dashboard .feature-card .fc-pill-label { margin-bottom: 3px; font-size: 8px; }
+#page-dashboard .feature-card .fc-pill-value { font-size: 11px; }
 </style>
 </head>
 <body>
@@ -2057,7 +2159,11 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
       <div class="hero-eyebrow" style="color:#b8abd6">Arquivo histórico</div>
       <h1 style="font-size:clamp(28px,7vw,48px)">Recordes</h1>
     </div>
-    <div class="record-grid" style="margin-bottom:14px" id="record-grid"></div>
+    <div class="record-selector" style="margin-bottom:14px">
+      <label for="record-select">Escolha um recorde</label>
+      <select class="control-select" id="record-select"></select>
+    </div>
+    <div class="record-grid record-focus" style="margin-bottom:14px" id="record-grid"></div>
     <div class="section-label">Menores pontuações</div>
     <div class="tbl-wrap wide">
       <table id="tbl-record-min"></table>
@@ -2352,10 +2458,11 @@ function playerRounds(player) {
 
 function recordCard(owner, label, value, note) {
   return `
-    <div class="record-card" data-owner="${owner}">
+    <div class="record-card" data-owner="${owner}" style="--record-color:${SOLID_CORES[owner]}">
       <span class="label">${label}</span>
       <div class="value">${value}</div>
       <div class="note">${note}</div>
+      <div class="record-owner">Dono do recorde: ${owner}</div>
     </div>`;
 }
 
@@ -2455,7 +2562,8 @@ classificacoes.forEach(({ rodada, list }) => {
   const div = document.createElement('div');
   div.className = 'round-item';
   div.innerHTML = `
-    <button class="round-toggle" onclick="toggleRound(this)">
+    <div class="round-tools">
+      <button class="round-toggle" onclick="toggleRound(this)">
       <div class="round-head">
         <div class="round-topline">
           <span class="round-rd">RD ${rodada}</span>
@@ -2463,7 +2571,9 @@ classificacoes.forEach(({ rodada, list }) => {
         </div>
       </div>
       <svg class="rnd-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-    </button>
+      </button>
+      <button class="round-download" type="button" onclick="downloadRoundRanking(${rodada})">Baixar</button>
+    </div>
     <div class="round-body">
       ${list.map((item, idx) => `
         <div class="round-row">
@@ -2483,6 +2593,86 @@ classificacoes.forEach(({ rodada, list }) => {
 function toggleRound(btn) {
   const item = btn.closest('.round-item');
   item.classList.toggle('open');
+}
+
+function downloadRoundRanking(rodada) {
+  const ranking = classificacoes.find(item => item.rodada === rodada);
+  if (!ranking) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1600;
+  canvas.height = 520 + ranking.list.length * 170;
+  const ctx = canvas.getContext('2d');
+  const bg = ctx.createLinearGradient(0, 0, 1600, canvas.height);
+  bg.addColorStop(0, '#06111d');
+  bg.addColorStop(.55, '#0b3c56');
+  bg.addColorStop(1, '#0b6a57');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = 'rgba(103,213,255,.14)';
+  ctx.beginPath(); ctx.arc(1420, 130, 300, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(56,217,150,.12)';
+  ctx.beginPath(); ctx.arc(160, canvas.height - 100, 260, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = '#38d996';
+  ctx.fillRect(100, 92, 100, 12);
+  ctx.fillStyle = '#f5fbff';
+  ctx.font = '800 68px Arial, sans-serif';
+  ctx.fillText('LIGA DA FAMÍLIA', 100, 205);
+  ctx.fillStyle = '#b9d2e0';
+  ctx.font = '600 34px Arial, sans-serif';
+  ctx.fillText('FAMÍLIA DO CARTOLA PT2', 100, 264);
+  ctx.font = '800 56px Arial, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(`RANKING DA RODADA ${rodada}`, 100, 370);
+
+  ranking.list.forEach((player, index) => {
+    const y = 440 + index * 170;
+    ctx.fillStyle = 'rgba(4,18,31,.64)';
+    ctx.beginPath();
+    ctx.roundRect(80, y, 1440, 132, 28);
+    ctx.fill();
+    ctx.fillStyle = SOLID_CORES[player.j];
+    ctx.beginPath();
+    ctx.arc(160, y + 66, 34, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 45px Arial, sans-serif';
+    ctx.fillText(String(index + 1), 274, y + 80);
+    ctx.font = '800 43px Arial, sans-serif';
+    ctx.fillText(player.j, 380, y + 80);
+    const nameWidth = ctx.measureText(player.j).width;
+    if (index === 0) {
+      ctx.font = '42px Arial, sans-serif';
+      ctx.fillText('👑', 402 + nameWidth, y + 80);
+    } else if (index === 1 || index === ranking.list.length - 1) {
+      const label = index === 1 ? 'FATAL' : 'MODEL';
+      const fill = index === 1 ? '#ff6b7b' : '#7b9dff';
+      ctx.font = '800 22px Arial, sans-serif';
+      const labelWidth = ctx.measureText(label).width + 34;
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      ctx.roundRect(402 + nameWidth, y + 41, labelWidth, 42, 14);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(label, 419 + nameWidth, y + 70);
+    }
+    ctx.textAlign = 'right';
+    ctx.fillStyle = index === 0 ? '#ffc45c' : index === ranking.list.length - 1 ? '#ff6b7b' : '#eaf7ff';
+    ctx.font = '800 46px Arial, sans-serif';
+    ctx.fillText(`${player.pts.toFixed(2)} pts`, 1430, y + 80);
+    ctx.textAlign = 'left';
+  });
+
+  ctx.fillStyle = 'rgba(229,246,255,.72)';
+  ctx.font = '600 24px Arial, sans-serif';
+  ctx.fillText('Ranking gerado pela Liga da Família', 100, canvas.height - 54);
+
+  const link = document.createElement('a');
+  link.download = `ranking-rodada-${String(rodada).padStart(2, '0')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 
 const totSorted = Object.entries(total).sort((a, b) => b[1] - a[1]);
@@ -2523,21 +2713,31 @@ buildTable('tbl-humilhante',
   hSort.map((v, i) => [i + 1, chip(v.v, 'sm'), chip(v.p, 'sm'), `<strong>${v.d.toFixed(2)}</strong>`, `Rd ${v.r}`])
 );
 
-document.getElementById('record-grid').innerHTML = [
-  recordCard(top10[0].j, 'Maior rodada', top10[0].p.toFixed(2), `${top10[0].j} na Rd ${top10[0].r}`),
-  recordCard(worstScores[0].j, 'Pior rodada', worstScores[0].p.toFixed(2), `${worstScores[0].j} na Rd ${worstScores[0].r}`),
-  recordCard(leaderWins[0], 'Mais vitórias', String(leaderWins[1]), `${leaderWins[0]} lidera a temporada`),
-  recordCard(Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][0], 'Mais lanternas', String(Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][1]), `${Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][0]} ficou mais vezes em último`),
-  recordCard(noWinRuns[0].j, 'Maior jejum', String(noWinRuns[0].run), `${noWinRuns[0].j} passou mais rodadas sem vencer`),
-  recordCard(longStreaks[0] ? longStreaks[0].j : leaderWins[0], 'Sequência máxima', String(longStreaks[0] ? longStreaks[0].n : 1), longStreaks[0] ? `${longStreaks[0].j} entre Rd ${longStreaks[0].s} e ${longStreaks[0].e}` : 'Sem sequência longa ainda'),
-  recordCard(top3Counts[0].j, 'Mais vezes no top 3', String(top3Counts[0].count), `${top3Counts[0].j} mais apareceu entre os 3 primeiros`),
-  recordCard(bestRecovery.j, 'Maior recuperação', `+${bestRecovery.bestUp.diff.toFixed(2)}`, `${bestRecovery.j} entre Rds ${bestRecovery.bestUp.from} e ${bestRecovery.bestUp.to}`),
-  recordCard(worstDrop.j, 'Maior queda', `${worstDrop.bestDown.diff.toFixed(2)}`, `${worstDrop.j} entre Rds ${worstDrop.bestDown.from} e ${worstDrop.bestDown.to}`),
-  recordCard(top3Streaks[0].j, 'Sequência no top 3', String(top3Streaks[0].streak), `${top3Streaks[0].j} teve a maior sequência entre os 3 primeiros`),
-  recordCard(aboveLeagueAverage[0].j, 'Acima da média da liga', String(aboveLeagueAverage[0].count), `${aboveLeagueAverage[0].j} superou a média mais vezes`),
-  recordCard(leaderByRounds[0].j, 'Liderando o geral', String(leaderByRounds[0].count), `${leaderByRounds[0].j} liderou o acumulado por mais rodadas`),
-  recordCard(finalStretch[0].j, 'Melhor reta final', finalStretch[0].total.toFixed(2), `${finalStretch[0].j} somou mais pontos da Rd ${finalStretch[0].from} à ${finalStretch[0].to}`)
-].join('');
+const records = [
+  [top10[0].j, 'Maior rodada', top10[0].p.toFixed(2), `${top10[0].j} na Rd ${top10[0].r}`],
+  [worstScores[0].j, 'Pior rodada', worstScores[0].p.toFixed(2), `${worstScores[0].j} na Rd ${worstScores[0].r}`],
+  [leaderWins[0], 'Mais vitórias', String(leaderWins[1]), `${leaderWins[0]} lidera a temporada`],
+  [Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][0], 'Mais lanternas', String(Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][1]), `${Object.entries(lanternas).sort((a, b) => b[1] - a[1])[0][0]} ficou mais vezes em último`],
+  [noWinRuns[0].j, 'Maior jejum', String(noWinRuns[0].run), `${noWinRuns[0].j} passou mais rodadas sem vencer`],
+  [longStreaks[0] ? longStreaks[0].j : leaderWins[0], 'Sequência máxima', String(longStreaks[0] ? longStreaks[0].n : 1), longStreaks[0] ? `${longStreaks[0].j} entre Rd ${longStreaks[0].s} e ${longStreaks[0].e}` : 'Sem sequência longa ainda'],
+  [top3Counts[0].j, 'Mais vezes no top 3', String(top3Counts[0].count), `${top3Counts[0].j} mais apareceu entre os 3 primeiros`],
+  [bestRecovery.j, 'Maior recuperação', `+${bestRecovery.bestUp.diff.toFixed(2)}`, `${bestRecovery.j} entre Rds ${bestRecovery.bestUp.from} e ${bestRecovery.bestUp.to}`],
+  [worstDrop.j, 'Maior queda', `${worstDrop.bestDown.diff.toFixed(2)}`, `${worstDrop.j} entre Rds ${worstDrop.bestDown.from} e ${worstDrop.bestDown.to}`],
+  [top3Streaks[0].j, 'Sequência no top 3', String(top3Streaks[0].streak), `${top3Streaks[0].j} teve a maior sequência entre os 3 primeiros`],
+  [aboveLeagueAverage[0].j, 'Acima da média da liga', String(aboveLeagueAverage[0].count), `${aboveLeagueAverage[0].j} superou a média mais vezes`],
+  [leaderByRounds[0].j, 'Liderando o geral', String(leaderByRounds[0].count), `${leaderByRounds[0].j} liderou o acumulado por mais rodadas`],
+  [finalStretch[0].j, 'Melhor reta final', finalStretch[0].total.toFixed(2), `${finalStretch[0].j} somou mais pontos da Rd ${finalStretch[0].from} à ${finalStretch[0].to}`]
+];
+
+const recordSelect = document.getElementById('record-select');
+const recordGrid = document.getElementById('record-grid');
+recordSelect.innerHTML = records.map(([, label], index) => `<option value="${index}">${label}</option>`).join('');
+function showRecord(index) {
+  const [owner, label, value, note] = records[index];
+  recordGrid.innerHTML = recordCard(owner, label, value, note);
+}
+recordSelect.addEventListener('change', () => showRecord(Number(recordSelect.value)));
+showRecord(0);
 
 buildTable('tbl-record-min',
   ['#', 'Jogador', 'Pontos', 'Rodada'],
@@ -2775,6 +2975,87 @@ document.querySelectorAll('.tab-item').forEach(btn => {
     document.getElementById('page-' + page).classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+});
+
+function downloadTableRanking(title, tableId) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  const rows = Array.from(table.querySelectorAll('tr')).map(row => Array.from(row.cells).map(cell => cell.textContent.trim()));
+  if (rows.length < 2) return;
+
+  const columns = Math.max(...rows.map(row => row.length));
+  const canvas = document.createElement('canvas');
+  canvas.width = 1800;
+  canvas.height = 420 + rows.length * 105;
+  const ctx = canvas.getContext('2d');
+  const background = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  background.addColorStop(0, '#06111d');
+  background.addColorStop(1, '#0b6655');
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(103,213,255,.14)';
+  ctx.beginPath(); ctx.arc(1640, 120, 300, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = '#38d996';
+  ctx.fillRect(100, 80, 100, 12);
+  ctx.fillStyle = '#f5fbff';
+  ctx.font = '800 62px Arial, sans-serif';
+  ctx.fillText('LIGA DA FAMÍLIA', 100, 190);
+  ctx.fillStyle = '#c6dae7';
+  ctx.font = '600 30px Arial, sans-serif';
+  ctx.fillText(title.toUpperCase(), 100, 250);
+
+  const left = 80, width = 1640, top = 310, colWidth = width / columns;
+  rows.forEach((row, rowIndex) => {
+    const y = top + rowIndex * 105;
+    ctx.fillStyle = rowIndex === 0 ? 'rgba(103,213,255,.18)' : 'rgba(4,18,31,.6)';
+    ctx.beginPath(); ctx.roundRect(left, y, width, 84, rowIndex === 0 ? 22 : 16); ctx.fill();
+    row.forEach((value, columnIndex) => {
+      ctx.fillStyle = rowIndex === 0 ? '#bfeedd' : '#eef8ff';
+      ctx.font = rowIndex === 0 ? '800 19px Arial, sans-serif' : '700 26px Arial, sans-serif';
+      const x = left + 24 + columnIndex * colWidth;
+      const player = rowIndex === 0 ? null : MEMBROS.find(member => value.includes(member));
+      if (player) {
+        ctx.fillStyle = SOLID_CORES[player];
+        ctx.beginPath();
+        ctx.arc(x + 14, y + 42, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#eef8ff';
+      }
+      ctx.fillText(value.slice(0, 26), x + (player ? 38 : 0), y + (rowIndex === 0 ? 51 : 53));
+    });
+  });
+
+  ctx.fillStyle = 'rgba(229,246,255,.72)';
+  ctx.font = '600 22px Arial, sans-serif';
+  ctx.fillText('Ranking gerado pela Liga da Família', 100, canvas.height - 48);
+  const link = document.createElement('a');
+  link.download = `${tableId.replace('tbl-', 'ranking-')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+const downloadableTables = {
+  'tbl-total': 'Ranking geral',
+  'tbl-media': 'Média por rodada',
+  'tbl-max': 'Maiores pontuações',
+  'tbl-streak': 'Sequências de vitória',
+  'tbl-apertada': 'Vitórias mais apertadas',
+  'tbl-humilhante': 'Vitórias mais humilhantes',
+  'tbl-record-min': 'Menores pontuações',
+  'tbl-confronto-detalhe': 'Confronto direto'
+};
+
+Object.entries(downloadableTables).forEach(([tableId, title]) => {
+  const table = document.getElementById(tableId);
+  const wrapper = table?.closest('.tbl-wrap');
+  if (!wrapper) return;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'ranking-download';
+  button.textContent = 'Baixar ranking';
+  button.addEventListener('click', () => downloadTableRanking(title, tableId));
+  wrapper.before(button);
 });
 
 function setSyncStatus(message, synced) {
