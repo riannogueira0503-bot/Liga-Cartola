@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg: #080312;
@@ -1857,6 +1858,28 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
 #page-dashboard .feature-card .fc-pill { padding: 8px 9px; border-radius: 12px; }
 #page-dashboard .feature-card .fc-pill-label { margin-bottom: 3px; font-size: 8px; }
 #page-dashboard .feature-card .fc-pill-value { font-size: 11px; }
+
+.admin-panel {
+  padding: 20px;
+  border: 1px solid rgba(189,223,241,.14);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(18,43,66,.88), rgba(9,24,40,.9));
+  box-shadow: 0 12px 28px rgba(0,9,20,.2);
+}
+.admin-panel h2 { font-family: 'DM Sans', sans-serif; font-size: 23px; margin-bottom: 6px; }
+.admin-panel p { color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
+.admin-panel label { display: block; margin: 14px 0 7px; color: #bfeedd; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.admin-panel input { width: 100%; padding: 13px 14px; border: 1px solid rgba(103,213,255,.25); border-radius: 14px; background: #0a2034; color: #f5fbff; font: 600 14px 'DM Sans', sans-serif; }
+.admin-primary, .admin-secondary { border-radius: 14px; padding: 13px 16px; font: 800 13px 'DM Sans', sans-serif; cursor: pointer; }
+.admin-primary { width: 100%; margin-top: 18px; border: 0; background: linear-gradient(135deg, #38d996, #20a978); color: #04151b; }
+.admin-secondary { border: 1px solid rgba(189,223,241,.2); background: transparent; color: #dbeef6; }
+.admin-message { min-height: 20px; margin-top: 12px; color: #bfeedd; font-size: 12px; font-weight: 700; }
+.admin-message.is-error { color: #ff9aa6; }
+.admin-topline { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.admin-score-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.admin-score-field { padding: 12px; border-radius: 16px; background: rgba(4,18,31,.34); border: 1px solid rgba(189,223,241,.1); }
+.admin-score-field label { margin: 0 0 8px; }
+@media (max-width: 420px) { .admin-score-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -1915,6 +1938,12 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
       <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 10-16 0"/><circle cx="12" cy="7" r="4"/>
     </svg>
     Perfil
+  </button>
+  <button class="tab-item" data-page="admin">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+      <rect x="5" y="10" width="14" height="10" rx="2"/><path stroke-linecap="round" d="M8 10V7a4 4 0 018 0v3"/>
+    </svg>
+    Admin
   </button>
 </div>
 
@@ -2178,6 +2207,34 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
     <div class="profile-grid" id="profile-grid"></div>
   </div>
 
+  <div class="page" id="page-admin">
+    <div class="hero" style="padding-bottom:12px">
+      <div class="hero-eyebrow" style="color:#b8abd6">Área protegida</div>
+      <h1 style="font-size:clamp(28px,7vw,48px)">Administrar rodada</h1>
+    </div>
+    <div class="admin-panel" id="admin-login-panel">
+      <h2>Entrar</h2>
+      <p>Use a conta administrativa criada no Supabase.</p>
+      <label for="admin-email">E-mail</label>
+      <input id="admin-email" type="email" autocomplete="email" placeholder="seuemail@exemplo.com">
+      <label for="admin-password">Senha</label>
+      <input id="admin-password" type="password" autocomplete="current-password" placeholder="Sua senha administrativa">
+      <button class="admin-primary" type="button" id="admin-login">Entrar no painel</button>
+      <div class="admin-message" id="admin-login-message"></div>
+    </div>
+    <div class="admin-panel" id="admin-editor-panel" hidden>
+      <div class="admin-topline">
+        <div><h2>Publicar uma rodada</h2><p>Os visitantes verão a atualização assim que você salvar.</p></div>
+        <button class="admin-secondary" type="button" id="admin-logout">Sair</button>
+      </div>
+      <label for="admin-round">Número da rodada</label>
+      <input id="admin-round" type="number" min="1" step="1">
+      <div class="admin-score-grid" id="admin-score-grid"></div>
+      <button class="admin-primary" type="button" id="admin-publish">Publicar rodada</button>
+      <div class="admin-message" id="admin-publish-message"></div>
+    </div>
+  </div>
+
   <div class="footer" id="footer-info"></div>
 </div>
 
@@ -2194,6 +2251,10 @@ const CARTOLA_SYNC = {
     Sellyda: 'Céu Tricolor FC'
   }
 };
+
+const SUPABASE_URL = 'https://xuhgcwhosfozismxjyjt.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_fOJRCKg4I_Ww4W9Fv1CyCQ_l80Fp85r';
+const db = window.supabase?.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let cachedLeague = null;
 try { cachedLeague = JSON.parse(localStorage.getItem('liga-cartola-data')); } catch (_) { /* first visit */ }
@@ -3057,6 +3118,94 @@ Object.entries(downloadableTables).forEach(([tableId, title]) => {
   button.addEventListener('click', () => downloadTableRanking(title, tableId));
   wrapper.before(button);
 });
+
+function setAdminMessage(target, message, isError = false) {
+  const el = document.getElementById(target);
+  if (!el) return;
+  el.textContent = message;
+  el.classList.toggle('is-error', isError);
+}
+
+function renderAdminScoreFields() {
+  const grid = document.getElementById('admin-score-grid');
+  const roundInput = document.getElementById('admin-round');
+  if (!grid || !roundInput) return;
+  const round = Math.max(1, Number(roundInput.value) || RODADAS_RAW.length + 1);
+  const existing = RODADAS_RAW[round - 1] || {};
+  grid.innerHTML = MEMBROS.map(member => `
+    <div class="admin-score-field">
+      <label for="score-${member}">${member}</label>
+      <input id="score-${member}" data-member="${member}" type="number" step="0.01" min="0" value="${existing[member] ?? ''}" placeholder="0.00">
+    </div>`).join('');
+}
+
+function showAdminEditor(show) {
+  document.getElementById('admin-login-panel').hidden = show;
+  document.getElementById('admin-editor-panel').hidden = !show;
+  if (show) renderAdminScoreFields();
+}
+
+async function refreshAdminSession() {
+  if (!db) return;
+  const { data: { session } } = await db.auth.getSession();
+  showAdminEditor(Boolean(session));
+}
+
+async function loadRemoteLeague() {
+  if (!db) return;
+  const { data, error } = await db.from('liga_cartola').select('rodadas, updated_at').eq('id', 1).maybeSingle();
+  if (error || !data?.rodadas?.length) return;
+  const payload = { rodadas: data.rodadas, updatedAt: data.updated_at };
+  const next = JSON.stringify(payload);
+  if (localStorage.getItem('liga-cartola-data') !== next) {
+    localStorage.setItem('liga-cartola-data', next);
+    window.location.reload();
+  }
+}
+
+document.getElementById('admin-login')?.addEventListener('click', async () => {
+  if (!db) return setAdminMessage('admin-login-message', 'Não foi possível conectar ao painel.', true);
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-password').value;
+  if (!email || !password) return setAdminMessage('admin-login-message', 'Preencha e-mail e senha.', true);
+  setAdminMessage('admin-login-message', 'Entrando...');
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  if (error) return setAdminMessage('admin-login-message', 'Não foi possível entrar. Confira os dados.', true);
+  setAdminMessage('admin-login-message', '');
+  showAdminEditor(true);
+});
+
+document.getElementById('admin-logout')?.addEventListener('click', async () => {
+  await db?.auth.signOut();
+  showAdminEditor(false);
+});
+
+document.getElementById('admin-round')?.addEventListener('change', renderAdminScoreFields);
+
+document.getElementById('admin-publish')?.addEventListener('click', async () => {
+  if (!db) return;
+  const round = Number(document.getElementById('admin-round').value);
+  if (!Number.isInteger(round) || round < 1 || round > RODADAS_RAW.length + 1) {
+    return setAdminMessage('admin-publish-message', 'Informe uma rodada existente ou a próxima rodada.', true);
+  }
+  const score = {};
+  for (const member of MEMBROS) {
+    const value = Number(document.getElementById(`score-${member}`).value);
+    if (!Number.isFinite(value) || value < 0) return setAdminMessage('admin-publish-message', `Informe uma pontuação válida para ${member}.`, true);
+    score[member] = value;
+  }
+  const rounds = RODADAS_RAW.map(item => ({ ...item }));
+  rounds[round - 1] = score;
+  setAdminMessage('admin-publish-message', 'Publicando rodada...');
+  const { error } = await db.from('liga_cartola').upsert({ id: 1, rodadas: rounds, updated_at: new Date().toISOString() });
+  if (error) return setAdminMessage('admin-publish-message', 'Não foi possível publicar. Tente novamente.', true);
+  localStorage.setItem('liga-cartola-data', JSON.stringify({ rodadas: rounds, updatedAt: new Date().toISOString() }));
+  setAdminMessage('admin-publish-message', 'Rodada publicada para todos. Atualizando...');
+  window.setTimeout(() => window.location.reload(), 900);
+});
+
+refreshAdminSession();
+loadRemoteLeague();
 
 function setSyncStatus(message, synced) {
   const status = document.getElementById('sync-status');
