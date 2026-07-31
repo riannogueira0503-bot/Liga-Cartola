@@ -3253,6 +3253,14 @@ function setSyncStatus(message, synced) {
 }
 
 async function loadLeagueData() {
+  if (cachedLeague?.updatedAt) {
+    const updatedAt = new Date(cachedLeague.updatedAt);
+    const timestamp = !Number.isNaN(updatedAt.getTime())
+      ? `Atualizado em ${updatedAt.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}`
+      : 'Dados da liga carregados';
+    setSyncStatus(timestamp, true);
+    return;
+  }
   try {
     const response = await fetch(`${CARTOLA_SYNC.source}?v=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) throw new Error('Fonte indisponível');
