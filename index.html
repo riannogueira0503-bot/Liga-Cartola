@@ -2227,6 +2227,16 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
       <button class="admin-primary" type="button" id="admin-login">Entrar no painel</button>
       <div class="admin-message" id="admin-login-message"></div>
     </div>
+    <div class="admin-panel" id="admin-reset-panel" hidden>
+      <h2>Criar uma nova senha</h2>
+      <p>Digite a nova senha que você usará para entrar no painel administrativo.</p>
+      <label for="admin-new-password">Nova senha</label>
+      <input id="admin-new-password" type="password" autocomplete="new-password" minlength="8" placeholder="No mínimo 8 caracteres">
+      <label for="admin-confirm-password">Confirmar nova senha</label>
+      <input id="admin-confirm-password" type="password" autocomplete="new-password" minlength="8" placeholder="Digite a senha novamente">
+      <button class="admin-primary" type="button" id="admin-save-password">Salvar nova senha</button>
+      <div class="admin-message" id="admin-reset-message"></div>
+    </div>
     <div class="admin-panel" id="admin-editor-panel" hidden>
       <div class="admin-topline">
         <div><h2>Publicar uma rodada</h2><p>Os visitantes verão a atualização assim que você salvar.</p></div>
@@ -2310,7 +2320,6 @@ const RODADAS_FALLBACK = [
   {Rian:140.18,Gian:96.68,Lucas:21,Fernando:43.70,Miguel:10.25,Sellyda:109.27},
   {Rian:116.93,Gian:65.80,Lucas:43.38,Fernando:47.10,Miguel:55.38,Sellyda:87.18},
   {Rian:88.76,Gian:37.71,Lucas:45.01,Fernando:11.90,Miguel:29.81,Sellyda:64.84},
-  {Rian:50.06,Gian:43.90,Lucas:29.09,Fernando:28.79,Miguel:62.44,Sellyda:52.26},
 ];
 
 const RODADAS_RAW = Array.isArray(cachedLeague?.rodadas) && cachedLeague.rodadas.length
@@ -2318,7 +2327,7 @@ const RODADAS_RAW = Array.isArray(cachedLeague?.rodadas) && cachedLeague.rodadas
   : RODADAS_FALLBACK;
 
 const PUNICOES = {
-  Rian:[], Gian:[], Lucas:[2,3,4,5,6, 13, 14, 15, 16, 17, 19], Fernando:[4,8,9,11,14, 19], Miguel:[3,5,6,7, 15, 19, 22], Sellyda:[]
+  Rian:[], Gian:[], Lucas:[2,3,4,5,6, 13, 14, 15, 16, 17, 19], Fernando:[4,8,9,11,14, 19], Miguel:[3,5,6,7, 15, 19], Sellyda:[]
 };
 
 const total = {}, vitorias = {}, lanternas = {};
@@ -3160,9 +3169,12 @@ function renderAdminScoreFields() {
     </div>`).join('');
 }
 
+let isPasswordRecovery = false;
+
 function showAdminEditor(show) {
-  document.getElementById('admin-login-panel').hidden = show;
-  document.getElementById('admin-editor-panel').hidden = !show;
+  document.getElementById('admin-login-panel').hidden = show || isPasswordRecovery;
+  document.getElementById('admin-reset-panel').hidden = !isPasswordRecovery;
+  document.getElementById('admin-editor-panel').hidden = !show || isPasswordRecovery;
   if (show) renderAdminScoreFields();
 }
 
@@ -3171,6 +3183,33 @@ async function refreshAdminSession() {
   const { data: { session } } = await db.auth.getSession();
   showAdminEditor(Boolean(session));
 }
+
+db?.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    isPasswordRecovery = true;
+    showAdminEditor(false);
+    document.querySelector('[data-page="admin"]')?.click();
+  } else if (event === 'SIGNED_OUT') {
+    isPasswordRecovery = false;
+    showAdminEditor(false);
+  } else if (event === 'SIGNED_IN' && !isPasswordRecovery) {
+    showAdminEditor(Boolean(session));
+  }
+});
+
+document.getElementById('admin-save-password')?.addEventListener('click', async () => {
+  if (!db) return setAdminMessage('admin-reset-message', 'Não foi possível conectar ao painel.', true);
+  const password = document.getElementById('admin-new-password').value;
+  const confirmation = document.getElementById('admin-confirm-password').value;
+  if (password.length < 8) return setAdminMessage('admin-reset-message', 'Use uma senha com pelo menos 8 caracteres.', true);
+  if (password !== confirmation) return setAdminMessage('admin-reset-message', 'As duas senhas precisam ser iguais.', true);
+  setAdminMessage('admin-reset-message', 'Salvando sua nova senha...');
+  const { error } = await db.auth.updateUser({ password });
+  if (error) return setAdminMessage('admin-reset-message', 'Não foi possível salvar. Solicite um novo link e tente novamente.', true);
+  isPasswordRecovery = false;
+  setAdminMessage('admin-reset-message', 'Senha alterada com sucesso. Abrindo o painel...');
+  setTimeout(() => showAdminEditor(true), 700);
+});
 
 async function loadRemoteLeague() {
   if (!db) return;
