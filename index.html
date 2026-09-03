@@ -1873,6 +1873,8 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
 .admin-primary, .admin-secondary { border-radius: 14px; padding: 13px 16px; font: 800 13px 'DM Sans', sans-serif; cursor: pointer; }
 .admin-primary { width: 100%; margin-top: 18px; border: 0; background: linear-gradient(135deg, #38d996, #20a978); color: #04151b; }
 .admin-secondary { border: 1px solid rgba(189,223,241,.2); background: transparent; color: #dbeef6; }
+.admin-link { display: inline-block; margin-top: 14px; padding: 0; border: 0; background: transparent; color: #80d9ff; font: 800 12px 'DM Sans', sans-serif; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.admin-link:hover { color: #bfeeff; }
 .admin-danger { width: 100%; margin-top: 10px; padding: 12px 16px; border: 1px solid rgba(255,107,123,.38); border-radius: 14px; background: rgba(255,107,123,.08); color: #ffb0ba; font: 800 13px 'DM Sans', sans-serif; cursor: pointer; }
 .admin-message { min-height: 20px; margin-top: 12px; color: #bfeedd; font-size: 12px; font-weight: 700; }
 .admin-message.is-error { color: #ff9aa6; }
@@ -2225,7 +2227,17 @@ tbody tr:hover { background: rgba(103, 213, 255, .06); }
       <label for="admin-password">Senha</label>
       <input id="admin-password" type="password" autocomplete="current-password" placeholder="Sua senha administrativa">
       <button class="admin-primary" type="button" id="admin-login">Entrar no painel</button>
+      <button class="admin-link" type="button" id="admin-show-recovery">Esqueci minha senha</button>
       <div class="admin-message" id="admin-login-message"></div>
+    </div>
+    <div class="admin-panel" id="admin-recovery-panel" hidden>
+      <h2>Recuperar senha</h2>
+      <p>Informe o e-mail da conta administrativa. Enviaremos um link para criar uma nova senha.</p>
+      <label for="admin-recovery-email">E-mail</label>
+      <input id="admin-recovery-email" type="email" autocomplete="email" placeholder="seuemail@exemplo.com">
+      <button class="admin-primary" type="button" id="admin-send-recovery">Enviar link de recuperação</button>
+      <button class="admin-link" type="button" id="admin-cancel-recovery">Voltar para entrar</button>
+      <div class="admin-message" id="admin-recovery-message"></div>
     </div>
     <div class="admin-panel" id="admin-reset-panel" hidden>
       <h2>Criar uma nova senha</h2>
@@ -3170,9 +3182,11 @@ function renderAdminScoreFields() {
 }
 
 let isPasswordRecovery = false;
+let isRecoveryRequest = false;
 
 function showAdminEditor(show) {
-  document.getElementById('admin-login-panel').hidden = show || isPasswordRecovery;
+  document.getElementById('admin-login-panel').hidden = show || isPasswordRecovery || isRecoveryRequest;
+  document.getElementById('admin-recovery-panel').hidden = !isRecoveryRequest;
   document.getElementById('admin-reset-panel').hidden = !isPasswordRecovery;
   document.getElementById('admin-editor-panel').hidden = !show || isPasswordRecovery;
   if (show) renderAdminScoreFields();
@@ -3187,14 +3201,41 @@ async function refreshAdminSession() {
 db?.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
     isPasswordRecovery = true;
+    isRecoveryRequest = false;
     showAdminEditor(false);
     document.querySelector('[data-page="admin"]')?.click();
   } else if (event === 'SIGNED_OUT') {
     isPasswordRecovery = false;
+    isRecoveryRequest = false;
     showAdminEditor(false);
   } else if (event === 'SIGNED_IN' && !isPasswordRecovery) {
     showAdminEditor(Boolean(session));
   }
+});
+
+document.getElementById('admin-show-recovery')?.addEventListener('click', () => {
+  isRecoveryRequest = true;
+  setAdminMessage('admin-recovery-message', '');
+  document.getElementById('admin-recovery-email').value = document.getElementById('admin-email').value.trim();
+  showAdminEditor(false);
+  document.getElementById('admin-recovery-email').focus();
+});
+
+document.getElementById('admin-cancel-recovery')?.addEventListener('click', () => {
+  isRecoveryRequest = false;
+  showAdminEditor(false);
+  document.getElementById('admin-email').focus();
+});
+
+document.getElementById('admin-send-recovery')?.addEventListener('click', async () => {
+  if (!db) return setAdminMessage('admin-recovery-message', 'Não foi possível conectar ao painel.', true);
+  const email = document.getElementById('admin-recovery-email').value.trim();
+  if (!email) return setAdminMessage('admin-recovery-message', 'Informe o e-mail da conta administrativa.', true);
+  setAdminMessage('admin-recovery-message', 'Enviando link de recuperação...');
+  const redirectTo = `${window.location.origin}${window.location.pathname}`;
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo });
+  if (error) return setAdminMessage('admin-recovery-message', 'Não foi possível enviar o link. Tente novamente.', true);
+  setAdminMessage('admin-recovery-message', 'Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.');
 });
 
 document.getElementById('admin-save-password')?.addEventListener('click', async () => {
